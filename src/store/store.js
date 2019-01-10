@@ -6,7 +6,7 @@ Vue.use(Vuex)
 console.log(sourceData)
 
 export default new Vuex.Store({
-  strict: process.env.NODE_ENV !== 'production',
+  // strict: process.env.NODE_ENV !== 'production',
   state: sourceData,
   getters: {
     allTasks: (state) => {
@@ -22,8 +22,6 @@ export default new Vuex.Store({
   },
   mutations: {
     addNewTask (state, payload) {
-      console.log(payload)
-
       const task = payload
       const taskId = 'newTask' + parseInt(Math.random() * 1000)
       Vue.set(state.tasks, taskId, task)

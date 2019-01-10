@@ -3,19 +3,40 @@
     "1": {
       "title": "task1",
       "description": "This is my first task",
-      "frequency": "x2 times a week",
+      "category": "Fitness",
+      "schedule": {
+        "periodicity": "Weekly",
+        "weekly": "",
+        "specificDays": ["Tuesday", "Wednesday"],
+        "once": "single"
+      },
+      "subtasks": "",
       "status": "complete"
     },
     "2": {
       "title": "task2",
       "description": "This is my second task",
-      "frequency": "single task",
+      "category": "Education",
+      "schedule": {
+        "periodicity": "Once",
+        "weekly": "",
+        "specificDays": [],
+        "once": ""
+      },
+      "subtasks": "",
       "status": "ongoing"
     },
     "3": {
       "title": "task3",
       "description": "This is my third task",
-      "frequency": "everyday",
+      "category": "Lifestyle",
+      "schedule": {
+        "periodicity": "Weekly",
+        "weekly": "Everyday",
+        "specificDays": [],
+        "once": ""
+      },
+      "subtasks": "",
       "status": "ongoing"
     }
   }
