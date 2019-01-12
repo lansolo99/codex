@@ -6,7 +6,7 @@ Vue.use(Vuex)
 console.log(sourceData)
 
 export default new Vuex.Store({
-  // strict: process.env.NODE_ENV !== 'production',
+  strict: process.env.NODE_ENV !== 'production',
   state: sourceData,
   getters: {
     allTasks: (state) => {
@@ -17,6 +17,8 @@ export default new Vuex.Store({
     addNewTask ({
       commit
     }, payload) {
+      console.log(payload)
+
       commit('addNewTask', payload)
     }
   },

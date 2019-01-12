@@ -2,44 +2,27 @@
   <div>
     <TheNavbar/>
     <v-container fluid>
-      <v-expansion-panel>
-        <v-expansion-panel-content v-for="task in tasks" :key="task.id">
-          <v-layout slot="header" row wrap :class="`task ${task.status}`">
-            <v-flex xs1 class="green">x</v-flex>
-            <v-flex xs1 class="red">x</v-flex>
-            <v-flex xs9 class="purple">{{task.title}}</v-flex>
-            <v-flex xs1 class="green">x</v-flex>
-          </v-layout>
-          <v-card>
-            <v-card-text>
-              <ul>
-                <li>{{task.description}}</li>
-                <li>{{task.category}}</li>
-              </ul>
-            </v-card-text>
-          </v-card>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
+      <div v-for="(periodicity,key) in periodicities" :key="key">
+        <v-subheader>{{periodicity.name}}</v-subheader>
+        <TasksFiltered :periodicity="periodicity" :tasks="tasks"/>
+      </div>
     </v-container>
   </div>
 </template>
 
 <script>
 import TheNavbar from '@/components/TheNavbar'
+import TasksFiltered from '@/components/TasksFiltered'
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TheNavbar
-  },
-  data () {
-    return {
-
-    }
+    TheNavbar,
+    TasksFiltered
   },
   computed: {
     ...mapState([
-      'tasks'
+      'tasks', 'periodicities'
     ]),
     ...mapGetters([
       'allTasks'
@@ -49,7 +32,10 @@ export default {
   methods: {
     ...mapActions([
       'addNewTask'
-    ])
+    ]),
+    getTaskFilter (periodicityName) {
+      return this.taskFilters.find(v => v.periodicity === periodicityName).filter
+    }
   }
 }
 </script>

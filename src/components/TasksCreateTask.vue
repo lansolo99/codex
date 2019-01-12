@@ -1,6 +1,6 @@
 <template>
   <v-dialog transition="slide-y-transition" scrollable fullscreen v-model="dialogTask">
-    <v-btn slot="activator" fab small depressed absolute class="white add">
+    <v-btn slot="activator" fab small depressed absolute class="white add" @click="resetTaskForm">
       <v-icon class="black--text">add</v-icon>
     </v-btn>
     <v-card>
@@ -14,10 +14,25 @@
       </v-toolbar>
       <!-- Form -->
       <v-container>
-        <v-form ref="taskForm">
-          <v-text-field label="Title" v-model="task.title"></v-text-field>
-          <v-textarea label="informations" v-model="task.description"></v-textarea>
-          <v-select :items="categories" label="Category" v-model="task.category"></v-select>
+        <v-form ref="taskForm" lazy-validation>
+          <v-text-field
+            label="Title"
+            v-model="task.title"
+            required
+            :error-messages="titleErrors"
+            @input="$v.task.title.$touch()"
+            @blur="$v.task.title.$touch()"
+          ></v-text-field>
+          <v-textarea label="Description" v-model="task.description"></v-textarea>
+          <v-select
+            :items="categories"
+            label="Category"
+            v-model="task.category"
+            required
+            :error-messages="categoryErrors"
+            @input="$v.task.category.$touch()"
+            @blur="$v.task.category.$touch()"
+          ></v-select>
           <v-tabs v-model="schedule.active" color="cyan" dark slider-color="yellow">
             <v-tab v-for="option in schedule.options" :key="option" ripples>{{ option }}</v-tab>
             <v-tab-item>
@@ -25,21 +40,30 @@
                 :items="schedule.weekly"
                 label="Choose a frequence"
                 v-model="task.schedule.weekly"
+                :error-messages="scheduleWeeklyErrors"
               ></v-select>
             </v-tab-item>
             <v-tab-item>
-              <v-layout row>
-                <v-checkbox v-model="task.schedule.specificDays" value="Monday"></v-checkbox>
-                <v-checkbox v-model="task.schedule.specificDays" value="Tuesday"></v-checkbox>
-                <v-checkbox v-model="task.schedule.specificDays" value="Wednesday"></v-checkbox>
-                <v-checkbox v-model="task.schedule.specificDays" value="Thurdsay"></v-checkbox>
-                <v-checkbox v-model="task.schedule.specificDays" value="Friday"></v-checkbox>
-                <v-checkbox v-model="task.schedule.specificDays" value="Saturday"></v-checkbox>
-                <v-checkbox v-model="task.schedule.specificDays" value="Sunday"></v-checkbox>
+              <v-layout>
+                <v-input :error-messages="scheduleSpecificDaysErrors">
+                  <v-btn-toggle v-model="task.schedule.specificDays" multiple>
+                    <v-btn flat value="Monday">M</v-btn>
+                    <v-btn flat value="Tuesday">T</v-btn>
+                    <v-btn flat value="Wednesday">W</v-btn>
+                    <v-btn flat value="Thursday">T</v-btn>
+                    <v-btn flat value="Friday">F</v-btn>
+                    <v-btn flat value="Saturday">S</v-btn>
+                    <v-btn flat value="Sunday">S</v-btn>
+                  </v-btn-toggle>
+                </v-input>
               </v-layout>
             </v-tab-item>
             <v-tab-item>
-              <v-radio-group v-model="task.schedule.once" column>
+              <v-radio-group
+                v-model="task.schedule.once"
+                :error-messages="scheduleOnceErrors"
+                column
+              >
                 <v-radio label="Single task" value="single"></v-radio>
                 <v-radio label="Monthly goal" value="monthly"></v-radio>
                 <v-radio label="Yearly goal" value="yearly"></v-radio>
@@ -54,6 +78,8 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { validationMixin } from 'vuelidate'
+import { required, requiredIf } from 'vuelidate/lib/validators'
 
 export default {
 
@@ -105,8 +131,7 @@ export default {
         description: null,
         category: null,
         schedule: {
-          periodicity: '',
-          // periodicity: Object.values(this.schedule.tabs)[this.schedule.active].name,
+          periodicity: null,
           weekly: null,
           specificDays: [],
           once: null
@@ -117,7 +142,61 @@ export default {
 
     }
   },
+  mixins: [validationMixin],
+  validations: {
+    task: {
+      title: { required },
+      category: { required },
+      schedule: {
+        weekly: {
+          required: requiredIf(function () {
+            return this.task.schedule.periodicity === 'Weekly'
+          })
+        },
+        specificDays: {
+          required: requiredIf(function () {
+            return this.task.schedule.periodicity === 'On specific days'
+          })
+        },
+        once: {
+          required: requiredIf(function () {
+            return this.task.schedule.periodicity === 'Once'
+          })
+        }
+      }
+    }
+  },
   computed: {
+    titleErrors () {
+      const errors = []
+      if (!this.$v.task.title.$dirty) return errors
+      !this.$v.task.title.required && errors.push('Give a name to your task!')
+      return errors
+    },
+    categoryErrors () {
+      const errors = []
+      if (!this.$v.task.category.$dirty) return errors
+      !this.$v.task.category.required && errors.push('Please select a category!')
+      return errors
+    },
+    scheduleWeeklyErrors () {
+      const errors = []
+      if (!this.$v.task.schedule.weekly.$dirty) return errors
+      !this.$v.task.schedule.weekly.required && errors.push('Please select a frequency!')
+      return errors
+    },
+    scheduleSpecificDaysErrors () {
+      const errors = []
+      if (!this.$v.task.schedule.specificDays.$dirty) return errors
+      !this.$v.task.schedule.specificDays.required && errors.push('Please select a frequency!')
+      return errors
+    },
+    scheduleOnceErrors () {
+      const errors = []
+      if (!this.$v.task.schedule.once.$dirty) return errors
+      !this.$v.task.schedule.once.required && errors.push('Please select a periodicity for your single task!')
+      return errors
+    },
     periodicity: function () {
       return this.schedule.active
     }
@@ -132,9 +211,15 @@ export default {
       'addNewTask'
     ]),
     handleSave () {
-      this.addNewTask(this.task)
-      this.dialogTask = false
-      this.resetTaskForm()
+      this.$v.task.$touch()
+      if (this.$v.task.$invalid) {
+        console.log('invalid form')
+      } else {
+        console.log('valid form')
+        // this.addNewTask({ ...this.task })
+        this.addNewTask(JSON.parse(JSON.stringify(this.task)))
+        this.dialogTask = false
+      }
     },
     handleCancel () {
       this.dialogTask = false
@@ -142,6 +227,7 @@ export default {
     },
     resetTaskForm () {
       this.$refs.taskForm.reset()
+      this.$v.task.$reset()
     }
   }
 }

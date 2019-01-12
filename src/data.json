@@ -1,19 +1,33 @@
 {
+  "periodicities": {
+    "id1": {
+      "name": "Weeklies"
+    },
+    "id2": {
+      "name": "Monthlies"
+    },
+    "id3": {
+      "name": "Yearlies"
+    },
+    "id4": {
+      "name": "Singles"
+    }
+  },
   "tasks": {
-    "1": {
+    "id1": {
       "title": "task1",
       "description": "This is my first task",
       "category": "Fitness",
       "schedule": {
         "periodicity": "Weekly",
         "weekly": "",
-        "specificDays": ["Tuesday", "Wednesday"],
+        "specificDays": [],
         "once": "single"
       },
       "subtasks": "",
       "status": "complete"
     },
-    "2": {
+    "id2": {
       "title": "task2",
       "description": "This is my second task",
       "category": "Education",
@@ -21,12 +35,12 @@
         "periodicity": "Once",
         "weekly": "",
         "specificDays": [],
-        "once": ""
+        "once": "monthly"
       },
       "subtasks": "",
       "status": "ongoing"
     },
-    "3": {
+    "id3": {
       "title": "task3",
       "description": "This is my third task",
       "category": "Lifestyle",
@@ -35,6 +49,32 @@
         "weekly": "Everyday",
         "specificDays": [],
         "once": ""
+      },
+      "subtasks": "",
+      "status": "ongoing"
+    },
+    "id4": {
+      "title": "task4",
+      "description": "This is my fourth task",
+      "category": "Lifestyle",
+      "schedule": {
+        "periodicity": "Once",
+        "weekly": "Everyday",
+        "specificDays": [],
+        "once": "yearly"
+      },
+      "subtasks": "",
+      "status": "ongoing"
+    },
+    "id5": {
+      "title": "task5",
+      "description": "This is my fifth task",
+      "category": "Lifestyle",
+      "schedule": {
+        "periodicity": "Once",
+        "weekly": "Everyday",
+        "specificDays": [],
+        "once": "single"
       },
       "subtasks": "",
       "status": "ongoing"
