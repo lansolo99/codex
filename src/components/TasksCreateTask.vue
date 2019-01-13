@@ -3,7 +3,7 @@
     <v-btn slot="activator" fab small depressed absolute class="white add" @click="resetTaskForm">
       <v-icon class="black--text">add</v-icon>
     </v-btn>
-    <v-card>
+    <v-card flat>
       <!-- Toolbar -->
       <v-toolbar dark flat class="red">
         <v-btn depressed flat @click="handleCancel">cancel</v-btn>
@@ -15,6 +15,7 @@
       <!-- Form -->
       <v-container>
         <v-form ref="taskForm" lazy-validation>
+          <h6 class="title my-3">Informations</h6>
           <v-text-field
             label="Title"
             v-model="task.title"
@@ -33,6 +34,7 @@
             @input="$v.task.category.$touch()"
             @blur="$v.task.category.$touch()"
           ></v-select>
+          <h6 class="title my-3">Schedule</h6>
           <v-tabs v-model="schedule.active" color="cyan" dark slider-color="yellow">
             <v-tab v-for="option in schedule.options" :key="option" ripples>{{ option }}</v-tab>
             <v-tab-item>
@@ -70,6 +72,23 @@
               </v-radio-group>
             </v-tab-item>
           </v-tabs>
+          <h6 class="title my-3">Subtasks</h6>
+
+          <div class="grey pa-2 pl-3" v-if="task.subtasks.length > 0">
+            <v-layout v-for="(subtask,key) in task.subtasks" :key="subtask.id">
+              <v-text-field placeholder="Your new subtask" v-model="subtask.name" clearable></v-text-field>
+              <v-btn icon depressed dark class="mt-3" color="red" @click="removeSubTask(key)">
+                <v-icon>delete_forever</v-icon>
+              </v-btn>
+            </v-layout>
+          </div>
+
+          <v-layout class="mt-2 pa-2 pl-3">
+            <v-text-field placeholder="Add a new subtask" clearable v-model="newSubtask.name"></v-text-field>
+            <v-btn icon depressed dark class="mt-3" color="green" @click="addNewSubTask">
+              <v-icon>add</v-icon>
+            </v-btn>
+          </v-layout>
         </v-form>
       </v-container>
     </v-card>
@@ -77,6 +96,7 @@
 </template>
 
 <script>
+// import Vue from 'vue'
 import { mapActions } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required, requiredIf } from 'vuelidate/lib/validators'
@@ -126,6 +146,9 @@ export default {
         ]
 
       },
+      newSubtask: {
+        name: ''
+      },
       task: {
         title: null,
         description: null,
@@ -136,8 +159,20 @@ export default {
           specificDays: [],
           once: null
         },
-        subtasks: null,
-        status: 'ongoing'
+        subtasks: [
+          // {
+          //   id: 'id01',
+          //   name: 'my dummy subtask 1',
+          //   status: 'ongoing'
+          // },
+          // {
+          //   id: 'id02',
+          //   name: 'my dummy subtask 2',
+          //   status: 'ongoing'
+          // }
+        ],
+        status: 'ongoing',
+        checked: false
       }
 
     }
@@ -216,7 +251,6 @@ export default {
         console.log('invalid form')
       } else {
         console.log('valid form')
-        // this.addNewTask({ ...this.task })
         this.addNewTask(JSON.parse(JSON.stringify(this.task)))
         this.dialogTask = false
       }
@@ -226,8 +260,16 @@ export default {
       this.resetTaskForm()
     },
     resetTaskForm () {
-      this.$refs.taskForm.reset()
+      // this.$refs.taskForm.reset()
       this.$v.task.$reset()
+    },
+    addNewSubTask () {
+      const subtaskId = 'newSubtask' + parseInt(Math.random() * 1000)
+      this.task.subtasks.push({ id: subtaskId, name: this.newSubtask.name, status: 'ongoing' })
+      this.newSubtask.name = ''
+    },
+    removeSubTask (index) {
+      this.task.subtasks.splice(index, 1)
     }
   }
 }

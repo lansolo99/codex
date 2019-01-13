@@ -1,11 +1,34 @@
 <template>
   <v-expansion-panel>
     <v-expansion-panel-content v-for="(task,key) in filterTasks(periodicity.name)" :key="key">
-      <v-layout slot="header" row wrap :class="`task ${task.status}`">
-        <v-flex xs1 class="green">x</v-flex>
-        <v-flex xs1 class="red">x</v-flex>
-        <v-flex xs9 class="purple">{{task.title}}</v-flex>
-        <v-flex xs1 class="green">x</v-flex>
+      <v-layout slot="header" row wrap :class="`task ${task.status} mr-2`">
+        <v-flex xs1 class="green">
+          <v-checkbox
+            @click.native.stop
+            class="ma-0 pa-0"
+            color="white"
+            hide-details
+            v-model="task.checked"
+          ></v-checkbox>
+        </v-flex>
+        <v-flex xs1 class="red">CAT</v-flex>
+        <v-flex xs10 class="purple">{{task.title}}</v-flex>
+
+        <v-flex v-if="task.subtasks.length > 0" xs12>
+          <v-divider class="my-3"></v-divider>
+          <v-layout
+            v-for="(subtask,key) in task.subtasks"
+            :key="key"
+            row
+            wrap
+            :class="`task ${task.status} mt-3`"
+          >
+            <v-flex xs1 class="green">
+              <v-checkbox class="ma-0 pa-0" color="white" hide-details v-model="task.checked"></v-checkbox>
+            </v-flex>
+            <v-flex xs11 class="purple">{{subtask.name}}</v-flex>
+          </v-layout>
+        </v-flex>
       </v-layout>
       <v-card>
         <v-card-text>

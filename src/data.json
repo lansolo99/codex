@@ -24,8 +24,19 @@
         "specificDays": [],
         "once": "single"
       },
-      "subtasks": "",
-      "status": "complete"
+      "subtasks": [{
+          "id": "id01",
+          "name": "subtask1 of prefilled task 1",
+          "status": "ongoing"
+        },
+        {
+          "id": "id02",
+          "name": "subtask2 of prefilled task 1",
+          "status": "ongoing"
+        }
+      ],
+      "status": "complete",
+      "checked": true
     },
     "id2": {
       "title": "task2",
@@ -37,8 +48,9 @@
         "specificDays": [],
         "once": "monthly"
       },
-      "subtasks": "",
-      "status": "ongoing"
+      "subtasks": [],
+      "status": "ongoing",
+      "checked": false
     },
     "id3": {
       "title": "task3",
@@ -50,8 +62,9 @@
         "specificDays": [],
         "once": ""
       },
-      "subtasks": "",
-      "status": "ongoing"
+      "subtasks": [],
+      "status": "ongoing",
+      "checked": false
     },
     "id4": {
       "title": "task4",
@@ -63,8 +76,9 @@
         "specificDays": [],
         "once": "yearly"
       },
-      "subtasks": "",
-      "status": "ongoing"
+      "subtasks": [],
+      "status": "ongoing",
+      "checked": false
     },
     "id5": {
       "title": "task5",
@@ -76,8 +90,9 @@
         "specificDays": [],
         "once": "single"
       },
-      "subtasks": "",
-      "status": "ongoing"
+      "subtasks": [],
+      "status": "ongoing",
+      "checked": false
     }
   }
 }

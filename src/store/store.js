@@ -28,6 +28,7 @@ export default new Vuex.Store({
       const taskId = 'newTask' + parseInt(Math.random() * 1000)
       Vue.set(state.tasks, taskId, task)
     }
+
   }
 
 })
