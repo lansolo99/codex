@@ -15,6 +15,7 @@
   },
   "tasks": {
     "id1": {
+      "id": "id1",
       "title": "task1",
       "description": "This is my first task",
       "category": "Fitness",
@@ -27,11 +28,13 @@
       "subtasks": [{
           "id": "id01",
           "name": "subtask1 of prefilled task 1",
+          "checked": true,
           "status": "ongoing"
         },
         {
           "id": "id02",
           "name": "subtask2 of prefilled task 1",
+          "checked": false,
           "status": "ongoing"
         }
       ],
@@ -39,6 +42,7 @@
       "checked": true
     },
     "id2": {
+      "id": "id2",
       "title": "task2",
       "description": "This is my second task",
       "category": "Education",
@@ -53,6 +57,7 @@
       "checked": false
     },
     "id3": {
+      "id": "id3",
       "title": "task3",
       "description": "This is my third task",
       "category": "Lifestyle",
@@ -67,6 +72,7 @@
       "checked": false
     },
     "id4": {
+      "id": "id4",
       "title": "task4",
       "description": "This is my fourth task",
       "category": "Lifestyle",
@@ -81,6 +87,7 @@
       "checked": false
     },
     "id5": {
+      "id": "id5",
       "title": "task5",
       "description": "This is my fifth task",
       "category": "Lifestyle",

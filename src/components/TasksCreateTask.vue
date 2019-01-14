@@ -155,6 +155,7 @@ export default {
         name: ''
       },
       task: {
+        id: null,
         title: null,
         description: null,
         category: null,
@@ -231,14 +232,6 @@ export default {
       !this.$v.task.schedule.once.required && errors.push('Please select a periodicity for your single task!')
       return errors
     },
-    // subtaskErrors (subtask) {
-    //   console.log('test')
-    //   return ('test')
-    //   // const errors = []
-    //   // if (!this.$v.subtasks.name.$dirty) return errors
-    //   // !this.$v.subtasks.name.required && errors.push('Please set something here')
-    //   // return errors
-    // },
     periodicity: function () {
       return this.schedule.active
     }
@@ -258,6 +251,7 @@ export default {
         console.log('invalid form')
       } else {
         console.log('valid form')
+        this.task.id = 'newTask' + parseInt(Math.random() * 1000)
         this.addNewTask(JSON.parse(JSON.stringify(this.task)))
         this.dialogTask = false
       }
@@ -272,7 +266,11 @@ export default {
     },
     addNewSubTask () {
       const subtaskId = 'newSubtask' + parseInt(Math.random() * 1000)
-      this.task.subtasks.push({ id: subtaskId, name: this.newSubtask.name, status: 'ongoing' })
+      this.task.subtasks.push({
+        id: subtaskId,
+        name: this.newSubtask.name,
+        checked: null,
+        status: 'ongoing' })
       this.newSubtask.name = ''
     },
     removeSubTask (index) {

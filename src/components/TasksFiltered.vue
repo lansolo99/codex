@@ -8,7 +8,9 @@
             class="ma-0 pa-0"
             color="white"
             hide-details
-            v-model="task.checked"
+            :disabled="hasTaskSubtasks(task)"
+            :input-value="task.checked"
+            @change="updateCheckedStatus(task.id, $event, 'task')"
           ></v-checkbox>
         </v-flex>
         <v-flex xs1 class="red">CAT</v-flex>
@@ -24,7 +26,14 @@
             :class="`task ${task.status} mt-3`"
           >
             <v-flex xs1 class="green">
-              <v-checkbox class="ma-0 pa-0" color="white" hide-details v-model="task.checked"></v-checkbox>
+              <v-checkbox
+                @click.native.stop
+                class="ma-0 pa-0"
+                color="white"
+                hide-details
+                :input-value="subtask.checked"
+                @change="updateCheckedStatus(task.id, $event, 'subtask',subtask.id)"
+              ></v-checkbox>
             </v-flex>
             <v-flex xs11 class="purple">{{subtask.name}}</v-flex>
           </v-layout>
@@ -44,7 +53,14 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
+  data () {
+    return {
+      testDisabled: true
+    }
+  },
   props: {
     tasks: {
       required: true,
@@ -55,7 +71,11 @@ export default {
       type: Object
     }
   },
+
   methods: {
+    ...mapActions([
+      'setCheckedStatus'
+    ]),
     filterTasks (periodicityStr) {
       return Object.values(this.tasks)
         .filter(task => {
@@ -69,6 +89,12 @@ export default {
             return task.schedule.periodicity === 'Once' && task.schedule.once === 'single'
           }
         })
+    },
+    updateCheckedStatus (taskId, checkstatus, taskType, subtaskId) {
+      this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId })
+    },
+    hasTaskSubtasks (task) {
+      return task.subtasks.length > 0
     }
   }
 }

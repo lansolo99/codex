@@ -13,7 +13,7 @@
 <script>
 import TheNavbar from '@/components/TheNavbar'
 import TasksFiltered from '@/components/TasksFiltered'
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -30,9 +30,6 @@ export default {
 
   },
   methods: {
-    ...mapActions([
-      'addNewTask'
-    ]),
     getTaskFilter (periodicityName) {
       return this.taskFilters.find(v => v.periodicity === periodicityName).filter
     }

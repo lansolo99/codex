@@ -17,16 +17,48 @@ export default new Vuex.Store({
     addNewTask ({
       commit
     }, payload) {
-      console.log(payload)
-
       commit('addNewTask', payload)
+    },
+    setCheckedStatus ({
+      commit
+    }, {
+      taskId,
+      checkstatus,
+      taskType,
+      subtaskId
+    }) {
+      commit('setCheckedStatus', {
+        taskId,
+        checkstatus,
+        taskType,
+        subtaskId
+      })
     }
   },
   mutations: {
     addNewTask (state, payload) {
-      const task = payload
-      const taskId = 'newTask' + parseInt(Math.random() * 1000)
-      Vue.set(state.tasks, taskId, task)
+      Vue.set(state.tasks, payload.id, payload)
+    },
+    setCheckedStatus (state, {
+      taskId,
+      checkstatus,
+      taskType,
+      subtaskId
+    }) {
+      if (taskType === 'task') {
+        // console.log(taskType)
+        const task = state.tasks[taskId]
+        task.checked = checkstatus
+      } else {
+        // console.log(state.tasks[taskId].subtasks)
+        const subtask = state.tasks[taskId].subtasks.find(sub => {
+          return sub.id === subtaskId
+        })
+        subtask.checked = checkstatus
+        // console.log(subtask)
+        // const subtask = state.tasks[taskId].subtasks[subtaskId]
+        // subtask.checked = checkstatus
+      }
     }
 
   }
