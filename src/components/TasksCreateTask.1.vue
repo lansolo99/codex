@@ -75,11 +75,14 @@
           <h6 class="title my-3">Subtasks</h6>
 
           <div class="grey pa-2 pl-3" v-if="task.subtasks.length > 0">
-            <v-layout v-for="(subtask,key) in $v.task.subtasks.$each.$iter" :key="subtask.id">
+            <v-layout v-for="(subtask,key) in task.subtasks" :key="subtask.id">
+              {{key}}
+              {{subtask}}
               <v-text-field
                 placeholder="Your new subtask"
-                :error-messages="subtaskErrors(subtask)"
-                v-model="subtask.name.$model"
+                v-model="subtask.name"
+                required
+                :error-messages="subtaskErrors"
                 clearable
               ></v-text-field>
               <v-btn icon depressed dark class="mt-3" color="red" @click="removeSubTask(key)">
@@ -194,9 +197,9 @@ export default {
         }
       },
       subtasks: {
-        $each: {
-          name: { required }
-        }
+        // $each: {
+        //   name: { required }
+        // }
       }
     }
   },
@@ -231,14 +234,12 @@ export default {
       !this.$v.task.schedule.once.required && errors.push('Please select a periodicity for your single task!')
       return errors
     },
-    // subtaskErrors (subtask) {
-    //   console.log('test')
-    //   return ('test')
-    //   // const errors = []
-    //   // if (!this.$v.subtasks.name.$dirty) return errors
-    //   // !this.$v.subtasks.name.required && errors.push('Please set something here')
-    //   // return errors
-    // },
+    subtaskErrors () {
+      const errors = []
+      if (!this.$v.task.subtasks.name.$dirty) return errors
+      !this.$v.task.subtasks.name.required && errors.push('Please set something here')
+      return errors
+    },
     periodicity: function () {
       return this.schedule.active
     }
@@ -277,12 +278,6 @@ export default {
     },
     removeSubTask (index) {
       this.task.subtasks.splice(index, 1)
-    },
-    subtaskErrors (subtask) {
-      const errors = []
-      if (!subtask.name.$dirty) return errors
-      !subtask.name.required && errors.push('Please set something here')
-      return errors
     }
   }
 }
