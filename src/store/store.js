@@ -11,7 +11,8 @@ export default new Vuex.Store({
   getters: {
     allTasks: (state) => {
       return Object.values(state.tasks)[1]['title']
-    }
+    },
+    getAllTasks: (state) => state.tasks
   },
   actions: {
     addNewTask ({
@@ -46,18 +47,23 @@ export default new Vuex.Store({
       subtaskId
     }) {
       if (taskType === 'task') {
-        // console.log(taskType)
         const task = state.tasks[taskId]
         task.checked = checkstatus
       } else {
-        // console.log(state.tasks[taskId].subtasks)
         const subtask = state.tasks[taskId].subtasks.find(sub => {
           return sub.id === subtaskId
         })
         subtask.checked = checkstatus
-        // console.log(subtask)
-        // const subtask = state.tasks[taskId].subtasks[subtaskId]
-        // subtask.checked = checkstatus
+        // set checked status for parent task
+        const allSubtasksChecked = Object.values(state.tasks[taskId].subtasks).every(v => {
+          return v.checked
+        })
+
+        if (allSubtasksChecked) {
+          state.tasks[taskId].checked = true
+        } else {
+          state.tasks[taskId].checked = false
+        }
       }
     }
 

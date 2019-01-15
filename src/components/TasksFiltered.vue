@@ -71,6 +71,21 @@ export default {
       type: Object
     }
   },
+  computed: {
+    tasksChecked: function () {
+      return this.tasks
+    }
+  },
+  watch: {
+    tasksChecked: {
+      handler: function (val, oldVal) {
+        // console.log(Object.values(this.tasks.subtasks))
+
+        // this.tasks.find(v => { return v === v })
+      },
+      deep: true
+    }
+  },
 
   methods: {
     ...mapActions([
@@ -91,6 +106,12 @@ export default {
         })
     },
     updateCheckedStatus (taskId, checkstatus, taskType, subtaskId) {
+      // if subtask :
+      // get subtasks list
+      // console.log(typeof this.$store.state.tasks[taskId].subtasks)
+      // check if all
+
+      // Anyway
       this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId })
     },
     hasTaskSubtasks (task) {
