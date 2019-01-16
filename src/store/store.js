@@ -34,6 +34,11 @@ export default new Vuex.Store({
         taskType,
         subtaskId
       })
+    },
+    toggleTaskDialog ({
+      commit
+    }, payload) {
+      commit('toggleTaskDialog', payload)
     }
   },
   mutations: {
@@ -65,6 +70,9 @@ export default new Vuex.Store({
           state.tasks[taskId].checked = false
         }
       }
+    },
+    toggleTaskDialog (state, payload) {
+      state.utility.dialogTask = payload
     }
 
   }

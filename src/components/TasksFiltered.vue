@@ -46,6 +46,7 @@
             <li>{{task.schedule.periodicity}}</li>
             <li>{{task.category}}</li>
           </ul>
+          <v-btn outline large small class="mt-3" @click="toggleTaskDialog(true)">Edit task</v-btn>
         </v-card-text>
       </v-card>
     </v-expansion-panel-content>
@@ -58,7 +59,7 @@ import { mapActions } from 'vuex'
 export default {
   data () {
     return {
-      testDisabled: true
+      readonly: false
     }
   },
   props: {
@@ -79,9 +80,6 @@ export default {
   watch: {
     tasksChecked: {
       handler: function (val, oldVal) {
-        // console.log(Object.values(this.tasks.subtasks))
-
-        // this.tasks.find(v => { return v === v })
       },
       deep: true
     }
@@ -89,7 +87,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'setCheckedStatus'
+      'setCheckedStatus', 'toggleTaskDialog'
     ]),
     filterTasks (periodicityStr) {
       return Object.values(this.tasks)
@@ -106,12 +104,6 @@ export default {
         })
     },
     updateCheckedStatus (taskId, checkstatus, taskType, subtaskId) {
-      // if subtask :
-      // get subtasks list
-      // console.log(typeof this.$store.state.tasks[taskId].subtasks)
-      // check if all
-
-      // Anyway
       this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId })
     },
     hasTaskSubtasks (task) {
@@ -120,6 +112,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

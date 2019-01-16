@@ -101,5 +101,8 @@
       "status": "ongoing",
       "checked": false
     }
+  },
+  "utility": {
+    "dialogTask": "false"
   }
 }

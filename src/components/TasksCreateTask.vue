@@ -1,6 +1,6 @@
 <template>
   <v-dialog transition="slide-y-transition" scrollable fullscreen v-model="dialogTask">
-    <v-btn slot="activator" fab small depressed absolute class="white add" @click="resetTaskForm">
+    <v-btn slot="activator" fab small depressed absolute class="white add" @click="handleCreate">
       <v-icon class="black--text">add</v-icon>
     </v-btn>
     <v-card flat>
@@ -102,7 +102,7 @@
 
 <script>
 // import Vue from 'vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required, requiredIf } from 'vuelidate/lib/validators'
 
@@ -202,6 +202,10 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      storeDialogTask: state => state.utility.dialogTask
+    }
+    ),
     titleErrors () {
       const errors = []
       if (!this.$v.task.title.$dirty) return errors
@@ -239,11 +243,14 @@ export default {
   watch: {
     periodicity () {
       this.task.schedule.periodicity = Object.values(this.schedule.tabs)[this.schedule.active].name
+    },
+    storeDialogTask () {
+      this.dialogTask = this.storeDialogTask
     }
   },
   methods: {
     ...mapActions([
-      'addNewTask'
+      'addNewTask', 'toggleTaskDialog'
     ]),
     handleSave () {
       this.$v.task.$touch()
@@ -253,16 +260,18 @@ export default {
         console.log('valid form')
         this.task.id = 'newTask' + parseInt(Math.random() * 1000)
         this.addNewTask(JSON.parse(JSON.stringify(this.task)))
-        this.dialogTask = false
+        this.toggleTaskDialog(false)
       }
     },
     handleCancel () {
-      this.dialogTask = false
+      this.toggleTaskDialog(false)
       this.resetTaskForm()
     },
-    resetTaskForm () {
-      // this.$refs.taskForm.reset()
+    handleCreate () {
+      this.$refs.taskForm.reset()
+      this.task.subtasks = []
       this.$v.task.$reset()
+      this.toggleTaskDialog(true)
     },
     addNewSubTask () {
       const subtaskId = 'newSubtask' + parseInt(Math.random() * 1000)
