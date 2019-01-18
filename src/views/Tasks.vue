@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     ...mapState([
-      'tasks', 'periodicities'
+      'periodicities', 'tasks'
     ]),
     ...mapGetters([
       'allTasks'

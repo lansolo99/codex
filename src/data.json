@@ -102,6 +102,9 @@
       "checked": false
     }
   },
+  "currentTask": {
+    "id": "new"
+  },
   "utility": {
     "dialogTask": "false"
   }

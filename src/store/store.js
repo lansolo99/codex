@@ -20,6 +20,17 @@ export default new Vuex.Store({
     }, payload) {
       commit('addNewTask', payload)
     },
+    updateTask ({
+      commit
+    }, {
+      taskId,
+      task
+    }) {
+      commit('updateTask', {
+        taskId,
+        task
+      })
+    },
     setCheckedStatus ({
       commit
     }, {
@@ -39,11 +50,22 @@ export default new Vuex.Store({
       commit
     }, payload) {
       commit('toggleTaskDialog', payload)
+    },
+    setCurrentTask ({
+      commit
+    }, payload) {
+      commit('setCurrentTask', payload)
     }
   },
   mutations: {
     addNewTask (state, payload) {
       Vue.set(state.tasks, payload.id, payload)
+    },
+    updateTask (state, {
+      taskId,
+      task
+    }) {
+      state.tasks[taskId] = task
     },
     setCheckedStatus (state, {
       taskId,
@@ -73,6 +95,9 @@ export default new Vuex.Store({
     },
     toggleTaskDialog (state, payload) {
       state.utility.dialogTask = payload
+    },
+    setCurrentTask (state, payload) {
+      state.currentTask.id = payload
     }
 
   }

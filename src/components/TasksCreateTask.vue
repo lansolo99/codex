@@ -10,7 +10,7 @@
         <v-spacer></v-spacer>
         <v-toolbar-title>New Task</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn depressed flat @click="handleSave">save</v-btn>
+        <v-btn depressed flat @click="handleSave">{{currentTask=== "new" ? 'Save' : 'Update'}}</v-btn>
       </v-toolbar>
       <!-- Form -->
       <v-container>
@@ -168,7 +168,8 @@ export default {
         subtasks: [],
         status: 'ongoing',
         checked: false
-      }
+      },
+      currentTask: 'new'
 
     }
   },
@@ -203,7 +204,8 @@ export default {
   },
   computed: {
     ...mapState({
-      storeDialogTask: state => state.utility.dialogTask
+      storeDialogTask: state => state.utility.dialogTask,
+      storeCurrentTask: state => state.currentTask.id
     }
     ),
     titleErrors () {
@@ -246,11 +248,19 @@ export default {
     },
     storeDialogTask () {
       this.dialogTask = this.storeDialogTask
+    },
+    storeCurrentTask () {
+      if (this.storeCurrentTask !== 'new') {
+        const retrievedTask = JSON.parse(JSON.stringify(this.$store.state.tasks[this.storeCurrentTask]))
+        this.task = retrievedTask
+      }
+
+      this.currentTask = this.storeCurrentTask
     }
   },
   methods: {
     ...mapActions([
-      'addNewTask', 'toggleTaskDialog'
+      'addNewTask', 'updateTask', 'toggleTaskDialog', 'setCurrentTask'
     ]),
     handleSave () {
       this.$v.task.$touch()
@@ -258,19 +268,30 @@ export default {
         console.log('invalid form')
       } else {
         console.log('valid form')
-        this.task.id = 'newTask' + parseInt(Math.random() * 1000)
-        this.addNewTask(JSON.parse(JSON.stringify(this.task)))
-        this.toggleTaskDialog(false)
+
+        if (this.storeCurrentTask !== 'new') {
+          /// Edit
+          const taskId = JSON.parse(JSON.stringify(this.task.id))
+          const task = JSON.parse(JSON.stringify(this.task))
+          this.updateTask({ taskId, task })
+          this.toggleTaskDialog(false)
+        } else {
+          /// Save
+          this.task.id = 'newTask' + parseInt(Math.random() * 1000)
+          this.addNewTask(JSON.parse(JSON.stringify(this.task)))
+          this.toggleTaskDialog(false)
+        }
       }
     },
     handleCancel () {
+      this.setCurrentTask('new')
       this.toggleTaskDialog(false)
-      this.resetTaskForm()
     },
     handleCreate () {
       this.$refs.taskForm.reset()
       this.task.subtasks = []
       this.$v.task.$reset()
+      this.setCurrentTask('new')
       this.toggleTaskDialog(true)
     },
     addNewSubTask () {

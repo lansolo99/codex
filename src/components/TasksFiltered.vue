@@ -46,7 +46,7 @@
             <li>{{task.schedule.periodicity}}</li>
             <li>{{task.category}}</li>
           </ul>
-          <v-btn outline large small class="mt-3" @click="toggleTaskDialog(true)">Edit task</v-btn>
+          <v-btn outline large small class="mt-3" @click="handleEdit(task.id)">Edit task</v-btn>
         </v-card-text>
       </v-card>
     </v-expansion-panel-content>
@@ -87,7 +87,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'setCheckedStatus', 'toggleTaskDialog'
+      'setCheckedStatus', 'toggleTaskDialog', 'setCurrentTask'
     ]),
     filterTasks (periodicityStr) {
       return Object.values(this.tasks)
@@ -108,6 +108,11 @@ export default {
     },
     hasTaskSubtasks (task) {
       return task.subtasks.length > 0
+    },
+    handleEdit (taskId) {
+      console.log(taskId)
+      this.setCurrentTask(taskId)
+      this.toggleTaskDialog(true)
     }
   }
 }
