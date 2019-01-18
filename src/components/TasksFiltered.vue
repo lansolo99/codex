@@ -41,12 +41,23 @@
       </v-layout>
       <v-card>
         <v-card-text>
-          <ul>
-            <li>{{task.description}}</li>
-            <li>{{task.schedule.periodicity}}</li>
-            <li>{{task.category}}</li>
-          </ul>
-          <v-btn outline large small class="mt-3" @click="handleEdit(task.id)">Edit task</v-btn>
+          <h2 class="body-2">Description</h2>
+          <p>{{task.description}}</p>
+          <h2 class="body-2">Schedule</h2>
+          <p>
+            {{task.schedule.periodicity}} :
+            <span
+              v-if="task.schedule.periodicity === 'Weekly'"
+            >{{task.schedule.weekly}}</span>
+            <span
+              v-if="task.schedule.periodicity === 'On specific days'"
+            >{{getTaskDays(task.schedule.specificDays)}}</span>
+            <span v-if="task.schedule.periodicity === 'Once'">{{task.schedule.once}}</span>
+          </p>
+
+          <h2 class="body-2">Category</h2>
+          <p>{{task.category}}</p>
+          <v-btn outline large small class="mt-0 ml-0" @click="handleEdit(task.id)">Edit task</v-btn>
         </v-card-text>
       </v-card>
     </v-expansion-panel-content>
@@ -93,7 +104,7 @@ export default {
       return Object.values(this.tasks)
         .filter(task => {
           if (periodicityStr === 'Weeklies') {
-            return task.schedule.periodicity === 'Weekly'
+            return task.schedule.periodicity === 'Weekly' || task.schedule.periodicity === 'On specific days'
           } else if (periodicityStr === 'Monthlies') {
             return task.schedule.periodicity === 'Once' && task.schedule.once === 'monthly'
           } else if (periodicityStr === 'Yearlies') {
@@ -102,6 +113,19 @@ export default {
             return task.schedule.periodicity === 'Once' && task.schedule.once === 'single'
           }
         })
+    },
+    getTaskDays (days) {
+      let daysList = []
+      for (let [key, value] of Object.entries(days)) {
+        console.log(key)
+        console.log(value)
+        daysList.push(value)
+      }
+      var daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      function daysOfWeekSorter (x, y) {
+        return daysOfWeek.indexOf(x) - daysOfWeek.indexOf(y)
+      }
+      return daysList.sort(daysOfWeekSorter).join(', ')
     },
     updateCheckedStatus (taskId, checkstatus, taskType, subtaskId) {
       this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId })

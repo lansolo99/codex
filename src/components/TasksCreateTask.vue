@@ -49,13 +49,13 @@
               <v-layout>
                 <v-input :error-messages="scheduleSpecificDaysErrors">
                   <v-btn-toggle v-model="task.schedule.specificDays" multiple>
-                    <v-btn flat value="Monday">M</v-btn>
-                    <v-btn flat value="Tuesday">T</v-btn>
-                    <v-btn flat value="Wednesday">W</v-btn>
-                    <v-btn flat value="Thursday">T</v-btn>
-                    <v-btn flat value="Friday">F</v-btn>
-                    <v-btn flat value="Saturday">S</v-btn>
-                    <v-btn flat value="Sunday">S</v-btn>
+                    <v-btn flat value="Mon">M</v-btn>
+                    <v-btn flat value="Tue">T</v-btn>
+                    <v-btn flat value="Wed">W</v-btn>
+                    <v-btn flat value="Thu">T</v-btn>
+                    <v-btn flat value="Fri">F</v-btn>
+                    <v-btn flat value="Sat">S</v-btn>
+                    <v-btn flat value="Sun">S</v-btn>
                   </v-btn-toggle>
                 </v-input>
               </v-layout>
@@ -268,6 +268,11 @@ export default {
         console.log('invalid form')
       } else {
         console.log('valid form')
+
+        // Default
+        if (!this.task.description) {
+          this.task.description = 'None'
+        }
 
         if (this.storeCurrentTask !== 'new') {
           /// Edit
