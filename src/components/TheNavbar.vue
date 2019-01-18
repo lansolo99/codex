@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <v-toolbar dark app flat class="red">
+    <v-toolbar dark app flat class="green">
       <v-spacer></v-spacer>
       <v-toolbar-title>Today</v-toolbar-title>
       <v-spacer></v-spacer>

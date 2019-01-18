@@ -116,7 +116,7 @@ export default {
         'Nutrition',
         'Skills',
         'Finance',
-        'Eduction',
+        'Education',
         'Lifestyle'
       ],
       schedule: {
@@ -295,6 +295,7 @@ export default {
     handleCreate () {
       this.$refs.taskForm.reset()
       this.task.subtasks = []
+      this.task.schedule.specificDays = []
       this.$v.task.$reset()
       this.setCurrentTask('new')
       this.toggleTaskDialog(true)

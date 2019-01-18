@@ -2,19 +2,23 @@
   <v-expansion-panel>
     <v-expansion-panel-content v-for="(task,key) in filterTasks(periodicity.name)" :key="key">
       <v-layout slot="header" row wrap :class="`task ${task.status} mr-2`">
-        <v-flex xs1 class="green">
+        <v-flex shrink class="pt-1">
           <v-checkbox
             @click.native.stop
             class="ma-0 pa-0"
-            color="white"
             hide-details
+            color="success"
             :disabled="hasTaskSubtasks(task)"
             :input-value="task.checked"
             @change="updateCheckedStatus(task.id, $event, 'task')"
           ></v-checkbox>
         </v-flex>
-        <v-flex xs1 class="red">CAT</v-flex>
-        <v-flex xs10 class="purple">{{task.title}}</v-flex>
+        <v-flex shrink>
+          <div :class="`cat pa-1 pt-1 pl-2 pr-2 ${task.category}`">
+            <span class="body-2">{{task.category.substr(0,1)}}</span>
+          </div>
+        </v-flex>
+        <v-flex grow class="pa-1 pt-1 pl-3 pr-3 body-1">{{task.title}}</v-flex>
 
         <v-flex v-if="task.subtasks.length > 0" xs12>
           <v-divider class="my-3"></v-divider>
@@ -25,21 +29,21 @@
             wrap
             :class="`task ${task.status} mt-3`"
           >
-            <v-flex xs1 class="green">
+            <v-flex shrink class="pt-1">
               <v-checkbox
                 @click.native.stop
                 class="ma-0 pa-0"
-                color="white"
+                color="success"
                 hide-details
                 :input-value="subtask.checked"
                 @change="updateCheckedStatus(task.id, $event, 'subtask',subtask.id)"
               ></v-checkbox>
             </v-flex>
-            <v-flex xs11 class="purple">{{subtask.name}}</v-flex>
+            <v-flex grow class="pa-1 pt-1 pl-0 pr-3 body-1">{{subtask.name}}</v-flex>
           </v-layout>
         </v-flex>
       </v-layout>
-      <v-card>
+      <v-card class="grey lighten-4">
         <v-card-text>
           <h2 class="body-2">Description</h2>
           <p>{{task.description}}</p>
@@ -141,3 +145,34 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.cat {
+  background-color: green;
+  width: 30px;
+  height: 100%;
+  color: white;
+  text-align: center;
+}
+
+.task {
+  .Fitness {
+    background-color: #f44336;
+  }
+  .Nutrition {
+    background-color: #cddc39;
+  }
+  .Skills {
+    background-color: #607d8b;
+  }
+  .Finance {
+    background-color: #ffc107;
+  }
+  .Education {
+    background-color: #00bcd4;
+  }
+  .Lifestyle {
+    background-color: #3f51b5;
+  }
+}
+</style>
