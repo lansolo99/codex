@@ -3,7 +3,6 @@
     <TheNavbar/>
     <v-container fluid>
       <div v-for="(periodicity,key) in periodicities" :key="key">
-        <v-subheader>{{periodicity.name}}</v-subheader>
         <TasksFiltered :periodicity="periodicity" :tasks="tasks"/>
       </div>
     </v-container>
@@ -32,6 +31,13 @@ export default {
   methods: {
     getTaskFilter (periodicityName) {
       return this.taskFilters.find(v => v.periodicity === periodicityName).filter
+    },
+    taskCount (periodicity) {
+      console.log(periodicity)
+      //   for (const [i, value] of task.entries()) {
+      // console.log('%d: %s', i, value);
+      // }
+      return 2
     }
   }
 }

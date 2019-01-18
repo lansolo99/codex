@@ -16,41 +16,47 @@
   "tasks": {
     "id1": {
       "id": "id1",
-      "title": "task1",
-      "description": "This is my first task",
+      "title": "Weekly workouts",
+      "description": "Workout session",
       "category": "Fitness",
       "schedule": {
         "periodicity": "Weekly",
-        "weekly": "",
+        "weekly": "x4 times",
         "specificDays": [],
         "once": "single"
       },
       "subtasks": [{
           "id": "id01",
-          "name": "subtask1 of prefilled task 1",
+          "name": "Freeletics",
           "checked": true,
           "status": "ongoing"
         },
         {
           "id": "id02",
-          "name": "subtask2 of prefilled task 1",
+          "name": "HS push-ups session(s)",
+          "checked": false,
+          "status": "ongoing"
+        },
+        {
+          "id": "id03",
+          "name": "5km run interval training",
           "checked": false,
           "status": "ongoing"
         }
       ],
       "status": "complete",
-      "checked": true
+      "checked": false
     },
     "id2": {
       "id": "id2",
-      "title": "task2",
-      "description": "This is my second task",
-      "category": "Education",
+      "title": "10 000 steps walk",
+      "description": "Barely complete 10000 walksteps everyday",
+      "category": "Fitness",
       "schedule": {
-        "periodicity": "Once",
-        "weekly": "",
-        "specificDays": [],
-        "once": "monthly"
+        "periodicity": "Weekly",
+        "weekly": "Everyday",
+        "specificDays": {},
+        "once": ""
       },
       "subtasks": [],
       "status": "ongoing",
@@ -58,26 +64,41 @@
     },
     "id3": {
       "id": "id3",
-      "title": "task3",
-      "description": "This is my third task",
-      "category": "Lifestyle",
+      "title": "Book readings",
+      "description": "Progress in my current book list",
+      "category": "Education",
       "schedule": {
-        "periodicity": "Weekly",
-        "weekly": "Everyday",
-        "specificDays": [],
+        "periodicity": "On specific days",
+        "weekly": "x3 times",
+        "specificDays": {
+          "0": "Tuesday",
+          "1": "Sunday"
+        },
         "once": ""
       },
-      "subtasks": [],
+      "subtasks": [{
+          "id": "id01",
+          "name": "You don't know JS",
+          "checked": false,
+          "status": "ongoing"
+        },
+        {
+          "id": "id02",
+          "name": "Deep Work",
+          "checked": false,
+          "status": "ongoing"
+        }
+      ],
       "status": "ongoing",
       "checked": false
     },
     "id4": {
       "id": "id4",
-      "title": "task4",
-      "description": "This is my fourth task",
+      "title": "Zero waste",
+      "description": "Achieve zero waste everyday (no packaging)",
       "category": "Lifestyle",
       "schedule": {
-        "periodicity": "Once",
+        "periodicity": "Weekly",
         "weekly": "Everyday",
         "specificDays": [],
         "once": "yearly"
