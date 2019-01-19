@@ -70,10 +70,10 @@
       "schedule": {
         "periodicity": "On specific days",
         "weekly": "x3 times",
-        "specificDays": {
-          "0": "Tuesday",
-          "1": "Sunday"
-        },
+        "specificDays": [
+          "Sunday",
+          "Tuesday"
+        ],
         "once": ""
       },
       "subtasks": [{
@@ -127,6 +127,7 @@
     "id": "new"
   },
   "utility": {
-    "dialogTask": "false"
+    "dialogTask": "false",
+    "taskPanels": null
   }
 }

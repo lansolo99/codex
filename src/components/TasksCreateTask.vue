@@ -3,99 +3,112 @@
     <v-btn slot="activator" fab small depressed absolute class="white add" @click="handleCreate">
       <v-icon class="black--text">add</v-icon>
     </v-btn>
-    <v-card flat>
+    <v-card flat class="createTaskCard">
       <!-- Toolbar -->
-      <v-toolbar dark flat class="red">
+      <v-toolbar dark flat class="green">
         <v-btn depressed flat @click="handleCancel">cancel</v-btn>
         <v-spacer></v-spacer>
         <v-toolbar-title>New Task</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn depressed flat @click="handleSave">{{currentTask=== "new" ? 'Save' : 'Update'}}</v-btn>
       </v-toolbar>
-      <!-- Form -->
-      <v-container>
-        <v-form ref="taskForm" lazy-validation>
-          <h6 class="title my-3">Informations</h6>
-          <v-text-field
-            label="Title"
-            v-model="task.title"
-            required
-            :error-messages="titleErrors"
-            @input="$v.task.title.$touch()"
-            @blur="$v.task.title.$touch()"
-          ></v-text-field>
-          <v-textarea label="Description" v-model="task.description"></v-textarea>
-          <v-select
-            :items="categories"
-            label="Category"
-            v-model="task.category"
-            required
-            :error-messages="categoryErrors"
-            @input="$v.task.category.$touch()"
-            @blur="$v.task.category.$touch()"
-          ></v-select>
-          <h6 class="title my-3">Schedule</h6>
-          <v-tabs v-model="schedule.active" color="cyan" dark slider-color="yellow">
-            <v-tab v-for="option in schedule.options" :key="option" ripples>{{ option }}</v-tab>
-            <v-tab-item>
-              <v-select
-                :items="schedule.weekly"
-                label="Choose a frequence"
-                v-model="task.schedule.weekly"
-                :error-messages="scheduleWeeklyErrors"
-              ></v-select>
-            </v-tab-item>
-            <v-tab-item>
-              <v-layout>
-                <v-input :error-messages="scheduleSpecificDaysErrors">
-                  <v-btn-toggle v-model="task.schedule.specificDays" multiple>
-                    <v-btn flat value="Mon">M</v-btn>
-                    <v-btn flat value="Tue">T</v-btn>
-                    <v-btn flat value="Wed">W</v-btn>
-                    <v-btn flat value="Thu">T</v-btn>
-                    <v-btn flat value="Fri">F</v-btn>
-                    <v-btn flat value="Sat">S</v-btn>
-                    <v-btn flat value="Sun">S</v-btn>
-                  </v-btn-toggle>
-                </v-input>
-              </v-layout>
-            </v-tab-item>
-            <v-tab-item>
-              <v-radio-group
-                v-model="task.schedule.once"
-                :error-messages="scheduleOnceErrors"
-                column
-              >
-                <v-radio label="Single task" value="single"></v-radio>
-                <v-radio label="Monthly goal" value="monthly"></v-radio>
-                <v-radio label="Yearly goal" value="yearly"></v-radio>
-              </v-radio-group>
-            </v-tab-item>
-          </v-tabs>
-          <h6 class="title my-3">Subtasks</h6>
+      <v-card-text style="height: auto;">
+        <!-- Form -->
+        <v-container>
+          <v-form ref="taskForm" lazy-validation>
+            <h6 class="title my-3">Informations</h6>
+            <v-text-field
+              label="Title"
+              v-model="task.title"
+              required
+              :error-messages="titleErrors"
+              @input="$v.task.title.$touch()"
+              @blur="$v.task.title.$touch()"
+            ></v-text-field>
+            <v-textarea label="Description" v-model="task.description"></v-textarea>
+            <v-select
+              :items="categories"
+              label="Category"
+              v-model="task.category"
+              required
+              :error-messages="categoryErrors"
+              @input="$v.task.category.$touch()"
+              @blur="$v.task.category.$touch()"
+            ></v-select>
+            <h6 class="title my-3">Schedule</h6>
+            <v-tabs v-model="schedule.active" color="green" dark slider-color="yellow">
+              <v-tab v-for="option in schedule.options" :key="option" ripples>{{ option }}</v-tab>
+              <v-tab-item :value="0">
+                <v-select
+                  :items="schedule.weekly"
+                  label="Choose a frequence"
+                  v-model="task.schedule.weekly"
+                  :error-messages="scheduleWeeklyErrors"
+                ></v-select>
+              </v-tab-item>
+              <v-tab-item :value="1">
+                <v-layout>
+                  <v-flex align-self-center>
+                    <v-input :error-messages="scheduleSpecificDaysErrors">
+                      <v-btn-toggle class="mt-3" v-model="task.schedule.specificDays" multiple>
+                        <v-btn class="px-3" flat value="Monday">M</v-btn>
+                        <v-btn class="px-3" flat value="Tuesday">T</v-btn>
+                        <v-btn class="px-3" flat value="Wednesday">W</v-btn>
+                        <v-btn class="px-3" flat value="Thursday">T</v-btn>
+                        <v-btn class="px-3" flat value="Friday">F</v-btn>
+                        <v-btn class="px-3" flat value="Saturday">S</v-btn>
+                        <v-btn class="px-3" flat value="Sunday">S</v-btn>
+                      </v-btn-toggle>
+                    </v-input>
+                  </v-flex>
+                </v-layout>
+              </v-tab-item>
+              <v-tab-item :value="2">
+                <v-radio-group
+                  v-model="task.schedule.once"
+                  :error-messages="scheduleOnceErrors"
+                  column
+                >
+                  <v-radio label="Single task" value="single"></v-radio>
+                  <v-radio label="Monthly goal" value="monthly"></v-radio>
+                  <v-radio label="Yearly goal" value="yearly"></v-radio>
+                </v-radio-group>
+              </v-tab-item>
+            </v-tabs>
+            <h6 class="title my-3">Subtasks</h6>
 
-          <div class="grey pa-2 pl-3" v-if="task.subtasks.length > 0">
-            <v-layout v-for="(subtask,key) in $v.task.subtasks.$each.$iter" :key="subtask.id">
-              <v-text-field
-                placeholder="Your new subtask"
-                :error-messages="subtaskErrors(subtask)"
-                v-model="subtask.name.$model"
-                clearable
-              ></v-text-field>
-              <v-btn icon depressed dark class="mt-3" color="red" @click="removeSubTask(key)">
-                <v-icon>delete_forever</v-icon>
+            <div class="grey lighten-2 pa-2 pl-3" v-if="task.subtasks.length > 0">
+              <v-layout v-for="(subtask,key) in $v.task.subtasks.$each.$iter" :key="subtask.id">
+                <v-text-field
+                  placeholder="Your new subtask"
+                  :error-messages="subtaskErrors(subtask)"
+                  v-model="subtask.name.$model"
+                  clearable
+                ></v-text-field>
+                <v-btn icon depressed dark class="mt-3" color="red" @click="removeSubTask(key)">
+                  <v-icon>delete_forever</v-icon>
+                </v-btn>
+              </v-layout>
+            </div>
+
+            <v-layout class="mt-2 pa-2 pl-3">
+              <v-text-field placeholder="Add a new subtask" clearable v-model="newSubtask.name"></v-text-field>
+              <v-btn icon depressed dark class="mt-3" color="green" @click="addNewSubTask">
+                <v-icon>add</v-icon>
               </v-btn>
             </v-layout>
+          </v-form>
+          <div class="mt-4 ml-4 mr-4">
+            <v-btn
+              v-if="currentTask !== 'new'"
+              outline
+              block
+              color="red"
+              @click="handleDelete(task.id)"
+            >Delete task</v-btn>
           </div>
-
-          <v-layout class="mt-2 pa-2 pl-3">
-            <v-text-field placeholder="Add a new subtask" clearable v-model="newSubtask.name"></v-text-field>
-            <v-btn icon depressed dark class="mt-3" color="green" @click="addNewSubTask">
-              <v-icon>add</v-icon>
-            </v-btn>
-          </v-layout>
-        </v-form>
-      </v-container>
+        </v-container>
+      </v-card-text>
     </v-card>
   </v-dialog>
 </template>
@@ -253,6 +266,7 @@ export default {
       if (this.storeCurrentTask !== 'new') {
         const retrievedTask = JSON.parse(JSON.stringify(this.$store.state.tasks[this.storeCurrentTask]))
         this.task = retrievedTask
+        this.schedule.active = this.schedule.tabs.findIndex(v => v.name === this.task.schedule.periodicity)
       }
 
       this.currentTask = this.storeCurrentTask
@@ -260,7 +274,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'addNewTask', 'updateTask', 'toggleTaskDialog', 'setCurrentTask'
+      'addNewTask', 'updateTask', 'toggleTaskDialog', 'closeTaskPanels', 'setCurrentTask', 'deleteTask'
     ]),
     handleSave () {
       this.$v.task.$touch()
@@ -284,6 +298,7 @@ export default {
           /// Save
           this.task.id = 'newTask' + parseInt(Math.random() * 1000)
           this.addNewTask(JSON.parse(JSON.stringify(this.task)))
+          this.closeTaskPanels(null)
           this.toggleTaskDialog(false)
         }
       }
@@ -293,12 +308,19 @@ export default {
       this.toggleTaskDialog(false)
     },
     handleCreate () {
+      // Reset
       this.$refs.taskForm.reset()
       this.task.subtasks = []
       this.task.schedule.specificDays = []
+      this.schedule.active = 0
+      this.task.schedule.active = null
       this.$v.task.$reset()
       this.setCurrentTask('new')
       this.toggleTaskDialog(true)
+    },
+    handleDelete (taskId) {
+      this.deleteTask(taskId)
+      this.toggleTaskDialog(false)
     },
     addNewSubTask () {
       const subtaskId = 'newSubtask' + parseInt(Math.random() * 1000)

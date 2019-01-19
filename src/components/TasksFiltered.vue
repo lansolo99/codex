@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-subheader v-if="filterTasks(periodicity.name).length > 0" class="mt-3">{{periodicity.name}}</v-subheader>
-    <v-expansion-panel>
+    <v-expansion-panel v-model="panel">
       <v-expansion-panel-content v-for="(task,key) in filterTasks(periodicity.name)" :key="key">
         <v-layout slot="header" row wrap :class="`task ${task.status} mr-2`">
           <v-flex shrink class="pt-1">
@@ -66,7 +66,7 @@
 
             <h2 class="body-2">Category</h2>
             <p>{{task.category}}</p>
-            <v-btn outline large small class="mt-0 ml-0" @click="handleEdit(task.id)">Edit task</v-btn>
+            <v-btn outline block class="mt-0 ml-0" @click="handleEdit(task.id)">Edit task</v-btn>
           </v-card-text>
         </v-card>
       </v-expansion-panel-content>
@@ -75,12 +75,14 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
+
   data () {
     return {
-      readonly: false
+      readonly: false,
+      panel: null
     }
   },
   props: {
@@ -93,12 +95,25 @@ export default {
       type: Object
     }
   },
+
   computed: {
+    ...mapState({
+      taskPanels: state => state.utility.taskPanels
+    }),
     tasksChecked: function () {
       return this.tasks
+    },
+    tasksPanelTriggered () {
+      return this.panel
     }
   },
   watch: {
+    tasksPanelTriggered () {
+      this.closeTaskPanels(this.panel)
+    },
+    taskPanels () {
+      this.panel = this.taskPanels
+    },
     tasksChecked: {
       handler: function (val, oldVal) {
       },
@@ -108,7 +123,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'setCheckedStatus', 'toggleTaskDialog', 'setCurrentTask'
+      'setCheckedStatus', 'toggleTaskDialog', 'closeTaskPanels', 'setCurrentTask'
     ]),
     filterTasks (periodicityStr) {
       return Object.values(this.tasks)
@@ -126,12 +141,11 @@ export default {
     },
     getTaskDays (days) {
       let daysList = []
-      for (let [key, value] of Object.entries(days)) {
-        console.log(key)
-        console.log(value)
+      for (let value of Object.values(days)) {
         daysList.push(value)
       }
-      var daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+      var daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
       function daysOfWeekSorter (x, y) {
         return daysOfWeek.indexOf(x) - daysOfWeek.indexOf(y)
       }
@@ -144,7 +158,6 @@ export default {
       return task.subtasks.length > 0
     },
     handleEdit (taskId) {
-      console.log(taskId)
       this.setCurrentTask(taskId)
       this.toggleTaskDialog(true)
     }
@@ -193,6 +206,10 @@ export default {
   }
   .Lifestyle {
     background-color: #3f51b5;
+  }
+
+  .createTaskCard {
+    height: 800px;
   }
 }
 </style>

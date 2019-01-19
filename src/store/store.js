@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 import sourceData from '@/data'
 
 Vue.use(Vuex)
-console.log(sourceData)
 
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
@@ -51,15 +50,28 @@ export default new Vuex.Store({
     }, payload) {
       commit('toggleTaskDialog', payload)
     },
+    closeTaskPanels ({
+      commit
+    }, payload) {
+      console.log('closeTaskPanels')
+
+      commit('closeTaskPanels', payload)
+    },
     setCurrentTask ({
       commit
     }, payload) {
       commit('setCurrentTask', payload)
+    },
+    deleteTask ({
+      commit
+    }, payload) {
+      commit('deleteTask', payload)
     }
   },
   mutations: {
     addNewTask (state, payload) {
       Vue.set(state.tasks, payload.id, payload)
+      console.log(state)
     },
     updateTask (state, {
       taskId,
@@ -96,8 +108,14 @@ export default new Vuex.Store({
     toggleTaskDialog (state, payload) {
       state.utility.dialogTask = payload
     },
+    closeTaskPanels (state, payload) {
+      state.utility.taskPanels = payload
+    },
     setCurrentTask (state, payload) {
       state.currentTask.id = payload
+    },
+    deleteTask (state, payload) {
+      Vue.delete(state.tasks, payload)
     }
 
   }

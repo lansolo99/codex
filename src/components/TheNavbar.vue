@@ -25,13 +25,7 @@ export default {
 
   props: {
     source: String
-  },
-  methods: {
-    displayCreateTask () {
-      console.log('displayCreateTask')
-    }
   }
-
 }
 </script>
 

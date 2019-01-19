@@ -31,13 +31,6 @@ export default {
   methods: {
     getTaskFilter (periodicityName) {
       return this.taskFilters.find(v => v.periodicity === periodicityName).filter
-    },
-    taskCount (periodicity) {
-      console.log(periodicity)
-      //   for (const [i, value] of task.entries()) {
-      // console.log('%d: %s', i, value);
-      // }
-      return 2
     }
   }
 }
