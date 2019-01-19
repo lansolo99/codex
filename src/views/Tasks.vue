@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div class="mb-5">
     <TheNavbar/>
-    <v-container fluid>
+    <v-container fluid class="mb-5">
+      <TasksProgress/>
       <div v-for="(periodicity,key) in periodicities" :key="key">
         <TasksFiltered :periodicity="periodicity" :tasks="tasks"/>
       </div>
@@ -12,11 +13,13 @@
 <script>
 import TheNavbar from '@/components/TheNavbar'
 import TasksFiltered from '@/components/TasksFiltered'
+import TasksProgress from '@/components/TasksProgress'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
   components: {
     TheNavbar,
+    TasksProgress,
     TasksFiltered
   },
   computed: {

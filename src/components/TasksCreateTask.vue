@@ -133,7 +133,7 @@ export default {
         'Lifestyle'
       ],
       schedule: {
-        active: null,
+        active: 1,
         tabs: [
           { id: 0, name: 'Weekly' },
           { id: 1, name: 'On specific days' },
@@ -320,6 +320,7 @@ export default {
     },
     handleDelete (taskId) {
       this.deleteTask(taskId)
+      this.closeTaskPanels(null)
       this.toggleTaskDialog(false)
     },
     addNewSubTask () {
