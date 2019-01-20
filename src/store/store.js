@@ -8,10 +8,12 @@ export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: sourceData,
   getters: {
-    allTasks: (state) => {
+    test: state => {
       return Object.values(state.tasks)[1]['title']
     },
-    getAllTasks: (state) => state.tasks
+    getAllTasks: state => {
+      return state.tasks
+    }
   },
   actions: {
     addNewTask ({
@@ -49,13 +51,6 @@ export default new Vuex.Store({
       commit
     }, payload) {
       commit('toggleTaskDialog', payload)
-    },
-    closeTaskPanels ({
-      commit
-    }, payload) {
-      console.log('closeTaskPanels')
-
-      commit('closeTaskPanels', payload)
     },
     setCurrentTask ({
       commit
@@ -107,9 +102,6 @@ export default new Vuex.Store({
     },
     toggleTaskDialog (state, payload) {
       state.utility.dialogTask = payload
-    },
-    closeTaskPanels (state, payload) {
-      state.utility.taskPanels = payload
     },
     setCurrentTask (state, payload) {
       state.currentTask.id = payload

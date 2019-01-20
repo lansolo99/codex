@@ -5,27 +5,27 @@
       <v-toolbar-title>Today</v-toolbar-title>
       <v-spacer></v-spacer>
       <TasksCreateTask/>
+      <TasksProgress slot="extension" class="blue TasksProgressWrapper"/>
     </v-toolbar>
   </nav>
 </template>
 
 <script>
 import TasksCreateTask from '@/components/TasksCreateTask'
+import TasksProgress from '@/components/TasksProgress'
 
 export default {
   components: {
-    TasksCreateTask
+    TasksCreateTask,
+    TasksProgress
   },
   data: () => ({
     items: [
       { title: 'Today', route: '/' },
       { title: 'Stats', route: '/stats' }
     ]
-  }),
+  })
 
-  props: {
-    source: String
-  }
 }
 </script>
 
@@ -38,5 +38,13 @@ export default {
     height: 30px;
     width: 30px;
   }
+}
+.TasksProgressWrapper {
+  height: auto;
+}
+
+.v-toolbar__extension {
+  height: auto !important;
+  padding: 0;
 }
 </style>

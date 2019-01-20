@@ -114,10 +114,10 @@
 </template>
 
 <script>
-// import Vue from 'vue'
 import { mapActions, mapState } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required, requiredIf } from 'vuelidate/lib/validators'
+import { EventBus } from '@/bus'
 
 export default {
 
@@ -296,9 +296,9 @@ export default {
           this.toggleTaskDialog(false)
         } else {
           /// Save
+          EventBus.$emit('closeOtherPanels', [null, null, null, null])
           this.task.id = 'newTask' + parseInt(Math.random() * 1000)
           this.addNewTask(JSON.parse(JSON.stringify(this.task)))
-          this.closeTaskPanels(null)
           this.toggleTaskDialog(false)
         }
       }
@@ -320,7 +320,6 @@ export default {
     },
     handleDelete (taskId) {
       this.deleteTask(taskId)
-      this.closeTaskPanels(null)
       this.toggleTaskDialog(false)
     },
     addNewSubTask () {

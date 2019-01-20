@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-subheader v-if="filterTasks(periodicity.name).length > 0" class="mt-3">{{periodicity.name}}</v-subheader>
-    <v-expansion-panel v-model="panel">
+    <v-expansion-panel v-model="panel[ind]" @click.native="managePanels(ind)">
       <v-expansion-panel-content v-for="(task,key) in filterTasks(periodicity.name)" :key="key">
         <v-layout slot="header" row wrap :class="`task ${task.status} mr-2`">
           <v-flex shrink class="pt-1">
@@ -48,7 +48,7 @@
             </v-layout>
           </v-flex>
         </v-layout>
-        <v-card class="grey lighten-4">
+        <v-card class="green lighten-5">
           <v-card-text>
             <h2 class="body-2">Description</h2>
             <p>{{task.description}}</p>
@@ -75,14 +75,15 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
+import { EventBus } from '@/bus'
 
 export default {
 
   data () {
     return {
       readonly: false,
-      panel: null
+      panel: [null, null, null, null]
     }
   },
   props: {
@@ -93,27 +94,19 @@ export default {
     periodicity: {
       required: true,
       type: Object
+    },
+    ind: {
+      required: true,
+      type: Number
     }
   },
 
   computed: {
-    ...mapState({
-      taskPanels: state => state.utility.taskPanels
-    }),
     tasksChecked: function () {
       return this.tasks
-    },
-    tasksPanelTriggered () {
-      return this.panel
     }
   },
   watch: {
-    tasksPanelTriggered () {
-      this.closeTaskPanels(this.panel)
-    },
-    taskPanels () {
-      this.panel = this.taskPanels
-    },
     tasksChecked: {
       handler: function (val, oldVal) {
       },
@@ -160,7 +153,22 @@ export default {
     handleEdit (taskId) {
       this.setCurrentTask(taskId)
       this.toggleTaskDialog(true)
+    },
+    managePanels (ind) {
+      const managePanel = this.panel.map((v, i) => {
+        if (i === ind) {
+          return v
+        } else {
+          return null
+        }
+      })
+      EventBus.$emit('closeOtherPanels', managePanel)
     }
+  },
+  created () {
+    EventBus.$on('closeOtherPanels', panel => {
+      this.panel = panel
+    })
   }
 }
 </script>
