@@ -5,7 +5,7 @@
       <v-toolbar-title>Today</v-toolbar-title>
       <v-spacer></v-spacer>
       <TasksCreateTask/>
-      <TasksProgress slot="extension" class="blue TasksProgressWrapper"/>
+      <TasksProgress v-if="!profile.firstTime" slot="extension" class="blue TasksProgressWrapper"/>
     </v-toolbar>
   </nav>
 </template>
@@ -18,6 +18,12 @@ export default {
   components: {
     TasksCreateTask,
     TasksProgress
+  },
+  props: {
+    profile: {
+      required: true,
+      type: Object
+    }
   },
   data: () => ({
     items: [

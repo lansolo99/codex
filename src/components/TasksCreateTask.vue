@@ -274,7 +274,13 @@ export default {
   },
   methods: {
     ...mapActions([
-      'addNewTask', 'updateTask', 'toggleTaskDialog', 'closeTaskPanels', 'setCurrentTask', 'deleteTask'
+      'updateProfile',
+      'addNewTask',
+      'updateTask',
+      'toggleTaskDialog',
+      'closeTaskPanels',
+      'setCurrentTask',
+      'deleteTask'
     ]),
     handleSave () {
       this.$v.task.$touch()
@@ -299,6 +305,7 @@ export default {
           EventBus.$emit('closeOtherPanels', [null, null, null, null])
           this.task.id = 'newTask' + parseInt(Math.random() * 1000)
           this.addNewTask(JSON.parse(JSON.stringify(this.task)))
+          this.updateProfile(false)
           this.toggleTaskDialog(false)
         }
       }
@@ -340,6 +347,11 @@ export default {
       !subtask.name.required && errors.push('Please set something here')
       return errors
     }
+  },
+  created () {
+    EventBus.$on('createFirstTask', () => {
+      this.handleCreate()
+    })
   }
 }
 </script>

@@ -1,18 +1,37 @@
 <template>
   <v-app>
-    <v-content>
+    <v-content :class="toolbarConf">
       <router-view/>
     </v-content>
   </v-app>
 </template>
 
 <script>
-
+import { mapState } from 'vuex'
 export default {
 
   name: 'App',
   data () {
     return {
+      toolbarConf: 'toolbarSingle'
+    }
+  },
+  computed: {
+    ...mapState([
+      'profile'
+    ]),
+    profileUpdate: function () {
+      return this.profile
+    }
+  },
+  watch: {
+    profileUpdate: {
+      handler (val, oldVal) {
+        if (this.profile.firstTime === false) {
+          this.toolbarConf = 'toolbarMultiple'
+        }
+      },
+      deep: true
     }
   }
 }
@@ -20,6 +39,11 @@ export default {
 
 <style lang="scss">
 #app {
-  //width: 50%;
+  .toolbarSingle {
+    padding-top: 56px !important;
+  }
+  .toolbarMultiple {
+    padding-top: 182px !important;
+  }
 }
 </style>

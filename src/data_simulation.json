@@ -1,0 +1,136 @@
+{
+  "periodicities": {
+    "id1": {
+      "name": "Weeklies"
+    },
+    "id2": {
+      "name": "Monthlies"
+    },
+    "id3": {
+      "name": "Yearlies"
+    },
+    "id4": {
+      "name": "Singles"
+    }
+  },
+  "tasks": {
+    "id1": {
+      "id": "id1",
+      "title": "Weekly workouts",
+      "description": "Workout session",
+      "category": "Fitness",
+      "schedule": {
+        "periodicity": "Weekly",
+        "weekly": "x4 times",
+        "specificDays": [],
+        "once": "single"
+      },
+      "subtasks": [{
+          "id": "id01",
+          "name": "Freeletics",
+          "checked": true,
+          "status": "ongoing"
+        },
+        {
+          "id": "id02",
+          "name": "HS push-ups session(s)",
+          "checked": false,
+          "status": "ongoing"
+        },
+        {
+          "id": "id03",
+          "name": "5km run interval training",
+          "checked": false,
+          "status": "ongoing"
+        }
+      ],
+      "status": "complete",
+      "checked": false
+    },
+    "id2": {
+      "id": "id2",
+      "title": "10 000 steps walk",
+      "description": "Barely complete 10000 walksteps everyday",
+      "category": "Fitness",
+      "schedule": {
+        "periodicity": "Weekly",
+        "weekly": "Everyday",
+        "specificDays": {},
+        "once": ""
+      },
+      "subtasks": [],
+      "status": "ongoing",
+      "checked": false
+    },
+    "id3": {
+      "id": "id3",
+      "title": "Book readings",
+      "description": "Progress in my current book list",
+      "category": "Education",
+      "schedule": {
+        "periodicity": "On specific days",
+        "weekly": "x3 times",
+        "specificDays": [
+          "Sunday",
+          "Tuesday"
+        ],
+        "once": ""
+      },
+      "subtasks": [{
+          "id": "id01",
+          "name": "You don't know JS",
+          "checked": false,
+          "status": "ongoing"
+        },
+        {
+          "id": "id02",
+          "name": "Deep Work",
+          "checked": false,
+          "status": "ongoing"
+        }
+      ],
+      "status": "ongoing",
+      "checked": false
+    },
+    "id4": {
+      "id": "id4",
+      "title": "Zero waste",
+      "description": "Achieve zero waste everyday (no packaging)",
+      "category": "Lifestyle",
+      "schedule": {
+        "periodicity": "Once",
+        "weekly": "Everyday",
+        "specificDays": [],
+        "once": "monthly"
+      },
+      "subtasks": [],
+      "status": "ongoing",
+      "checked": false
+    },
+    "id5": {
+      "id": "id5",
+      "title": "task5",
+      "description": "This is my fifth task",
+      "category": "Lifestyle",
+      "schedule": {
+        "periodicity": "Once",
+        "weekly": "Everyday",
+        "specificDays": [],
+        "once": "single"
+      },
+      "subtasks": [],
+      "status": "ongoing",
+      "checked": false
+    }
+  },
+  "profile": {
+    "firstTime": true
+  },
+  "currentTask": {
+    "id": "new"
+  },
+  "utility": {
+    "dialogTask": "false",
+    "taskPanels": [null, null, null, null]
+  }
+}

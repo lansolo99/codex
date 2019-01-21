@@ -38,8 +38,8 @@ import { mapState } from 'vuex'
 export default {
   data () {
     return {
-      progressToday: null,
-      progressWeek: null
+      progressToday: 0,
+      progressWeek: 0
     }
   },
   computed: {
@@ -84,6 +84,7 @@ export default {
         })
 
       total = Math.trunc((taskValue * countCheckedTasks) + totalSubtasks)
+      if (isNaN(total)) { total = 0 }
       this.progressToday = total
     },
     calcWeeklyCompletion () {

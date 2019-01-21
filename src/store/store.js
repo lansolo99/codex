@@ -8,14 +8,16 @@ export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: sourceData,
   getters: {
-    test: state => {
-      return Object.values(state.tasks)[1]['title']
-    },
     getAllTasks: state => {
       return state.tasks
     }
   },
   actions: {
+    updateProfile ({
+      commit
+    }, payload) {
+      commit('updateProfile', payload)
+    },
     addNewTask ({
       commit
     }, payload) {
@@ -64,6 +66,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    updateProfile (state, payload) {
+      state.profile.firstTime = payload
+    },
     addNewTask (state, payload) {
       Vue.set(state.tasks, payload.id, payload)
       console.log(state)
