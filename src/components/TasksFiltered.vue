@@ -220,4 +220,11 @@ export default {
     height: 800px;
   }
 }
+.v-expansion-panel__header {
+  align-items: flex-start !important;
+  &__icon {
+    position: relative;
+    top: 5px;
+  }
+}
 </style>

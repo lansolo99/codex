@@ -9,6 +9,9 @@
         </div>
       </div>
     </v-container>
+    <div class="dimmer">
+      <div class="dimmer__content white--text display-1 font-weight-medium">TAP TO PASS</div>
+    </div>
   </div>
 </template>
 
@@ -46,6 +49,25 @@ export default {
 .periodicityWrapper:first-child {
   .v-subheader {
     margin-top: 0px !important;
+  }
+}
+.dimmer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(black, 0.3);
+
+  &__content {
+    position: relative;
+    display: block;
+    text-align: center;
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 </style>

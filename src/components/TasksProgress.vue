@@ -2,12 +2,25 @@
   <v-container class="pa-0">
     <v-layout>
       <v-flex xs4 text-xs-center>
-        <v-card flat height="100%" class="taskProgressContainer green darken-3 pa-3 pt-4">
-          <v-avatar>
-            <v-icon size="50px" dark>account_circle</v-icon>
-          </v-avatar>
-          <div class="white--text mt-1">LEVEL 0/100</div>
-        </v-card>
+        <v-tooltip v-model="show" max-width="200" right fixed>
+          <v-card
+            slot="activator"
+            flat
+            height="100%"
+            class="taskProgressContainer green darken-3 pa-3 pt-4"
+          >
+            <v-avatar>
+              <v-icon size="50px" dark>account_circle</v-icon>
+            </v-avatar>
+            <div class="white--text mt-1">LEVEL 0/100</div>
+          </v-card>
+          <span class="black--text">
+            <span class="v-tooltip__content-title light-green white--text">Profile level</span>
+            <span
+              class="v-tooltip__content-plain"
+            >Your global level depends on your capacity to achieve your goals on a 10 weeks lifespan.</span>
+          </span>
+        </v-tooltip>
       </v-flex>
       <v-flex xs8>
         <v-card
@@ -39,7 +52,10 @@ export default {
   data () {
     return {
       progressToday: 0,
-      progressWeek: 0
+      progressWeek: 0,
+      tutorial: {
+        dialog: false
+      }
     }
   },
   computed: {
@@ -113,6 +129,25 @@ export default {
       top: -7px;
       right: -45px;
     }
+  }
+}
+
+.v-tooltip__content {
+  background-color: white;
+  font-size: 16px;
+  opacity: 1 !important;
+  padding: 0px;
+  &-title {
+    font-size: 17px;
+    font-weight: bold;
+    display: block;
+    padding: 5px 10px;
+  }
+  &-plain {
+    display: block;
+    padding: 10px;
+    font-size: 15px;
+    color: #333333;
   }
 }
 </style>

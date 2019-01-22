@@ -40,6 +40,10 @@ export default {
   margin-left: 0px;
 }
 .v-toolbar {
+  max-width: 400px;
+  margin: auto;
+  left: auto;
+
   .v-btn--floating.v-btn--small {
     height: 30px;
     width: 30px;

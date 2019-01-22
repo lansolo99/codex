@@ -361,4 +361,10 @@ export default {
   right: 14px;
   top: 14px;
 }
+
+.v-dialog {
+  max-width: 400px;
+  margin: auto;
+  left: auto;
+}
 </style>

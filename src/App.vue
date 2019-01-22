@@ -33,12 +33,18 @@ export default {
       },
       deep: true
     }
+  },
+  mounted () {
+    // comment below in real mode
+    this.toolbarConf = 'toolbarMultiple'
   }
 }
 </script>
 
 <style lang="scss">
 #app {
+  max-width: 400px;
+  margin: auto;
   .toolbarSingle {
     padding-top: 56px !important;
   }
