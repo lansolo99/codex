@@ -5,7 +5,11 @@
       <v-toolbar-title>Today</v-toolbar-title>
       <v-spacer></v-spacer>
       <TasksCreateTask/>
-      <TasksProgress v-if="!profile.firstTime" slot="extension" class="blue TasksProgressWrapper"/>
+      <TasksProgress
+        v-show="!profile.firstTime"
+        slot="extension"
+        class="blue TasksProgressWrapper"
+      />
     </v-toolbar>
   </nav>
 </template>
@@ -56,5 +60,8 @@ export default {
 .v-toolbar__extension {
   height: auto !important;
   padding: 0;
+}
+.v-toolbar__content {
+  height: 56px !important;
 }
 </style>

@@ -9,8 +9,12 @@
         </div>
       </div>
     </v-container>
-    <div class="dimmer">
-      <div class="dimmer__content white--text display-1 font-weight-medium">TAP TO PASS</div>
+    <div
+      class="dimmer"
+      v-if="beginnerTutorial.status == 'ongoing'"
+      @click="beginnerTutorialWalkthrough"
+    >
+      <v-btn outline large class="dimmer__content white--text">TAP TO PASS</v-btn>
     </div>
   </div>
 </template>
@@ -19,8 +23,9 @@
 import TheNavbar from '@/components/TheNavbar'
 import TasksFiltered from '@/components/TasksFiltered'
 import TasksWelcome from '@/components/TasksWelcome'
+import { EventBus } from '@/bus'
 
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -28,19 +33,48 @@ export default {
     TasksWelcome,
     TasksFiltered
   },
+  data () {
+    return {
+      beginnerTutorial: {
+        status: 'off',
+        currentTooltip: null
+      }
+    }
+  },
   computed: {
     ...mapState([
       'periodicities', 'tasks', 'profile'
-    ]),
-    ...mapGetters([
-      'allTasks'
     ])
-
+  },
+  watch: {
+    'beginnerTutorial.status': function () {
+      this.beginnerTutorialWalkthrough()
+    }
   },
   methods: {
     getTaskFilter (periodicityName) {
       return this.taskFilters.find(v => v.periodicity === periodicityName).filter
+    },
+    beginnerTutorialWalkthrough () {
+      this.beginnerTutorial.currentTooltip += 1
+      let tooltips = []
+      for (let i = 0; i < 8; i++) {
+        tooltips.push(false)
+      }
+      tooltips[this.beginnerTutorial.currentTooltip - 1] = true
+      EventBus.$emit('nextTooltip', [false, false, false, false, false, false, false, false])
+      if (this.beginnerTutorial.currentTooltip > 8) {
+        EventBus.$emit('disableTooltips', -10)
+        this.beginnerTutorial.status = 'complete'
+      } else {
+        setTimeout(function () { EventBus.$emit('nextTooltip', tooltips) }, 400)
+      }
     }
+  },
+  created () {
+    EventBus.$on('startBeginnerTutorial', () => {
+      this.beginnerTutorial.status = 'ongoing'
+    })
   }
 }
 </script>
@@ -66,8 +100,12 @@ export default {
     display: block;
     text-align: center;
     margin: auto;
-    top: 50%;
+    top: 90%;
     transform: translateY(-50%);
   }
+}
+.disable_tooltips {
+  opacity: 0 !important;
+  pointer-events: none;
 }
 </style>

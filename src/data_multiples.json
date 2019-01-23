@@ -124,7 +124,8 @@
       }
     },
     "profile": {
-      "firstTime": false
+      "firstTime": false,
+      "beginnerTutorial": false
     },
     "currentTask": {
       "id": "new"

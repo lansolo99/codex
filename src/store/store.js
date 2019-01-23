@@ -13,10 +13,10 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    updateProfile ({
+    disableFirstTimeUser ({
       commit
-    }, payload) {
-      commit('updateProfile', payload)
+    }) {
+      commit('disableFirstTimeUser')
     },
     addNewTask ({
       commit
@@ -66,8 +66,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    updateProfile (state, payload) {
-      state.profile.firstTime = payload
+    disableFirstTimeUser (state) {
+      state.profile.firstTime = false
+      state.profile.beginnerTutorial = true
     },
     addNewTask (state, payload) {
       Vue.set(state.tasks, payload.id, payload)

@@ -1,30 +1,83 @@
 <template>
   <div>
-    <v-subheader v-if="filterTasks(periodicity.name).length > 0" class="mt-3">{{periodicity.name}}</v-subheader>
+    <v-subheader v-if="filterTasks(periodicity.name).length > 0" class="mt-3">
+      <v-tooltip v-model="tooltips[3]" :z-index="tooltipsZindexes" max-width="200" bottom fixed>
+        <span slot="activator">{{periodicity.name}}</span>
+        <span class="black--text">
+          <span class="v-tooltip__content-title light-green white--text">Frequency type</span>
+          <span
+            class="v-tooltip__content-plain"
+          >Your tasks is categorized under one of the following periodicity: Weeklies, Monthlies, yearlies, Singles</span>
+        </span>
+      </v-tooltip>
+    </v-subheader>
+
     <v-expansion-panel v-model="panel[ind]" @click.native="managePanels(ind)">
       <v-expansion-panel-content v-for="(task,key) in filterTasks(periodicity.name)" :key="key">
         <v-layout slot="header" row wrap :class="`task ${task.status} mr-2`">
           <v-flex shrink class="pt-1">
-            <v-checkbox
-              @click.native.stop
-              class="ma-0 pa-0"
-              hide-details
-              color="success"
-              :disabled="hasTaskSubtasks(task)"
-              :input-value="task.checked"
-              @change="updateCheckedStatus(task.id, $event, 'task')"
-            ></v-checkbox>
+            <v-tooltip
+              v-model="tooltips[4]"
+              :z-index="tooltipsZindexes"
+              max-width="200"
+              right
+              fixed
+            >
+              <v-checkbox
+                slot="activator"
+                @click.native.stop
+                class="ma-0 pa-0"
+                hide-details
+                color="success"
+                :disabled="hasTaskSubtasks(task)"
+                :input-value="task.checked"
+                @change="updateCheckedStatus(task.id, $event, 'task')"
+              ></v-checkbox>
+              <span class="black--text">
+                <span class="v-tooltip__content-title light-green white--text">Tick box</span>
+                <span
+                  class="v-tooltip__content-plain"
+                >This is where you check your task for the current day.</span>
+              </span>
+            </v-tooltip>
             <v-checkbox class="preventExpansion" @click.native.stop v-if="task.subtasks.length > 0"></v-checkbox>
           </v-flex>
           <v-flex shrink>
-            <div :class="`cat pa-1 pt-1 pl-2 pr-2 ${task.category}`">
-              <span class="body-2">{{task.category.substr(0,1)}}</span>
-            </div>
+            <v-tooltip
+              v-model="tooltips[5]"
+              :z-index="tooltipsZindexes"
+              max-width="200"
+              right
+              fixed
+            >
+              <div slot="activator" :class="`cat pa-1 pt-1 pl-2 pr-2 ${task.category}`">
+                <span class="body-2">{{task.category.substr(0,1)}}</span>
+              </div>
+              <span class="black--text">
+                <span class="v-tooltip__content-title light-green white--text">Category</span>
+                <span class="v-tooltip__content-plain">The category you set your task into.</span>
+              </span>
+            </v-tooltip>
           </v-flex>
-          <v-flex grow class="pa-1 pt-1 pl-3 pr-3 body-1">
-            <span class="custom-title">{{task.title}}</span>
-          </v-flex>
-
+          <v-tooltip v-model="tooltips[6]" :z-index="tooltipsZindexes" max-width="200" bottom fixed>
+            <v-flex grow slot="activator" class="pa-1 pt-1 pl-3 pr-3 body-1">
+              <span class="custom-title">{{task.title}}</span>
+            </v-flex>
+            <span class="black--text">
+              <span class="v-tooltip__content-title light-green white--text">Task name</span>
+              <span class="v-tooltip__content-plain">The name of your task.</span>
+            </span>
+          </v-tooltip>
+          <v-spacer></v-spacer>
+          <v-tooltip v-model="tooltips[7]" :z-index="tooltipsZindexes" max-width="200" left fixed>
+            <v-flex slot="activator" shrink width="0"></v-flex>
+            <span class="black--text">
+              <span class="v-tooltip__content-title light-green white--text">Task details</span>
+              <span
+                class="v-tooltip__content-plain"
+              >Click here to see all your task details (description + frequency set).</span>
+            </span>
+          </v-tooltip>
           <v-flex v-if="task.subtasks.length > 0" xs12>
             <v-divider class="my-3"></v-divider>
             <v-layout
@@ -83,7 +136,9 @@ export default {
   data () {
     return {
       readonly: false,
-      panel: [null, null, null, null]
+      panel: [null, null, null, null],
+      tooltipsZindexes: 0,
+      tooltips: [false, false, false, false, false]
     }
   },
   props: {
@@ -168,6 +223,12 @@ export default {
   created () {
     EventBus.$on('closeOtherPanels', panel => {
       this.panel = panel
+    })
+    EventBus.$on('nextTooltip', (tooltips) => {
+      this.tooltips = tooltips
+    })
+    EventBus.$on('disableTooltips', (zindex) => {
+      this.tooltipsZindexes = zindex
     })
   }
 }

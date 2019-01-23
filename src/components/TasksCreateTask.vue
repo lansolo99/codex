@@ -1,11 +1,17 @@
 <template>
-  <v-dialog transition="slide-y-transition" scrollable fullscreen v-model="dialogTask">
+  <v-dialog
+    id="taskDialog"
+    transition="slide-y-transition"
+    scrollable
+    fullscreen
+    v-model="dialogTask"
+  >
     <v-btn slot="activator" fab small depressed absolute class="white add" @click="handleCreate">
       <v-icon class="black--text">add</v-icon>
     </v-btn>
     <v-card flat class="createTaskCard">
       <!-- Toolbar -->
-      <v-toolbar dark flat class="green">
+      <v-toolbar dark flat class="green dialogToolbar">
         <v-btn depressed flat @click="handleCancel">cancel</v-btn>
         <v-spacer></v-spacer>
         <v-toolbar-title>New Task</v-toolbar-title>
@@ -14,7 +20,7 @@
       </v-toolbar>
       <v-card-text style="height: auto;">
         <!-- Form -->
-        <v-container>
+        <v-container class="dialogContainer">
           <v-form ref="taskForm" lazy-validation>
             <h6 class="title my-3">Informations</h6>
             <v-text-field
@@ -118,11 +124,13 @@ import { mapActions, mapState } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required, requiredIf } from 'vuelidate/lib/validators'
 import { EventBus } from '@/bus'
+import * as easings from 'vuetify/es5/util/easing-patterns'
 
 export default {
 
   data () {
     return {
+      easings: Object.keys(easings),
       dialogTask: false,
       categories: [
         'Fitness',
@@ -253,6 +261,13 @@ export default {
     },
     periodicity: function () {
       return this.schedule.active
+    },
+    options () {
+      return {
+        duration: 500,
+        offset: 0,
+        easing: 'easeInOutCubic'
+      }
     }
   },
   watch: {
@@ -274,7 +289,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'updateProfile',
+      'disableFirstTimeUser',
       'addNewTask',
       'updateTask',
       'toggleTaskDialog',
@@ -285,8 +300,10 @@ export default {
     handleSave () {
       this.$v.task.$touch()
       if (this.$v.task.$invalid) {
+        // Throw form errors
         console.log('invalid form')
       } else {
+        // Validation passed
         console.log('valid form')
 
         // Default
@@ -305,7 +322,7 @@ export default {
           EventBus.$emit('closeOtherPanels', [null, null, null, null])
           this.task.id = 'newTask' + parseInt(Math.random() * 1000)
           this.addNewTask(JSON.parse(JSON.stringify(this.task)))
-          this.updateProfile(false)
+          this.disableFirstTimeUser()
           this.toggleTaskDialog(false)
         }
       }
@@ -315,6 +332,7 @@ export default {
       this.toggleTaskDialog(false)
     },
     handleCreate () {
+      // Scroll
       // Reset
       this.$refs.taskForm.reset()
       this.task.subtasks = []
@@ -330,6 +348,10 @@ export default {
       this.toggleTaskDialog(false)
     },
     addNewSubTask () {
+      // console.log(document.getElementsByClassName('v-dialog v-dialog--active')[0])
+      let container = document.getElementById('taskDialog')
+      container.scrollTop = 0
+
       const subtaskId = 'newSubtask' + parseInt(Math.random() * 1000)
       this.task.subtasks.push({
         id: subtaskId,
@@ -356,7 +378,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .v-btn.v-btn--absolute.add {
   right: 14px;
   top: 14px;
@@ -366,5 +388,16 @@ export default {
   max-width: 400px;
   margin: auto;
   left: auto;
+}
+
+.dialogToolbar {
+  margin-bottom: 0 !important;
+  .v-toolbar__content {
+    height: 56px !important;
+  }
+}
+
+.dialogContainer {
+  padding-top: 0 !important;
 }
 </style>

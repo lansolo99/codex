@@ -1,43 +1,28 @@
-  {
-    "periodicities": {
-      "id1": {
-        "name": "Weeklies"
-      },
-      "id2": {
-        "name": "Monthlies"
-      },
-      "id3": {
-        "name": "Yearlies"
-      },
-      "id4": {
-        "name": "Singles"
-      }
+{
+  "periodicities": {
+    "id1": {
+      "name": "Weeklies"
     },
-    "tasks": {
-      "id1": {
-        "id": "id1",
-        "title": "Weekly workouts",
-        "description": "Workout session",
-        "category": "Fitness",
-        "schedule": {
-          "periodicity": "Weekly",
-          "weekly": "x4 times",
-          "specificDays": [],
-          "once": "single"
-        },
-        "subtasks": [],
-        "status": "complete",
-        "checked": false
-      }
+    "id2": {
+      "name": "Monthlies"
     },
-    "profile": {
-      "firstTime": false
+    "id3": {
+      "name": "Yearlies"
     },
-    "currentTask": {
-      "id": "new"
-    },
-    "utility": {
-      "dialogTask": "false",
-      "taskPanels": [null, null, null, null]
+    "id4": {
+      "name": "Singles"
     }
+  },
+  "tasks": {},
+  "profile": {
+    "firstTime": true,
+    "beginnerTutorial": false
+  },
+  "currentTask": {
+    "id": "new"
+  },
+  "utility": {
+    "dialogTask": "false",
+    "taskPanels": [null, null, null, null]
   }
+}

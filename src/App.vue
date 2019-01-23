@@ -8,6 +8,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { EventBus } from '@/bus'
 export default {
 
   name: 'App',
@@ -30,13 +31,16 @@ export default {
         if (this.profile.firstTime === false) {
           this.toolbarConf = 'toolbarMultiple'
         }
+        if (this.profile.beginnerTutorial === true) {
+          EventBus.$emit('startBeginnerTutorial')
+        }
       },
       deep: true
     }
   },
   mounted () {
     // comment below in real mode
-    this.toolbarConf = 'toolbarMultiple'
+    // this.toolbarConf = 'toolbarMultiple'
   }
 }
 </script>
