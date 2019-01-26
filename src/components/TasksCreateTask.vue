@@ -6,7 +6,7 @@
     fullscreen
     v-model="dialogTask"
   >
-    <v-btn slot="activator" fab small depressed absolute class="white add" @click="handleCreate">
+    <v-btn slot="activator" small depressed fab absolute class="white add" @click="handleCreate">
       <v-icon class="black--text">add</v-icon>
     </v-btn>
     <v-card flat class="createTaskCard">
