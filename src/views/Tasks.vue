@@ -1,6 +1,6 @@
 <template>
-  <div class="mb-5">
-    <TheNavbar :profile="profile"/>
+  <div>
+    <TaskHeader :profile="profile"/>
     <v-container fluid class="mb-5">
       <TasksWelcome v-if="profile.firstTime"/>
       <div>
@@ -20,16 +20,15 @@
 </template>
 
 <script>
-import TheNavbar from '@/components/TheNavbar'
+import TaskHeader from '@/components/TaskHeader'
 import TasksFiltered from '@/components/TasksFiltered'
 import TasksWelcome from '@/components/TasksWelcome'
 import { EventBus } from '@/bus'
-
 import { mapState } from 'vuex'
 
 export default {
   components: {
-    TheNavbar,
+    TaskHeader,
     TasksWelcome,
     TasksFiltered
   },

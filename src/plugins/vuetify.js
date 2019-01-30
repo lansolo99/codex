@@ -5,9 +5,13 @@ import 'vuetify/dist/vuetify.min.css'
 Vue.use(Vuetify, {
   iconfont: 'md',
   theme: {
-    primary: '#ff0000',
-    secondary: '#b0bec5',
-    accent: '#8c9eff',
-    error: '#b71c1c'
+    primary: '#FFBA4C',
+    secondary: '#23445C',
+    colorGreen: '#56E39F',
+    accent: '#56E39F',
+    error: '#FF5252',
+    info: '#2196F3',
+    success: '#4CAF50',
+    warning: '#FFC107'
   }
 })

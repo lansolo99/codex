@@ -80,7 +80,7 @@ export default {
         },
 
         dataLabels: {
-          enabled: false
+          enabled: true
         },
         colors: ['#F44336'],
         tooltip: {

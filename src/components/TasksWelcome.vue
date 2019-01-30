@@ -1,16 +1,23 @@
 <template>
   <div>
-    <v-alert v-model="alert" dismissible color="info" class="px-5 pt-4">
-      <v-avatar>
-        <v-icon size="80px" dark>schedule</v-icon>
-      </v-avatar>
-      <p class="text mt-2">
-        Welcome to your daily board, the place where you'll set all your habits, goals.
-        Your journey starts after creating your first task!
-      </p>
-    </v-alert>
-    <v-btn block large class="mt-3 green white--text" @click="handleCreate">Add your first task</v-btn>
-    <v-divider class="divider-scaffold mt-5" v-for="n in 5" :key="n"></v-divider>
+    <v-card class="welcomeCard pa-3 pl-5 pr-5 pb-4">
+      <img
+        src="@/assets/images/startup_illustration.jpg"
+        srcset="@/assets/images/startup_illustration.jpg 1x, @/assets/images/startup_illustration@2x.jpg 2x"
+        alt
+      >
+      <h2 class="mt-3 font-weight">Welcome!</h2>
+      <p
+        class="font-weight-light"
+      >This is your routine board, the place you’ll set all your habits/goals.</p>
+      <p class="font-weight-light">Your journey starts after creating your first task</p>
+      <v-btn
+        block
+        large
+        class="mt-3 colorGreen white--text"
+        @click="handleCreate"
+      >Add your first task</v-btn>
+    </v-card>
   </div>
 </template>
 
@@ -31,20 +38,15 @@ export default {
 </script>
 
 <style lang="scss">
-.v-alert {
-  .v-avatar {
-    display: block;
-    width: auto !important;
-    height: auto !important;
+.welcomeCard {
+  h2 {
+    font-size: 27px;
+    font-weight: 600;
   }
-  .text {
-    font-size: 18px;
-    text-align: center;
-  }
-  .v-alert__dismissible {
-    position: absolute;
-    top: 15px;
-    right: 15px;
+  p {
+    font-size: 16px;
+    font-weight: normal;
+    color: $color-anthracite;
   }
 }
 </style>

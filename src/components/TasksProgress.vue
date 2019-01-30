@@ -1,59 +1,32 @@
 <template>
-  <v-container class="pa-0">
+  <v-container class="pt-0 pb-2">
     <v-layout>
-      <v-flex xs4 text-xs-center>
-        <v-tooltip v-model="tooltips[0]" :z-index="tooltipsZindexes" max-width="200" right fixed>
-          <v-card
-            slot="activator"
-            flat
-            height="100%"
-            class="taskProgressContainer green darken-3 pa-3 pt-4"
-          >
-            <v-avatar>
-              <v-icon size="50px" dark>account_circle</v-icon>
-            </v-avatar>
-            <div class="white--text mt-1">LEVEL 0/100</div>
-          </v-card>
-          <span class="black--text">
-            <span class="v-tooltip__content-title light-green white--text">Profile level</span>
-            <span
-              class="v-tooltip__content-plain"
-            >Your global level depends on your capacity to achieve your goals on a 10 weeks lifespan.</span>
-          </span>
-        </v-tooltip>
-      </v-flex>
-      <v-flex xs8>
+      <v-flex xs6>
         <v-card
           flat
           height="100%"
-          class="taskProgressContainer taskProgressContainer--bars green darken-2 pa-3"
+          class="taskProgressContainer taskProgressContainer--bars transparent"
         >
-          <span class="white--text">TODAY</span>
-          <v-tooltip v-model="tooltips[1]" :z-index="tooltipsZindexes" max-width="200" bottom>
-            <div slot="activator" class="progressbarContainer">
-              <v-progress-linear v-model="progressToday" color="white" class="mt-2" width="80%"></v-progress-linear>
-              <div class="progressbarContainer__value white--text text-xs-right">{{progressToday}}%</div>
-            </div>
-            <span class="black--text">
-              <span class="v-tooltip__content-title light-green white--text">Today progress bar</span>
-              <span
-                class="v-tooltip__content-plain"
-              >Here you can follow your daily progression : your score depends on your daily tasks completed.</span>
-            </span>
-          </v-tooltip>
-          <span class="white--text">THIS WEEK</span>
-          <v-tooltip v-model="tooltips[2]" :z-index="tooltipsZindexes" max-width="200" bottom>
-            <div slot="activator" class="progressbarContainer">
-              <v-progress-linear v-model="progressWeek" color="white" class="mt-2 mb-2"></v-progress-linear>
-              <div class="progressbarContainer__value white--text text-xs-right">{{progressWeek}}%</div>
-            </div>
-            <span class="black--text">
-              <span class="v-tooltip__content-title light-green white--text">This week progress bar</span>
-              <span
-                class="v-tooltip__content-plain"
-              >Here you can follow your weekly progression : your score depends on your tasks completed during the whole week.</span>
-            </span>
-          </v-tooltip>
+          <span class="label white--text">TODAY (0/0 tasks)</span>
+
+          <div class="progressbarContainer">
+            <v-progress-linear v-model="progressToday" height="15" class="mt-2" width="80%"></v-progress-linear>
+            <div class="progressbarContainer__value white--text text-xs-right">{{progressToday}}%</div>
+          </div>
+        </v-card>
+      </v-flex>
+      <v-flex xs6>
+        <v-card
+          flat
+          height="100%"
+          class="taskProgressContainer taskProgressContainer--bars taskProgressContainer--week transparent"
+        >
+          <span class="label white--text">THIS WEEK</span>
+
+          <div class="progressbarContainer">
+            <v-progress-linear v-model="progressWeek" height="15" class="mt-2" width="80%"></v-progress-linear>
+            <div class="progressbarContainer__value white--text text-xs-right">{{progressWeek}}%</div>
+          </div>
         </v-card>
       </v-flex>
     </v-layout>
@@ -141,18 +114,42 @@ export default {
 
 <style lang="scss">
 .taskProgressContainer {
+  text-align: left;
+
   border-radius: 0 !important;
+  .label {
+    opacity: 0.7;
+    font-size: 12px;
+  }
   &--bars {
-    padding-right: 70px !important;
+    padding-right: 60px !important;
+  }
+
+  &--week {
+    position: relative;
+    left: 5px;
   }
 
   .progressbarContainer {
     position: relative;
+    top: -4px;
     &__value {
       position: absolute;
-      top: -7px;
+      top: -5px;
       right: -45px;
     }
+  }
+  .v-progress-linear {
+  }
+  .v-progress-linear__bar__determinate {
+    background-color: $color-green !important;
+    border-radius: 3px;
+  }
+  .v-progress-linear__background {
+    opacity: 1 !important;
+    background-color: darken(#0a1d38, 2%) !important;
+    border-radius: 3px;
+    box-shadow: inset 0px 0px 2px 1px rgba(0, 0, 0, 0.6);
   }
 }
 
