@@ -21,8 +21,7 @@
           </v-flex>
           <v-flex shrink class="ml-2">
             <div :class="`category ${task.category}`">
-              <img src="@/assets/images/icons_categories/Lifestyle.svg">
-              <!-- <img :src="`@/assets/images/icons_categories/${task.category}.svg`"> -->
+              <img :src="require(`@/assets/images/icons_categories/${task.category}.svg`)" alt>
             </div>
           </v-flex>
 
