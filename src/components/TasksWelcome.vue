@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="welcomeCard pa-3 pl-5 pr-5 pb-4">
+    <v-card class="welcomeCard pa-3 pl-5 pr-5 pb-4 text-xs-center">
       <img
         src="@/assets/images/startup_illustration.jpg"
         srcset="@/assets/images/startup_illustration.jpg 1x, @/assets/images/startup_illustration@2x.jpg 2x"

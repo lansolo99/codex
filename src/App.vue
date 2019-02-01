@@ -47,7 +47,6 @@ export default {
   font-family: "Signika", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   max-width: 400px;
   margin: auto;

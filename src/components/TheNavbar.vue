@@ -44,8 +44,8 @@ export default {
         height: 100%;
         background: linear-gradient(
           to bottom,
-          rgba(0, 0, 0, 0.65) 0%,
-          rgba(0, 0, 0, 0.1) 100%
+          rgba(0, 0, 0, 1) 0%,
+          rgba(0, 0, 0, 0.6) 100%
         );
         position: absolute;
         right: 0;

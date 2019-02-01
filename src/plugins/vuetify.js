@@ -8,6 +8,7 @@ Vue.use(Vuetify, {
     primary: '#FFBA4C',
     secondary: '#23445C',
     colorGreen: '#56E39F',
+    colorRed: '#EA6060',
     accent: '#56E39F',
     error: '#FF5252',
     info: '#2196F3',

@@ -3,7 +3,7 @@
     <v-toolbar dark app class="taskHeader secondary">
       <v-toolbar-title class="primary--text font-weight-bold">Tasks</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn fab small class="colorGreen">
+      <v-btn fab small class="colorGreen" @click="handleCreate">
         <v-icon class="icon icon-add"></v-icon>
       </v-btn>
       <TasksProgress slot="extension" class="TasksProgressWrapper"/>
@@ -12,18 +12,21 @@
 </template>
 
 <script>
-// import TasksCreateTask from '@/components/TasksCreateTask'
 import TasksProgress from '@/components/TasksProgress'
-
+import { EventBus } from '@/bus'
 export default {
   components: {
-    // TasksCreateTask
     TasksProgress
   },
   props: {
     profile: {
       required: true,
       type: Object
+    }
+  },
+  methods: {
+    handleCreate () {
+      EventBus.$emit('createFirstTask')
     }
   }
 
@@ -33,32 +36,29 @@ export default {
 <style lang="scss">
 .taskHeader {
   padding-top: 10px;
-  .v-toolbar__content {
-    //height: 56px;
+
+  &.v-toolbar {
+    max-width: 400px;
+    margin: auto;
+    left: auto;
+
+    .v-toolbar__title {
+      font-size: 27px !important;
+    }
+
+    .v-btn--small {
+      height: 36px;
+      width: 36px;
+    }
   }
-}
 
-.v-toolbar {
-  max-width: 400px;
-  margin: auto;
-  left: auto;
-
-  .v-toolbar__title {
-    font-size: 27px !important;
+  .TasksProgressWrapper {
+    height: auto;
   }
 
-  .v-btn--floating.v-btn--small {
-    height: 30px;
-    width: 30px;
+  .v-toolbar__extension {
+    height: auto !important;
+    padding: 0;
   }
-}
-
-.TasksProgressWrapper {
-  height: auto;
-}
-
-.v-toolbar__extension {
-  height: auto !important;
-  padding: 0;
 }
 </style>

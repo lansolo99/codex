@@ -5,23 +5,18 @@
       <TasksWelcome v-if="profile.firstTime"/>
       <div>
         <div class="periodicityWrapper" v-for="(periodicity,key,index) in periodicities" :key="key">
-          <TasksFiltered :periodicity="periodicity" :ind="index" :tasks="tasks"/>
+          <TasksList :periodicity="periodicity" :ind="index" :tasks="tasks"/>
         </div>
       </div>
     </v-container>
-    <div
-      class="dimmer"
-      v-if="beginnerTutorial.status == 'ongoing'"
-      @click="beginnerTutorialWalkthrough"
-    >
-      <v-btn outline large class="dimmer__content white--text">TAP TO PASS</v-btn>
-    </div>
+    <TasksEditor/>
   </div>
 </template>
 
 <script>
 import TaskHeader from '@/components/TaskHeader'
-import TasksFiltered from '@/components/TasksFiltered'
+import TasksEditor from '@/components/TasksEditor'
+import TasksList from '@/components/TasksList'
 import TasksWelcome from '@/components/TasksWelcome'
 import { EventBus } from '@/bus'
 import { mapState } from 'vuex'
@@ -30,7 +25,8 @@ export default {
   components: {
     TaskHeader,
     TasksWelcome,
-    TasksFiltered
+    TasksEditor,
+    TasksList
   },
   data () {
     return {
