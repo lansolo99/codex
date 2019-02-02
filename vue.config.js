@@ -6,8 +6,16 @@ module.exports = {
       patterns: [
         path.resolve(__dirname, 'src/styles/variables.scss'),
         path.resolve(__dirname, 'src/styles/globals.scss'),
-        path.resolve(__dirname, 'src/styles/icons.scss')
+        path.resolve(__dirname, 'src/styles/icons.scss'),
+        path.resolve(__dirname, 'src/styles/mixins.scss')
       ]
     }
   }
+  // css: {
+  //   loaderOptions: {
+  //     sass: {
+  //       data: `@import "@/styles/mixins.scss";`
+  //     }
+  //   }
+  // }
 }

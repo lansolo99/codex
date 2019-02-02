@@ -48,8 +48,12 @@
 			$char: "\E005";
 		}
 
-		 @if $filename==stats {
+		 @if $filename==question_mark {
 			$char: "\E006";
+		}
+
+		 @if $filename==stats {
+			$char: "\E007";
 		}
 
 		@return $char;
@@ -87,6 +91,10 @@
 
 	.icon-profile {
 		@include icon(profile);
+	}
+
+	.icon-question_mark {
+		@include icon(question_mark);
 	}
 
 	.icon-stats {

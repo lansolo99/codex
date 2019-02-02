@@ -10,13 +10,12 @@
 <script>
 import TheNavbar from '@/components/TheNavbar'
 import { mapState } from 'vuex'
-// import { EventBus } from '@/bus'
 
 export default {
   name: 'App',
   data () {
     return {
-      toolbarConf: 'toolbarMultiple'
+      toolbarConf: 'toolbarTasks'
     }
   },
   components: {
@@ -31,6 +30,18 @@ export default {
     }
   },
   watch: {
+    '$route': {
+      immediate: true,
+      handler (newVal, oldVal) {
+        if (this.$route.path === '/') {
+        // Tasks
+          this.toolbarConf = 'toolbarTasks'
+        } else {
+          this.toolbarConf = 'toolbarNone'
+        }
+      }
+
+    },
     profileUpdate: {
       handler (val, oldVal) {
         if (this.profile.firstTime === false) {
@@ -43,6 +54,7 @@ export default {
 </script>
 
 <style lang="scss">
+@include btnFabCustom;
 #app {
   font-family: "Signika", sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -51,10 +63,10 @@ export default {
   max-width: 400px;
   margin: auto;
 }
-.toolbarSingle {
-  padding-top: 56px !important;
+.toolbarNone {
+  padding-top: 0px !important;
 }
-.toolbarMultiple {
+.toolbarTasks {
   padding-top: 132px !important;
 }
 </style>

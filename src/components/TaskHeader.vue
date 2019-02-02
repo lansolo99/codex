@@ -43,12 +43,7 @@ export default {
     left: auto;
 
     .v-toolbar__title {
-      font-size: 27px !important;
-    }
-
-    .v-btn--small {
-      height: 36px;
-      width: 36px;
+      font-size: 30px !important;
     }
   }
 

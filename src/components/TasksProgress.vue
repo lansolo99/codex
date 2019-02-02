@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pt-0 pb-2">
+  <v-container class="taskProgress pt-0 pb-2">
     <v-layout>
       <v-flex xs6>
         <v-card
@@ -113,62 +113,58 @@ export default {
 </script>
 
 <style lang="scss">
-.taskProgressContainer {
-  text-align: left;
+.taskProgress {
+  .taskProgressContainer {
+    text-align: left;
+    border-radius: 0 !important;
 
-  border-radius: 0 !important;
-  .label {
-    opacity: 0.7;
-    font-size: 12px;
-  }
-  &--bars {
-    padding-right: 60px !important;
-  }
+    .label {
+      opacity: 0.7;
+      font-size: 12px;
+    }
+    &--bars {
+      padding-right: 60px !important;
+    }
 
-  &--week {
-    position: relative;
-    left: 5px;
-  }
+    &--week {
+      position: relative;
+      left: 5px;
+    }
 
-  .progressbarContainer {
-    position: relative;
-    top: -4px;
-    &__value {
-      position: absolute;
-      top: -5px;
-      right: -45px;
+    .progressbarContainer {
+      position: relative;
+      top: -4px;
+      &__value {
+        position: absolute;
+        top: -5px;
+        right: -45px;
+      }
+    }
+    .v-progress-linear__bar__determinate {
+      @include progress-linear-fill;
+    }
+    .v-progress-linear__background {
+      @include progress-linear-background;
     }
   }
-  .v-progress-linear {
-  }
-  .v-progress-linear__bar__determinate {
-    background-color: $color-green !important;
-    border-radius: 3px;
-  }
-  .v-progress-linear__background {
-    opacity: 1 !important;
-    background-color: darken(#0a1d38, 2%) !important;
-    border-radius: 3px;
-    box-shadow: inset 0px 0px 2px 1px rgba(0, 0, 0, 0.6);
-  }
-}
 
-.v-tooltip__content {
-  background-color: white;
-  font-size: 16px;
-  opacity: 1 !important;
-  padding: 0px;
-  &-title {
-    font-size: 17px;
-    font-weight: bold;
-    display: block;
-    padding: 5px 10px;
-  }
-  &-plain {
-    display: block;
-    padding: 10px;
-    font-size: 15px;
-    color: #333333;
+  .v-tooltip__content {
+    background-color: white;
+    font-size: 16px;
+    opacity: 1 !important;
+    padding: 0px;
+    &-title {
+      font-size: 17px;
+      font-weight: bold;
+      display: block;
+      padding: 5px 10px;
+    }
+    &-plain {
+      display: block;
+      padding: 10px;
+      font-size: 15px;
+      color: #333333;
+    }
   }
 }
 </style>

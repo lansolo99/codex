@@ -1,15 +1,15 @@
 <template>
   <!-- <div class="headline text-xs-center pa-5">Active: {{ bottomNav }}</div> -->
   <v-bottom-nav :active.sync="bottomNav" :value="true" color="primary" app fixed>
-    <v-btn to="/" flat color="white" value="recent">
+    <v-btn to="/" flat color="white" value="tasks">
       <v-icon class="icon icon-check"></v-icon>
     </v-btn>
 
-    <v-btn to="/stats" flat value="favorites">
+    <v-btn to="/stats" color="white" flat value="stats">
       <v-icon class="icon icon-stats"></v-icon>
     </v-btn>
 
-    <v-btn to="/stats" flat value="nearby">
+    <v-btn to="/profile" color="white" flat value="profile">
       <v-icon class="icon icon-profile"></v-icon>
     </v-btn>
   </v-bottom-nav>
@@ -19,7 +19,7 @@
 export default {
   data () {
     return {
-      bottomNav: 'recent'
+      bottomNav: ''
     }
   }
 }

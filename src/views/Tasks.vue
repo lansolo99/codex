@@ -1,7 +1,7 @@
 <template>
   <div>
     <TaskHeader :profile="profile"/>
-    <v-container fluid class="mb-5">
+    <v-container fluid class="mb-4 tasks">
       <TasksWelcome v-if="profile.firstTime"/>
       <div>
         <div class="periodicityWrapper" v-for="(periodicity,key,index) in periodicities" :key="key">
@@ -75,6 +75,9 @@ export default {
 </script>
 
 <style lang="scss">
+.tasks {
+  //padding-top: 36px !important;
+}
 .periodicityWrapper:first-child {
   .subheader {
     margin-top: 5px !important;
