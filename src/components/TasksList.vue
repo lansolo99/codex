@@ -1,11 +1,12 @@
 <template>
   <div class="taskList">
-    <h6 v-if="filterTasks(periodicity.name).length > 0" class="my-3 black--text">
+    <h6 v-if="filterTasks(periodicity.name).length > 0" class="subheader my-3 mt-4 black--text">
       <span>{{periodicity.name}}</span>
     </h6>
 
     <v-expansion-panel v-model="panel[ind]" @click.native="managePanels(ind)">
       <v-expansion-panel-content v-for="(task,key) in filterTasks(periodicity.name)" :key="key">
+        <!-- Bar part -->
         <v-layout slot="header" row wrap :class="`task ${task.status} mr-2 px-0`">
           <v-flex shrink>
             <v-checkbox
@@ -33,34 +34,40 @@
 
           <v-flex shrink width="0"></v-flex>
 
-          <v-flex v-if="task.subtasks.length > 0" xs12>
-            <v-divider class="my-3"></v-divider>
+          <!-- If subtasks -->
+          <v-flex v-if="task.subtasks.length > 0" xs12 class="subtasks">
             <v-layout
               v-for="(subtask,key) in task.subtasks"
               :key="key"
               row
               wrap
-              :class="`task ${task.status} mt-3`"
+              :class="`task ${task.status}`"
             >
               <v-flex shrink class="pt-1">
                 <v-checkbox
                   @click.native.stop
                   class="ma-0 pa-0"
-                  color="success"
+                  color="colorGreen"
                   hide-details
                   :input-value="subtask.checked"
                   @change="updateCheckedStatus(task.id, $event, 'subtask',subtask.id)"
                 ></v-checkbox>
               </v-flex>
-              <v-flex grow class="pa-1 pt-1 pl-0 pr-3 body-1">{{subtask.name}}</v-flex>
+              <v-flex shrink class="pt-2 ml-2 icon-slot">
+                <v-icon class="icon icon-arrow_return"></v-icon>
+              </v-flex>
+              <v-flex grow class="pa-1 pt-2 pl-3 pr-3 body-1">
+                <span class="name">{{subtask.name}}</span>
+              </v-flex>
             </v-layout>
           </v-flex>
         </v-layout>
-        <v-card class="green lighten-5">
+        <!-- Expanded part -->
+        <v-card class="details blue-grey lighten-5 pa-2">
           <v-card-text>
-            <h2 class="body-2">Description</h2>
+            <h6>Description</h6>
             <p>{{task.description}}</p>
-            <h2 class="body-2">Schedule</h2>
+            <h6>Schedule</h6>
             <p>
               {{task.schedule.periodicity}} :
               <span
@@ -72,9 +79,9 @@
               <span v-if="task.schedule.periodicity === 'Once'">{{task.schedule.once}}</span>
             </p>
 
-            <h2 class="body-2">Category</h2>
+            <h6>Category</h6>
             <p>{{task.category}}</p>
-            <v-btn outline block class="mt-0 ml-0" @click="handleEdit(task.id)">Edit task</v-btn>
+            <v-btn large class="colorGreen white--text ma-0" @click="handleEdit(task.id)">Edit task</v-btn>
           </v-card-text>
         </v-card>
       </v-expansion-panel-content>
@@ -191,8 +198,29 @@ export default {
 
 <style lang="scss">
 .taskList {
-  h6 {
+  h6.subheader {
     opacity: 0.7;
+  }
+
+  .task {
+    .custom-title {
+      font-size: 16px;
+    }
+
+    .createTaskCard {
+      height: 800px;
+    }
+  }
+  .details {
+    h6 {
+      font-size: 15px !important;
+      font-weight: 600;
+      color: rgba(black, 0.6);
+    }
+    p {
+      font-weight: 300;
+      font-size: 14px;
+    }
   }
   //Expansions
   .v-expansion-panel__header {
@@ -204,8 +232,15 @@ export default {
     }
     //Checkboxes
     .v-input--selection-controls {
+      position: relative;
+      top: 1px;
+
       .material-icons {
         font-size: 31px;
+      }
+
+      .theme--light.v-icon {
+        //color: rgba(0, 0, 0, 0.35);
       }
     }
     // Invisible checkboxes (prevent openning panel at click when disabled state)
@@ -216,7 +251,7 @@ export default {
       opacity: 0;
     }
   }
-
+  // Categories
   .category {
     width: 34px;
     height: 100%;
@@ -230,14 +265,25 @@ export default {
       top: -1px;
     }
   }
-
-  .task {
-    .custom-title {
-      font-size: 16px;
+  // Subtasks
+  .subtasks {
+    .flex {
+      height: 38px;
     }
 
-    .createTaskCard {
-      height: 800px;
+    .icon {
+      &:before {
+        font-size: 25px;
+        position: relative;
+        top: 1px;
+        left: 4px;
+      }
+    }
+    .name {
+      font-weight: 300;
+      font-size: 16px;
+      display: block;
+      margin-left: 2px;
     }
   }
 }

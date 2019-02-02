@@ -76,8 +76,8 @@ export default {
 
 <style lang="scss">
 .periodicityWrapper:first-child {
-  .v-subheader {
-    margin-top: 0px !important;
+  .subheader {
+    margin-top: 5px !important;
   }
 }
 .dimmer {

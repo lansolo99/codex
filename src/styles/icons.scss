@@ -32,20 +32,24 @@
 			$char: "\E001";
 		}
 
-		 @if $filename==check {
+		 @if $filename==arrow_return {
 			$char: "\E002";
 		}
 
-		 @if $filename==delete {
+		 @if $filename==check {
 			$char: "\E003";
 		}
 
-		 @if $filename==profile {
+		 @if $filename==delete {
 			$char: "\E004";
 		}
 
-		 @if $filename==stats {
+		 @if $filename==profile {
 			$char: "\E005";
+		}
+
+		 @if $filename==stats {
+			$char: "\E006";
 		}
 
 		@return $char;
@@ -67,6 +71,10 @@
 
 .icon-add {
 		@include icon(add);
+	}
+
+	.icon-arrow_return {
+		@include icon(arrow_return);
 	}
 
 	.icon-check {
