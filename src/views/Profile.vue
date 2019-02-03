@@ -23,6 +23,7 @@
 import ProfileForm from '@/components/ProfileForm'
 import ProfileEditor from '@/components/ProfileEditor'
 import { mapActions } from 'vuex'
+import { EventBus } from '@/bus'
 
 export default {
   name: 'Profile',
@@ -35,6 +36,7 @@ export default {
       'toggleProfileDialog'
     ]),
     handleEditProfile () {
+      EventBus.$emit('editProfile', true)
       this.toggleProfileDialog(true)
     }
   }

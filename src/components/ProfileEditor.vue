@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { EventBus } from '@/bus'
 import { mapActions, mapState } from 'vuex'
 import ProfileForm from '@/components/ProfileForm'
 import * as easings from 'vuetify/es5/util/easing-patterns'
@@ -59,9 +60,10 @@ export default {
       'toggleProfileDialog'
     ]),
     handleSave () {
-      this.toggleProfileDialog(false)
+      EventBus.$emit('saveProfile')
     },
     handleCancel () {
+      EventBus.$emit('editProfile', false)
       this.toggleProfileDialog(false)
     }
   }

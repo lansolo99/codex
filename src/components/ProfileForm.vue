@@ -16,8 +16,9 @@
           <div class="fieldset fieldset--account">
             <h6 class="subheader subheader--first my-3 black--text">Account</h6>
             <v-text-field
-              disabled
+              :disabled="!editing"
               color="secondary"
+              class="red--text"
               label="Pseudo"
               v-model="userData.pseudo"
               required
@@ -27,7 +28,7 @@
             ></v-text-field>
             <v-text-field
               class="pt-1"
-              disabled
+              :disabled="!editing"
               color="secondary"
               label="Email"
               v-model="userData.email"
@@ -57,7 +58,7 @@
           <div class="fieldset fieldset--informations">
             <h6 class="subheader subheader--first my-3 black--text">Informations</h6>
             <v-select
-              disabled
+              :disabled="!editing"
               class="pt-1"
               color="secondary"
               :items="formComponents.gender"
@@ -66,14 +67,14 @@
             ></v-select>
             <v-select
               class="pt-1"
-              disabled
+              :disabled="!editing"
               color="secondary"
               :items="formComponents.maritalStatus"
               label="Marital status"
               v-model="userData.maritalStatus"
             ></v-select>
             <v-slider
-              readonly
+              :readonly="!editing"
               class="pt-3 px-1"
               label="Age"
               :value="userData.age"
@@ -86,7 +87,7 @@
               max="122"
             ></v-slider>
             <v-text-field
-              disabled
+              :disabled="!editing"
               class="pt-1"
               color="secondary"
               label="City"
@@ -94,14 +95,14 @@
             ></v-text-field>
             <v-select
               class="pt-1"
-              disabled
+              :disabled="!editing"
               color="secondary"
               :items="formComponents.countries"
               label="Country"
               v-model="userData.country"
             ></v-select>
             <v-text-field
-              disabled
+              :disabled="!editing"
               class="pt-1"
               color="secondary"
               label="Occupation"
@@ -115,9 +116,11 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { EventBus } from '@/bus'
+import { mapState, mapActions } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required, email, sameAs, minLength } from 'vuelidate/lib/validators'
+
 export default {
   comments: true,
   name: 'ProfileForm',
@@ -147,19 +150,6 @@ export default {
           'Spain',
           'South Africa'
         ]
-      },
-      userData: {
-        avatarImage: null,
-        avatarDefault: 'man',
-        pseudo: 'Lansolo',
-        email: 'lansolo99@hotmail.fr',
-        password: 'mypassword',
-        gender: 'Male',
-        maritalStatus: 'Undefined',
-        age: 25,
-        city: 'Marseille',
-        country: 'France',
-        occupation: 'Webdesigner'
       }
     }
   },
@@ -181,6 +171,9 @@ export default {
     }
   },
   computed: {
+    ...mapState('profile', {
+      userData: state => state
+    }),
     pseudoErrors () {
       const errors = []
       if (!this.$v.userData.pseudo.$dirty) return errors
@@ -219,17 +212,42 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'toggleProfileDialog'
-    ]),
+    ...mapActions({
+      updateProfile: 'profile/updateProfile',
+      toggleProfileDialog: 'toggleProfileDialog'
+    }),
     togglePasswordVisibility (field) {
       this.formComponents.passwordType === 'password' ? this.formComponents.passwordType = 'clear' : this.formComponents.passwordType = 'password'
       this.formComponents.iconShowPassword === 'icon-eye' ? this.formComponents.iconShowPassword = 'icon-eye_hidden' : this.formComponents.iconShowPassword = 'icon-eye'
     },
     handleEditProfile () {
       this.toggleProfileDialog(true)
+    },
+    saveProfile () {
+      this.$v.userData.$touch()
+      if (this.$v.userData.$invalid) {
+        // Throw form errors
+        console.log('invalid form')
+      } else {
+        // Validation passed
+        console.log('valid form')
+        const userData = JSON.parse(JSON.stringify(this.userData))
+        this.updateProfile(userData)
+        // Everything is done :
+        EventBus.$emit('editProfile', false)
+        this.toggleProfileDialog(false)
+      }
     }
+  },
+  created () {
+    EventBus.$on('editProfile', (status) => {
+      this.editing = status
+    })
+    EventBus.$on('saveProfile', () => {
+      this.saveProfile()
+    })
   }
+
 }
 </script>
 
@@ -259,6 +277,10 @@ export default {
         font-size: 14px;
       }
     }
+  }
+  .theme--light.v-input:not(.v-input--is-disabled) input,
+  .theme--light.v-select .v-select__selections {
+    color: rgba(0, 0, 0, 0.55);
   }
 }
 </style>
