@@ -1,11 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import sourceData from '@/data'
+import profile from '@/store/modules/profile'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
+  modules: {
+    profile
+  },
   state: sourceData,
   getters: {
     getAllTasks: state => {
@@ -54,6 +58,11 @@ export default new Vuex.Store({
     }, payload) {
       commit('toggleTaskDialog', payload)
     },
+    toggleProfileDialog ({
+      commit
+    }, payload) {
+      commit('toggleProfileDialog', payload)
+    },
     setCurrentTask ({
       commit
     }, payload) {
@@ -68,7 +77,6 @@ export default new Vuex.Store({
   mutations: {
     disableFirstTimeUser (state) {
       state.profile.firstTime = false
-      state.profile.beginnerTutorial = true
     },
     addNewTask (state, payload) {
       Vue.set(state.tasks, payload.id, payload)
@@ -109,8 +117,11 @@ export default new Vuex.Store({
     toggleTaskDialog (state, payload) {
       state.utility.dialogTask = payload
     },
+    toggleProfileDialog (state, payload) {
+      state.utility.dialogProfile = payload
+    },
     setCurrentTask (state, payload) {
-      state.currentTask.id = payload
+      state.utility.currentTask.id = payload
     },
     deleteTask (state, payload) {
       Vue.delete(state.tasks, payload)

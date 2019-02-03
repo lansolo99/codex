@@ -7,7 +7,7 @@
     fullscreen
     v-model="dialogTask"
   >
-    <v-card flat>
+    <v-card flat tile>
       <!-- Toolbar -->
       <v-toolbar dark class="secondary dialogToolbar">
         <v-btn depressed flat @click="handleCancel">cancel</v-btn>
@@ -242,7 +242,7 @@ export default {
   computed: {
     ...mapState({
       storeDialogTask: state => state.utility.dialogTask,
-      storeCurrentTask: state => state.currentTask.id
+      storeCurrentTask: state => state.utility.currentTask.id
     }
     ),
     titleErrors () {

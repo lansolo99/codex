@@ -44,16 +44,28 @@
 			$char: "\E004";
 		}
 
-		 @if $filename==profile {
+		 @if $filename==edit {
 			$char: "\E005";
 		}
 
-		 @if $filename==question_mark {
+		 @if $filename==eye {
 			$char: "\E006";
 		}
 
-		 @if $filename==stats {
+		 @if $filename==eye_hidden {
 			$char: "\E007";
+		}
+
+		 @if $filename==profile {
+			$char: "\E008";
+		}
+
+		 @if $filename==question_mark {
+			$char: "\E009";
+		}
+
+		 @if $filename==stats {
+			$char: "\E00A";
 		}
 
 		@return $char;
@@ -87,6 +99,18 @@
 
 	.icon-delete {
 		@include icon(delete);
+	}
+
+	.icon-edit {
+		@include icon(edit);
+	}
+
+	.icon-eye {
+		@include icon(eye);
+	}
+
+	.icon-eye_hidden {
+		@include icon(eye_hidden);
 	}
 
 	.icon-profile {

@@ -137,6 +137,7 @@ import Vue from 'vue'
 Vue.use(VueApexCharts)
 
 export default {
+  name: 'Stats',
   components: {
     apexcharts: VueApexCharts
   },

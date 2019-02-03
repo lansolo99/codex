@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Tasks from './views/Tasks.vue'
 import Stats from './views/Stats.vue'
+import Profile from './views/Profile.vue'
 
 Vue.use(Router)
 
@@ -17,6 +18,11 @@ export default new Router({
     path: '/stats',
     name: 'stats',
     component: Stats
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: Profile
   }
   ]
 })

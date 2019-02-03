@@ -18,10 +18,10 @@ import TaskHeader from '@/components/TaskHeader'
 import TasksEditor from '@/components/TasksEditor'
 import TasksList from '@/components/TasksList'
 import TasksWelcome from '@/components/TasksWelcome'
-import { EventBus } from '@/bus'
 import { mapState } from 'vuex'
 
 export default {
+  name: 'Tasks',
   components: {
     TaskHeader,
     TasksWelcome,
@@ -30,10 +30,6 @@ export default {
   },
   data () {
     return {
-      beginnerTutorial: {
-        status: 'off',
-        currentTooltip: null
-      }
     }
   },
   computed: {
@@ -42,34 +38,11 @@ export default {
     ])
   },
   watch: {
-    'beginnerTutorial.status': function () {
-      this.beginnerTutorialWalkthrough()
-    }
   },
   methods: {
     getTaskFilter (periodicityName) {
       return this.taskFilters.find(v => v.periodicity === periodicityName).filter
-    },
-    beginnerTutorialWalkthrough () {
-      this.beginnerTutorial.currentTooltip += 1
-      let tooltips = []
-      for (let i = 0; i < 8; i++) {
-        tooltips.push(false)
-      }
-      tooltips[this.beginnerTutorial.currentTooltip - 1] = true
-      EventBus.$emit('nextTooltip', [false, false, false, false, false, false, false, false])
-      if (this.beginnerTutorial.currentTooltip > 8) {
-        EventBus.$emit('disableTooltips', -10)
-        this.beginnerTutorial.status = 'complete'
-      } else {
-        setTimeout(function () { EventBus.$emit('nextTooltip', tooltips) }, 400)
-      }
     }
-  },
-  created () {
-    EventBus.$on('startBeginnerTutorial', () => {
-      this.beginnerTutorial.status = 'ongoing'
-    })
   }
 }
 </script>

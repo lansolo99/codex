@@ -16,13 +16,24 @@
   "tasks": {},
   "profile": {
     "firstTime": true,
-    "beginnerTutorial": false
-  },
-  "currentTask": {
-    "id": "new"
+    "avatarImage": null,
+    "avatarDefault": "man",
+    "pseudo": "Lansolo",
+    "email": "lansolo99@hotmail.fr",
+    "password": "mypassword",
+    "gender": "Male",
+    "maritalStatus": "Undefined",
+    "age": 25,
+    "city": "Marseille",
+    "country": "France",
+    "occupation": "Webdesigner"
   },
   "utility": {
+    "currentTask": {
+      "id": "new"
+    },
     "dialogTask": "false",
+    "dialogProfile": "false",
     "taskPanels": [null, null, null, null]
   }
 }
