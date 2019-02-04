@@ -18,15 +18,9 @@ export default {
   components: {
     TasksProgress
   },
-  props: {
-    profile: {
-      required: true,
-      type: Object
-    }
-  },
   methods: {
     handleCreate () {
-      EventBus.$emit('createFirstTask')
+      EventBus.$emit('createTask')
     }
   }
 

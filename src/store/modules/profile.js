@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import sourceData from '@/data'
 
 export default {
@@ -5,10 +6,16 @@ export default {
   state: sourceData.profile,
   getters: {
     getProfileData (state) {
-      return state.profile
+      const retrievedUserData = JSON.parse(JSON.stringify(state.wrapper))
+      return retrievedUserData
     }
   },
   actions: {
+    disableFirstTimeUser ({
+      commit
+    }) {
+      commit('disableFirstTimeUser')
+    },
     updateProfile ({
       commit
     }, payload) {
@@ -18,7 +25,10 @@ export default {
   mutations: {
     updateProfile (state, payload) {
       console.log(payload)
-      state = payload
+      Vue.set(state, 'wrapper', payload)
+    },
+    disableFirstTimeUser (state) {
+      state.wrapper.firstTime = false
     }
   }
 }

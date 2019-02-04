@@ -56,9 +56,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'toggleProfileDialog'
-    ]),
+    ...mapActions({
+      toggleProfileDialog: 'utility/toggleProfileDialog'
+    }),
     handleSave () {
       EventBus.$emit('saveProfile')
     },

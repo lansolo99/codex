@@ -32,9 +32,9 @@ export default {
     ProfileEditor
   },
   methods: {
-    ...mapActions([
-      'toggleProfileDialog'
-    ]),
+    ...mapActions({
+      toggleProfileDialog: 'utility/toggleProfileDialog'
+    }),
     handleEditProfile () {
       EventBus.$emit('editProfile', true)
       this.toggleProfileDialog(true)

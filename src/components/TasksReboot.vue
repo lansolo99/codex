@@ -6,17 +6,11 @@
         srcset="@/assets/images/startup_illustration.jpg 1x, @/assets/images/startup_illustration@2x.jpg 2x"
         alt
       >
-      <h2 class="mt-3 font-weight">Welcome!</h2>
+      <h2 class="mt-3 font-weight">Nothing here!</h2>
       <p
         class="font-weight-light"
-      >This is your routine board, the place you’ll set all your habits/goals.</p>
-      <p class="font-weight-light">Your journey starts after creating your first task</p>
-      <v-btn
-        block
-        large
-        class="mt-3 colorGreen white--text"
-        @click="handleCreate"
-      >Add your first task</v-btn>
+      >You don't have tasks anymore, keep adding tasks or goals to track your progress and discipline commitment!</p>
+      <v-btn block large class="mt-3 colorGreen white--text" @click="handleCreate">Init a task again</v-btn>
     </v-card>
   </div>
 </template>

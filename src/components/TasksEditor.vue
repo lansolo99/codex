@@ -12,7 +12,9 @@
       <v-toolbar dark class="secondary dialogToolbar">
         <v-btn depressed flat @click="handleCancel">cancel</v-btn>
         <v-spacer></v-spacer>
-        <v-toolbar-title class="primary--text font-weight-bold">New Task</v-toolbar-title>
+        <v-toolbar-title
+          class="primary--text font-weight-bold"
+        >{{currentTask=== "new" ? 'New Task' : 'Edit Task'}}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn depressed flat @click="handleSave">{{currentTask=== "new" ? 'Save' : 'Update'}}</v-btn>
       </v-toolbar>
@@ -304,15 +306,15 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'disableFirstTimeUser',
-      'addNewTask',
-      'updateTask',
-      'toggleTaskDialog',
-      'closeTaskPanels',
-      'setCurrentTask',
-      'deleteTask'
-    ]),
+    ...mapActions({
+      updateProfile: 'profile/updateProfile',
+      disableFirstTimeUser: 'profile/disableFirstTimeUser',
+      addNewTask: 'tasks/addNewTask',
+      updateTask: 'tasks/updateTask',
+      deleteTask: 'tasks/deleteTask',
+      toggleTaskDialog: 'utility/toggleTaskDialog',
+      setCurrentTask: 'utility/setCurrentTask'
+    }),
     handleSave () {
       this.$v.task.$touch()
       if (this.$v.task.$invalid) {
@@ -387,7 +389,7 @@ export default {
     }
   },
   created () {
-    EventBus.$on('createFirstTask', () => {
+    EventBus.$on('createTask', () => {
       this.handleCreate()
     })
   }

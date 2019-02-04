@@ -48,9 +48,9 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'tasks'
-    ]),
+    ...mapState('tasks', {
+      tasks: state => state
+    }),
     tasksChecked: function () {
       return this.tasks
     }

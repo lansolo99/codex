@@ -22,9 +22,9 @@ export default {
     TheNavbar
   },
   computed: {
-    ...mapState([
-      'profile'
-    ]),
+    ...mapState('profile', {
+      profile: state => state
+    }),
     profileUpdate: function () {
       return this.profile
     }

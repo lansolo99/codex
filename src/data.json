@@ -1,39 +1,41 @@
 {
-  "periodicities": {
-    "id1": {
-      "name": "Weeklies"
-    },
-    "id2": {
-      "name": "Monthlies"
-    },
-    "id3": {
-      "name": "Yearlies"
-    },
-    "id4": {
-      "name": "Singles"
+  "profile": {
+    "wrapper": {
+      "firstTime": true,
+      "avatarImage": null,
+      "avatarDefault": "man",
+      "pseudo": "Lansolo4",
+      "email": "lansolo99@hotmail.fr",
+      "password": "mypassword",
+      "gender": "Female",
+      "maritalStatus": "Undefined",
+      "age": 25,
+      "city": "Marseille",
+      "country": "France",
+      "occupation": "Webdesigner"
     }
   },
-  "tasks": {},
-  "profile": {
-    "firstTime": true,
-    "avatarImage": null,
-    "avatarDefault": "man",
-    "pseudo": "Lansolo2",
-    "email": "lansolo99@hotmail.fr",
-    "password": "mypassword",
-    "gender": "Male",
-    "maritalStatus": "Undefined",
-    "age": 25,
-    "city": "Marseille",
-    "country": "France",
-    "occupation": "Webdesigner"
-  },
   "utility": {
+    "periodicities": {
+      "id1": {
+        "name": "Weeklies"
+      },
+      "id2": {
+        "name": "Monthlies"
+      },
+      "id3": {
+        "name": "Yearlies"
+      },
+      "id4": {
+        "name": "Singles"
+      }
+    },
     "currentTask": {
       "id": "new"
     },
     "dialogTask": "false",
     "dialogProfile": "false",
-    "taskPanels": [null, null, null, null]
+    "taskPanels": [null, null, null, null],
+    "reboot": false
   }
 }

@@ -6,6 +6,19 @@
         <v-avatar size="80px" color="rgba(0, 0, 0, 0.4)">
           <img v-if="userData.avatarImage" src alt="Avatar">
           <img v-else :src="require(`@/assets/images/avatar/${this.userData.avatarDefault}.svg`)">
+          <v-btn
+            v-if="editing"
+            floating
+            fab
+            absolute
+            bottom
+            right
+            small
+            dark
+            class="colorGreen mr-0"
+          >
+            <v-icon class="icon icon-edit"></v-icon>
+          </v-btn>
         </v-avatar>
       </v-flex>
     </v-layout>
@@ -117,7 +130,7 @@
 
 <script>
 import { EventBus } from '@/bus'
-import { mapState, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required, email, sameAs, minLength } from 'vuelidate/lib/validators'
 
@@ -171,8 +184,8 @@ export default {
     }
   },
   computed: {
-    ...mapState('profile', {
-      userData: state => state
+    ...mapGetters('profile', {
+      userData: 'getProfileData'
     }),
     pseudoErrors () {
       const errors = []
@@ -214,7 +227,7 @@ export default {
   methods: {
     ...mapActions({
       updateProfile: 'profile/updateProfile',
-      toggleProfileDialog: 'toggleProfileDialog'
+      toggleProfileDialog: 'utility/toggleProfileDialog'
     }),
     togglePasswordVisibility (field) {
       this.formComponents.passwordType === 'password' ? this.formComponents.passwordType = 'clear' : this.formComponents.passwordType = 'password'
@@ -260,6 +273,12 @@ export default {
       margin-top: 20px !important;
     }
   }
+  .v-avatar {
+    .v-btn--right {
+      right: -9px;
+      bottom: -9px;
+    }
+  }
   .fieldset {
     &--password {
       position: relative;
@@ -278,9 +297,16 @@ export default {
       }
     }
   }
-  .theme--light.v-input:not(.v-input--is-disabled) input,
+  input[disabled] {
+    opacity: 0.55;
+    -webkit-text-fill-color: black;
+  }
+  .theme--light.v-input input,
+  .theme--light.v-input input[disabled],
+  .theme--light.v-input--is-disabled .v-label,
+  .theme--light.v-select .v-select__selection--disabled,
   .theme--light.v-select .v-select__selections {
-    color: rgba(0, 0, 0, 0.55);
+    color: rgba(0, 0, 0, 0.55) !important;
   }
 }
 </style>

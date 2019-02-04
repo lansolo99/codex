@@ -1,10 +1,15 @@
 <template>
   <div>
-    <TaskHeader :profile="profile"/>
+    <TaskHeader/>
     <v-container fluid class="mb-4 tasks">
-      <TasksWelcome v-if="profile.firstTime"/>
+      <TasksWelcome v-if="profile.wrapper.firstTime"/>
+      <TasksReboot v-if="showReboot"/>
       <div>
-        <div class="periodicityWrapper" v-for="(periodicity,key,index) in periodicities" :key="key">
+        <div
+          class="periodicityWrapper"
+          v-for="(periodicity,key,index) in utility.periodicities"
+          :key="key"
+        >
           <TasksList :periodicity="periodicity" :ind="index" :tasks="tasks"/>
         </div>
       </div>
@@ -18,6 +23,7 @@ import TaskHeader from '@/components/TaskHeader'
 import TasksEditor from '@/components/TasksEditor'
 import TasksList from '@/components/TasksList'
 import TasksWelcome from '@/components/TasksWelcome'
+import TasksReboot from '@/components/TasksReboot'
 import { mapState } from 'vuex'
 
 export default {
@@ -25,19 +31,40 @@ export default {
   components: {
     TaskHeader,
     TasksWelcome,
+    TasksReboot,
     TasksEditor,
     TasksList
   },
   data () {
     return {
+      showReboot: false
     }
   },
   computed: {
-    ...mapState([
-      'periodicities', 'tasks', 'profile'
-    ])
+    ...mapState('tasks', {
+      tasks: state => state
+    }),
+    ...mapState('utility', {
+      utility: state => state
+    }),
+    ...mapState('profile', {
+      profile: state => state
+    })
   },
   watch: {
+    tasks: {
+      handler (val, oldVal) {
+        console.log('task has been changed')
+        console.log(Object.keys(this.tasks).length)
+        if (!Object.keys(this.tasks).length && !this.profile.wrapper.firstTime) {
+          this.showReboot = true
+        } else {
+          this.showReboot = false
+        }
+      },
+      deep: true,
+      immediate: true
+    }
   },
   methods: {
     getTaskFilter (periodicityName) {
@@ -48,9 +75,6 @@ export default {
 </script>
 
 <style lang="scss">
-.tasks {
-  //padding-top: 36px !important;
-}
 .periodicityWrapper:first-child {
   .subheader {
     margin-top: 5px !important;

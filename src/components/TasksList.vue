@@ -132,9 +132,11 @@ export default {
   },
 
   methods: {
-    ...mapActions([
-      'setCheckedStatus', 'toggleTaskDialog', 'closeTaskPanels', 'setCurrentTask'
-    ]),
+    ...mapActions({
+      setCheckedStatus: 'tasks/setCheckedStatus',
+      toggleTaskDialog: 'utility/toggleTaskDialog',
+      setCurrentTask: 'utility/setCurrentTask'
+    }),
     filterTasks (periodicityStr) {
       return Object.values(this.tasks)
         .filter(task => {
