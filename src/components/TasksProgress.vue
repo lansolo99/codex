@@ -21,7 +21,7 @@
           height="100%"
           class="taskProgressContainer taskProgressContainer--bars taskProgressContainer--week transparent"
         >
-          <span class="label white--text">THIS WEEK</span>
+          <span class="label white--text">THIS WEEK (day {{isoDay}}/7)</span>
 
           <div class="progressbarContainer">
             <v-progress-linear v-model="progressWeek" height="15" class="mt-2" width="80%"></v-progress-linear>
@@ -35,21 +35,24 @@
 
 <script>
 import { countObjectProperties } from '@/utils'
-import { mapState } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import { EventBus } from '@/bus'
+import { getISODay } from 'date-fns'
 
 export default {
   data () {
     return {
       progressToday: 0,
       progressWeek: 0,
-      tooltipsZindexes: 0,
-      tooltips: [false, false, false, false, false]
+      isoDay: null
     }
   },
   computed: {
     ...mapState('tasks', {
       tasks: state => state
+    }),
+    ...mapGetters({
+      userData: 'profile/getProfileData'
     }),
     tasksChecked: function () {
       return this.tasks
@@ -65,7 +68,9 @@ export default {
     }
   },
   methods: {
-
+    ...mapActions({
+      recordProgress: 'profile/recordProgress'
+    }),
     calcDailyCompletion () {
       const countTasks = countObjectProperties(this.tasks)
       const taskValue = 100 / countTasks
@@ -91,10 +96,12 @@ export default {
       total = Math.trunc((taskValue * countCheckedTasks) + totalSubtasks)
       if (isNaN(total)) { total = 0 }
       this.progressToday = total
+      EventBus.$emit('recordProgress')
     },
     calcWeeklyCompletion () {
-      const total = Math.trunc(this.progressToday / 7)
+      const total = Math.trunc(this.userData.stats.progressWeek.reduce((a, b) => a + b) / 7)
       this.progressWeek = total
+      EventBus.$emit('recordProgress')
     }
   },
   mounted () {
@@ -102,11 +109,13 @@ export default {
     this.calcWeeklyCompletion()
   },
   created () {
-    EventBus.$on('nextTooltip', (tooltips) => {
-      this.tooltips = tooltips
-    })
-    EventBus.$on('disableTooltips', (zindex) => {
-      this.tooltipsZindexes = zindex
+    // Time
+    EventBus.$on('recordProgress', () => {
+      const currentTime = Date.now()
+      const isoDay = getISODay(currentTime)
+      const progressToday = this.progressToday
+      this.isoDay = isoDay
+      this.recordProgress({ progressToday, isoDay })
     })
   }
 }

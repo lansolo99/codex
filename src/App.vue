@@ -9,7 +9,7 @@
 
 <script>
 import TheNavbar from '@/components/TheNavbar'
-import { mapState } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'App',
@@ -24,6 +24,9 @@ export default {
   computed: {
     ...mapState('profile', {
       profile: state => state
+    }),
+    ...mapGetters({
+      'userData': 'profile/getProfileData'
     }),
     profileUpdate: function () {
       return this.profile
@@ -49,6 +52,19 @@ export default {
       },
       deep: true
     }
+  },
+  methods: {
+    ...mapActions({
+      'updateProfile': 'profile/updateProfile'
+    })
+  },
+  created () {
+    // Set last connexion date (relay)
+    this.userData.connexionDateLast = this.userData.connexionDateCurrent
+    // Update current connexion date
+    const currentTime = Date.now()
+    this.userData.connexionDateCurrent = currentTime
+    this.updateProfile(this.userData)
   }
 }
 </script>

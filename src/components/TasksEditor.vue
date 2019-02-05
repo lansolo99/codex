@@ -195,6 +195,7 @@ export default {
       },
       task: {
         id: null,
+        startDate: null,
         title: null,
         description: null,
         category: null,
@@ -323,6 +324,10 @@ export default {
       } else {
         // Validation passed
         console.log('valid form')
+
+        // Time
+        const currentTime = Date.now()
+        this.task.startDate = currentTime
 
         // Default
         if (!this.task.description) {

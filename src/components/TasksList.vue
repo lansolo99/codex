@@ -90,8 +90,9 @@
 </template>
 
 <script>
-import isToday from 'date-fns/is_today'
-import { mapActions } from 'vuex'
+// eslint-disable-next-line
+import { isToday, getTime } from 'date-fns'
+import { mapGetters, mapActions } from 'vuex'
 import { EventBus } from '@/bus'
 
 export default {
@@ -120,6 +121,9 @@ export default {
   },
 
   computed: {
+    ...mapGetters({
+      'userData': 'profile/getProfileData'
+    }),
     tasksChecked: function () {
       return this.tasks
     }
@@ -166,7 +170,9 @@ export default {
       return daysList.sort(daysOfWeekSorter).join(', ')
     },
     updateCheckedStatus (taskId, checkstatus, taskType, subtaskId) {
-      this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId })
+      EventBus.$emit('recordProgress')
+      const checkTime = Date.now()
+      this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId, checkTime })
     },
     hasTaskSubtasks (task) {
       return task.subtasks.length > 0
@@ -187,39 +193,29 @@ export default {
     }
   },
   created () {
-    EventBus.$on('closeOtherPanels', panel => {
-      this.panel = panel
-    })
-    EventBus.$on('nextTooltip', (tooltips) => {
-      this.tooltips = tooltips
-    })
-    EventBus.$on('disableTooltips', (zindex) => {
-      this.tooltipsZindexes = zindex
-    })
-
     // Time
-    // const currentTime = Date.now()
+    // console.log(getTime(new Date(2019, 1, 4, 11, 45, 5, 123)))
+
+    // Tasks records processing
     const copiedTasks = JSON.parse(JSON.stringify(this.tasks))
 
     for (let [key, value] of Object.entries(copiedTasks)) {
-      console.log(value.startDate)
       // Weekly
-      // Everyday
-      if (!isToday(value.startDate)) {
-        console.log('this is not today -> decheck')
-      } else {
-        value.checked = false
-        console.log('ok this is today, let checked')
+      if (value.schedule.periodicity === 'Weekly') {
+        // Everyday
+        if (value.schedule.weekly === 'Everyday') {
+          // Reset check
+          if (!isToday(this.userData.connexionDateLast)) {
+            console.log('no it was another day')
+            value.checked = false
+          }
+        }
       }
+
       const taskId = JSON.parse(JSON.stringify(key))
       const task = JSON.parse(JSON.stringify(value))
       this.updateTask({ taskId, task })
     }
-
-    // const result = isToday(this.tasks.id1.startDate)
-    // console.log(this.tasks.id1.startDate)
-
-    // console.log(`is startDate today ? :  ${result}`)
   }
 }
 </script>
