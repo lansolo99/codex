@@ -54,8 +54,6 @@ export default {
   watch: {
     tasks: {
       handler (val, oldVal) {
-        console.log('task has been changed')
-        console.log(Object.keys(this.tasks).length)
         if (!Object.keys(this.tasks).length && !this.profile.wrapper.firstTime) {
           this.showReboot = true
         } else {

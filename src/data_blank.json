@@ -1,7 +1,7 @@
 {
   "profile": {
     "wrapper": {
-      "firstTime": false,
+      "firstTime": true,
       "avatarImage": null,
       "avatarDefault": "man",
       "pseudo": "Lansolo4",
@@ -13,24 +13,6 @@
       "city": "Marseille",
       "country": "France",
       "occupation": "Webdesigner"
-    }
-  },
-  "tasks": {
-    "id1": {
-      "id": "id1",
-      "title": "Weekly workouts",
-      "description": "Workout session",
-      "startDate": 1549346534967,
-      "category": "Fitness",
-      "schedule": {
-        "periodicity": "Weekly",
-        "weekly": "x4 times",
-        "specificDays": [],
-        "once": "single"
-      },
-      "subtasks": [],
-      "status": "complete",
-      "checked": true
     }
   },
   "utility": {

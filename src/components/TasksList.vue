@@ -90,6 +90,7 @@
 </template>
 
 <script>
+import isToday from 'date-fns/is_today'
 import { mapActions } from 'vuex'
 import { EventBus } from '@/bus'
 
@@ -134,6 +135,7 @@ export default {
   methods: {
     ...mapActions({
       setCheckedStatus: 'tasks/setCheckedStatus',
+      updateTask: 'tasks/updateTask',
       toggleTaskDialog: 'utility/toggleTaskDialog',
       setCurrentTask: 'utility/setCurrentTask'
     }),
@@ -194,6 +196,30 @@ export default {
     EventBus.$on('disableTooltips', (zindex) => {
       this.tooltipsZindexes = zindex
     })
+
+    // Time
+    // const currentTime = Date.now()
+    const copiedTasks = JSON.parse(JSON.stringify(this.tasks))
+
+    for (let [key, value] of Object.entries(copiedTasks)) {
+      console.log(value.startDate)
+      // Weekly
+      // Everyday
+      if (!isToday(value.startDate)) {
+        console.log('this is not today -> decheck')
+      } else {
+        value.checked = false
+        console.log('ok this is today, let checked')
+      }
+      const taskId = JSON.parse(JSON.stringify(key))
+      const task = JSON.parse(JSON.stringify(value))
+      this.updateTask({ taskId, task })
+    }
+
+    // const result = isToday(this.tasks.id1.startDate)
+    // console.log(this.tasks.id1.startDate)
+
+    // console.log(`is startDate today ? :  ${result}`)
   }
 }
 </script>

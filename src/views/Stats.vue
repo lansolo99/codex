@@ -132,8 +132,10 @@
 </template>
 
 <script>
-import VueApexCharts from 'vue-apexcharts'
+
+import { mapState, mapGetters } from 'vuex'
 import Vue from 'vue'
+import VueApexCharts from 'vue-apexcharts'
 Vue.use(VueApexCharts)
 
 export default {
@@ -397,6 +399,12 @@ export default {
         ]
       }
     }
+  },
+  computed: {
+    ...mapState('time', ['now']),
+    ...mapGetters('time', {
+      today: 'today'
+    })
   },
   methods: {
     generateData (count, yrange) {

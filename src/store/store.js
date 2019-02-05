@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import tasks from '@/store/modules/tasks'
 import profile from '@/store/modules/profile'
 import utility from '@/store/modules/utility'
+import time from '@/store/modules/time'
 
 Vue.use(Vuex)
 
@@ -11,7 +12,8 @@ export default new Vuex.Store({
   modules: {
     tasks,
     profile,
-    utility
+    utility,
+    time
   },
   state: {},
   getters: {},
