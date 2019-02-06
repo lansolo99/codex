@@ -30,7 +30,8 @@ export default {
       taskType,
       subtaskId,
       checkTime,
-      completionIndex
+      completionIndex,
+      completionValue
     }) {
       commit('setCheckedStatus', {
         taskId,
@@ -38,7 +39,8 @@ export default {
         taskType,
         subtaskId,
         checkTime,
-        completionIndex
+        completionIndex,
+        completionValue
       })
     },
     deleteTask ({
@@ -64,13 +66,14 @@ export default {
       taskType,
       subtaskId,
       checkTime,
-      completionIndex
+      completionIndex,
+      completionValue
     }) {
       if (taskType === 'task') {
         const task = state[taskId]
+        task.completion[completionIndex] = completionValue
         task.checked = checkstatus
         task.checkTime = checkTime
-        task.completion[completionIndex] = 1
       } else {
         const subtask = state[taskId].subtasks.find(sub => {
           return sub.id === subtaskId

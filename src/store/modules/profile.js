@@ -33,6 +33,17 @@ export default {
         progressToday,
         isoDay
       })
+    },
+    recordWeekScore ({
+      commit
+    }, {
+      isoWeek,
+      total
+    }) {
+      commit('recordWeekScore', {
+        isoWeek,
+        total
+      })
     }
   },
   mutations: {
@@ -47,7 +58,12 @@ export default {
       isoDay
     }) {
       state.wrapper.stats.progressToday = progressToday
-      // state.wrapper.stats.progressWeek[isoDay - 1] = progressToday
+    },
+    recordWeekScore (state, {
+      isoWeek,
+      total
+    }) {
+      Vue.set(state.wrapper.stats.weeksRecords, isoWeek, total)
     }
   }
 }

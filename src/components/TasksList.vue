@@ -91,7 +91,7 @@
 
 <script>
 // eslint-disable-next-line
-import { isToday, getTime, getISODay } from 'date-fns'
+import { isToday, getTime, getISODay, isThisWeek } from 'date-fns'
 import { mapGetters, mapActions } from 'vuex'
 import { EventBus } from '@/bus'
 
@@ -172,12 +172,23 @@ export default {
     updateCheckedStatus (taskId, checkstatus, taskType, subtaskId) {
       // Task completion update
       const checkTime = Date.now()
-      // Slot index
-      const completionIndex = this.tasks[taskId].completion.indexOf(0)
+      let completionIndex = this.tasks[taskId].completion.indexOf(0)
+      let completionValue
+      // Everyday
+
+      // is today : no completionIndex progression
+      if (this.tasks[taskId].checked === true) {
+        completionValue = 0
+        if (isToday(this.tasks[taskId].checkTime)) {
+          completionIndex = this.tasks[taskId].completion.indexOf(0) - 1
+        }
+      } else {
+        completionValue = 1
+      }
 
       // TasksProgress & store update
       EventBus.$emit('recordProgress')
-      this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId, checkTime, completionIndex })
+      this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId, checkTime, completionIndex, completionValue })
     },
     hasTaskSubtasks (task) {
       return task.subtasks.length > 0
@@ -199,12 +210,13 @@ export default {
   },
   created () {
     // Time
-    // console.log(getTime(new Date(2019, 1, 4, 11, 45, 5, 123)))
+    console.log(getTime(new Date(2019, 0, 4, 11, 45, 5, 123)))
 
-    // TASKS RECORD PROCESSING
+    // TASKS RECORD PROCESSING & MIDDLEWARE
 
     const copiedTasks = JSON.parse(JSON.stringify(this.tasks))
 
+    // All task checks automations & guards
     for (let [key, value] of Object.entries(copiedTasks)) {
       // Weekly
       if (value.schedule.periodicity === 'Weekly') {

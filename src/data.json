@@ -3,7 +3,7 @@
     "wrapper": {
       "firstTime": false,
       "connexionDateLast": 1549273505123,
-      "connexionDateCurrent": 1549273505123,
+      "connexionDateCurrent": 1546595105123,
       "avatarImage": null,
       "avatarDefault": "man",
       "pseudo": "Lansolo4",
@@ -17,7 +17,7 @@
       "occupation": "Webdesigner",
       "stats": {
         "progressToday": null,
-        "progressWeek": null
+        "weeksRecords": {}
       }
     }
   },
@@ -37,9 +37,8 @@
       "subtasks": [],
       "status": "complete",
       "checked": true,
-      "checkTime": null,
+      "checkTime": 1549273505123,
       "completion": [1, 1, 0, 0, 0, 0, 0]
-
     }
   },
   "utility": {
