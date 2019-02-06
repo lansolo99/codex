@@ -91,7 +91,7 @@
 
 <script>
 // eslint-disable-next-line
-import { isToday, getTime } from 'date-fns'
+import { isToday, getTime, getISODay } from 'date-fns'
 import { mapGetters, mapActions } from 'vuex'
 import { EventBus } from '@/bus'
 
@@ -170,9 +170,14 @@ export default {
       return daysList.sort(daysOfWeekSorter).join(', ')
     },
     updateCheckedStatus (taskId, checkstatus, taskType, subtaskId) {
-      EventBus.$emit('recordProgress')
+      // Task completion update
       const checkTime = Date.now()
-      this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId, checkTime })
+      // Slot index
+      const completionIndex = this.tasks[taskId].completion.indexOf(0)
+
+      // TasksProgress & store update
+      EventBus.$emit('recordProgress')
+      this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId, checkTime, completionIndex })
     },
     hasTaskSubtasks (task) {
       return task.subtasks.length > 0
@@ -196,7 +201,8 @@ export default {
     // Time
     // console.log(getTime(new Date(2019, 1, 4, 11, 45, 5, 123)))
 
-    // Tasks records processing
+    // TASKS RECORD PROCESSING
+
     const copiedTasks = JSON.parse(JSON.stringify(this.tasks))
 
     for (let [key, value] of Object.entries(copiedTasks)) {
@@ -206,7 +212,7 @@ export default {
         if (value.schedule.weekly === 'Everyday') {
           // Reset check
           if (!isToday(this.userData.connexionDateLast)) {
-            console.log('no it was another day')
+            // console.log('no it was another day')
             value.checked = false
           }
         }

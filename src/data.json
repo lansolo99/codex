@@ -17,7 +17,7 @@
       "occupation": "Webdesigner",
       "stats": {
         "progressToday": null,
-        "progressWeek": [0, 0, 0, 0, 0, 0, 0]
+        "progressWeek": null
       }
     }
   },
@@ -25,7 +25,7 @@
     "id1": {
       "id": "id1",
       "startDate": 1549346534967,
-      "title": "Weekly workouts",
+      "title": "Everyday workout",
       "description": "Workout session",
       "category": "Fitness",
       "schedule": {
@@ -37,7 +37,9 @@
       "subtasks": [],
       "status": "complete",
       "checked": true,
-      "checkTime": null
+      "checkTime": null,
+      "completion": [1, 1, 0, 0, 0, 0, 0]
+
     }
   },
   "utility": {

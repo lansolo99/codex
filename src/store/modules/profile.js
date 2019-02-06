@@ -6,7 +6,9 @@ export default {
   state: sourceData.profile,
   getters: {
     getProfileData (state) {
-      const retrievedUserData = JSON.parse(JSON.stringify(state.wrapper))
+      const retrievedUserData = {
+        ...state.wrapper
+      }
       return retrievedUserData
     }
   },
@@ -45,7 +47,7 @@ export default {
       isoDay
     }) {
       state.wrapper.stats.progressToday = progressToday
-      state.wrapper.stats.progressWeek[isoDay - 1] = progressToday
+      // state.wrapper.stats.progressWeek[isoDay - 1] = progressToday
     }
   }
 }

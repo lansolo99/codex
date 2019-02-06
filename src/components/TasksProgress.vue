@@ -7,7 +7,7 @@
           height="100%"
           class="taskProgressContainer taskProgressContainer--bars transparent"
         >
-          <span class="label white--text">TODAY (0/0 tasks)</span>
+          <span class="label white--text">TODAY ({{dailyTasksChecked}}/{{dailyTasks.length}} tasks)</span>
 
           <div class="progressbarContainer">
             <v-progress-linear v-model="progressToday" height="15" class="mt-2" width="80%"></v-progress-linear>
@@ -34,7 +34,8 @@
 </template>
 
 <script>
-import { countObjectProperties } from '@/utils'
+// eslint-disable-next-line
+import { countObjectProperties, getIsoDayFromString, getStringFromIsoDay } from '@/utils'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { EventBus } from '@/bus'
 import { getISODay } from 'date-fns'
@@ -44,7 +45,9 @@ export default {
     return {
       progressToday: 0,
       progressWeek: 0,
-      isoDay: null
+      isoDay: null,
+      dailyTasks: null,
+      dailyTasksChecked: null
     }
   },
   computed: {
@@ -72,16 +75,37 @@ export default {
       recordProgress: 'profile/recordProgress'
     }),
     calcDailyCompletion () {
-      const countTasks = countObjectProperties(this.tasks)
-      const taskValue = 100 / countTasks
+      // todayProgress value is based on everydays + all specific days + singles
+
+      // Filter daily tasks from tasks
+      const dailyTasks = Object.values(this.tasks)
+        .filter(task => {
+          return (task.schedule.periodicity === 'Weekly' &&
+        task.schedule.weekly === 'Everyday') ||
+        (task.schedule.periodicity === 'On specific days' &&
+        task.schedule.specificDays.find(v => { return v === getStringFromIsoDay(this.isoDay) })) ||
+        (task.schedule.periodicity === 'Once' &&
+        task.schedule.once === 'single')
+        })
+
+      // UI feed
+      this.dailyTasks = dailyTasks
+
+      // Distribute tasks value
+      const taskValue = 100 / dailyTasks.length
       let total = 0
       let totalSubtasks = 0
 
-      const countCheckedTasks = Object.entries(this.tasks)
+      // Count checked
+      const countCheckedTasks = Object.entries(dailyTasks)
         .filter(v => { return v[1].checked === true })
         .length
 
-      Object.entries(this.tasks)
+      // UI feed
+      this.dailyTasksChecked = countCheckedTasks
+
+      // Distribute subtasks values
+      Object.entries(dailyTasks)
         .filter(v => { return v[1].checked === false && v[1].subtasks.length > 0 })
         .forEach(v => {
           const subtaskLength = v[1].subtasks.length
@@ -93,14 +117,58 @@ export default {
           totalSubtasks += subtaskValue * countSubtasksChecked
         })
 
+      // Set todayProgress value
       total = Math.trunc((taskValue * countCheckedTasks) + totalSubtasks)
       if (isNaN(total)) { total = 0 }
       this.progressToday = total
+
+      // Update store -> profile.stats
       EventBus.$emit('recordProgress')
     },
+
     calcWeeklyCompletion () {
-      const total = Math.trunc(this.userData.stats.progressWeek.reduce((a, b) => a + b) / 7)
+      // Filter weekly tasks from tasks
+      const weeklyTasks = Object.values(this.tasks)
+        .filter(task => {
+          return task.schedule.periodicity === 'Weekly' ||
+                  task.schedule.periodicity === 'On specific days' ||
+        (task.schedule.periodicity === 'Once' && task.schedule.once === 'single')
+        })
+
+      // Distribute tasks value
+      const taskValue = 100 / weeklyTasks.length
+
+      console.log('weeklyTasks = ' + weeklyTasks.length)
+      console.log('taskValue = ' + taskValue)
+
+      let total = 0
+      let totalCompletions = 0
+
+      // Distribute completion slots values
+      Object.entries(weeklyTasks)
+        .forEach(v => {
+          const completionLength = v[1].completion.length
+          console.log('completionLength = ' + completionLength)
+          const completionValue = taskValue / completionLength
+          console.log('completionValue = ' + completionValue)
+
+          const countCompletionsDone = Object.entries(v[1].completion)
+            .filter(completion => { return completion[1] === 1 })
+            .length
+
+          console.log('countCompletionsDone = ' + countCompletionsDone)
+          totalCompletions += completionValue * countCompletionsDone
+          if (totalCompletions > 100) {
+            totalCompletions = 100
+          }
+          console.log('totalCompletions = ' + totalCompletions)
+        })
+      // Set weekProgress value
+      total = Math.trunc(totalCompletions)
+      if (isNaN(total)) { total = 0 }
       this.progressWeek = total
+
+      // Update store -> profile.stats
       EventBus.$emit('recordProgress')
     }
   },
@@ -110,6 +178,8 @@ export default {
   },
   created () {
     // Time
+    this.calcDailyCompletion()
+    this.calcWeeklyCompletion()
     EventBus.$on('recordProgress', () => {
       const currentTime = Date.now()
       const isoDay = getISODay(currentTime)

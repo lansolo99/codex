@@ -59,11 +59,10 @@ export default {
     })
   },
   created () {
-    // Set last connexion date (relay)
+    // Set last connexion from current + update current
     this.userData.connexionDateLast = this.userData.connexionDateCurrent
-    // Update current connexion date
-    const currentTime = Date.now()
-    this.userData.connexionDateCurrent = currentTime
+    this.userData.connexionDateCurrent = Date.now()
+
     this.updateProfile(this.userData)
   }
 }

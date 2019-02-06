@@ -207,7 +207,9 @@ export default {
         },
         subtasks: [],
         status: 'ongoing',
-        checked: false
+        checked: false,
+        checkTime: null,
+        completion: []
       },
       currentTask: 'new'
 
@@ -281,6 +283,9 @@ export default {
     periodicity: function () {
       return this.schedule.active
     },
+    scheduleChange: function () {
+      return this.task.schedule
+    },
     options () {
       return {
         duration: 500,
@@ -292,6 +297,53 @@ export default {
   watch: {
     periodicity () {
       this.task.schedule.periodicity = Object.values(this.schedule.tabs)[this.schedule.active].name
+    },
+    scheduleChange: {
+      handler (val, oldVal) {
+        // Slot Generator
+        const slotsGenerator = n => {
+          this.task.completion = []
+          for (let i = 0; i < n; i++) {
+            this.task.completion.push(0)
+          }
+        }
+        // Case Weekly
+        if (this.task.schedule.periodicity === 'Weekly') {
+          switch (this.task.schedule.weekly) {
+            case 'Everyday' :
+              slotsGenerator(7)
+              break
+            case 'x1 time' :
+              slotsGenerator(1)
+              break
+            case 'x2 times' :
+              slotsGenerator(2)
+              break
+            case 'x3 times' :
+              slotsGenerator(3)
+              break
+            case 'x4 times' :
+              slotsGenerator(4)
+              break
+            case 'x5 times' :
+              slotsGenerator(5)
+              break
+            case 'x6 times' :
+              slotsGenerator(6)
+              break
+          }
+        }
+        if (this.task.schedule.periodicity === 'On specific days') {
+          slotsGenerator(this.task.schedule.specificDays.length)
+        }
+        if (this.task.schedule.periodicity === 'Once') {
+          if (this.task.schedule.once === 'single') {
+            slotsGenerator(1)
+          }
+        }
+        // Single -> 1
+      },
+      deep: true
     },
     storeDialogTask () {
       this.dialogTask = this.storeDialogTask
@@ -342,6 +394,7 @@ export default {
           this.toggleTaskDialog(false)
         } else {
           /// Save
+
           EventBus.$emit('closeOtherPanels', [null, null, null, null])
           this.task.id = 'newTask' + parseInt(Math.random() * 1000)
           this.addNewTask(JSON.parse(JSON.stringify(this.task)))
