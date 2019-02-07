@@ -9,22 +9,29 @@
           <span class="label white--text">Profile level</span>
           <v-layout row wrap>
             <v-flex grow align-self-center>
-              <span class="profileScore white--text">12/100</span>
+              <span class="profileScore white--text">{{setProfileLevel}}/100</span>
             </v-flex>
             <v-flex shrink align-self-center>
-              <v-btn fab small class="primary help mr-0">
-                <v-icon class="icon icon-question_mark white--text"></v-icon>
-              </v-btn>
+              <v-dialog v-model="dialogHelpProfile" max-width="350" content-class="standard-dialog">
+                <v-btn slot="activator" fab small class="primary help mr-0">
+                  <v-icon class="icon icon-question_mark white--text"></v-icon>
+                </v-btn>
+                <v-card>
+                  <v-card-title class="title primary white--text" primary-title>Profile level
+                    <v-icon
+                      right
+                      class="white--text icon icon-delete close"
+                      @click="dialogHelpProfile = false"
+                    ></v-icon>
+                  </v-card-title>
+                  <v-card-text>Your global level is based on the weekly scores achieved during the last 10 weeks. It can go up and down, it depends entirely to your discipline commitment throughout this time.</v-card-text>
+                </v-card>
+              </v-dialog>
             </v-flex>
           </v-layout>
           <v-layout row wrap>
             <v-flex groww>
-              <v-progress-linear
-                v-model="levels.progressLevel"
-                height="15"
-                class="mt-2"
-                width="80%"
-              ></v-progress-linear>
+              <v-progress-linear v-model="setProfileLevel" height="15" class="mt-2" width="80%"></v-progress-linear>
             </v-flex>
           </v-layout>
         </v-container>
@@ -133,7 +140,7 @@
 
 <script>
 
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import Vue from 'vue'
 import VueApexCharts from 'vue-apexcharts'
 Vue.use(VueApexCharts)
@@ -145,7 +152,9 @@ export default {
   },
   data () {
     return {
+      dialogHelpProfile: null,
       levels: {
+        profile: this.setProfileLevel,
         progressLevel: 50,
         trends: {
           gradients: [
@@ -401,10 +410,21 @@ export default {
     }
   },
   computed: {
-    ...mapState('time', ['now']),
-    ...mapGetters('time', {
-      today: 'today'
-    })
+    ...mapGetters({
+      'userData': 'profile/getProfileData'
+    }),
+    setProfileLevel () {
+      let weeksRecord = []
+      console.log('test')
+
+      for (let value of Object.values(this.userData.stats.weeksRecords)) {
+        console.log(value)
+        weeksRecord.push(value)
+      }
+      const total = Math.round(weeksRecord.slice(-10).reduce((a, b) => a + b) / 10)
+
+      return total
+    }
   },
   methods: {
     generateData (count, yrange) {
@@ -514,6 +534,20 @@ export default {
         color: black;
       }
     }
+  }
+}
+.standard-dialog {
+  .v-card__title {
+    font-weight: 600;
+  }
+  .v-card__text {
+    font-size: 16px;
+    font-weight: 400;
+  }
+  .close {
+    position: absolute;
+    top: 20px;
+    right: 15px;
   }
 }
 </style>

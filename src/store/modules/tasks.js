@@ -47,6 +47,11 @@ export default {
       commit
     }, payload) {
       commit('deleteTask', payload)
+    },
+    rebootWeeklyTasksCompletions ({
+      commit
+    }, payload) {
+      commit('rebootWeeklyTasksCompletions', payload)
     }
   },
   mutations: {
@@ -94,6 +99,16 @@ export default {
     },
     deleteTask (state, payload) {
       Vue.delete(state, payload)
+    },
+    rebootWeeklyTasksCompletions (state, payload) {
+      // Filter weekly tasks only (after)
+      for (let value of Object.values(state)) {
+        const newCompletionArray = []
+        value.completion.forEach((v, i) => {
+          newCompletionArray.push(0)
+        })
+        value.completion = newCompletionArray
+      }
     }
   }
 }

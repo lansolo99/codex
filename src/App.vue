@@ -8,8 +8,9 @@
 </template>
 
 <script>
+import { EventBus } from '@/bus'
 import TheNavbar from '@/components/TheNavbar'
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'App',
@@ -22,15 +23,9 @@ export default {
     TheNavbar
   },
   computed: {
-    ...mapState('profile', {
-      profile: state => state
-    }),
     ...mapGetters({
       'userData': 'profile/getProfileData'
-    }),
-    profileUpdate: function () {
-      return this.profile
-    }
+    })
   },
   watch: {
     '$route': {
@@ -44,13 +39,6 @@ export default {
         }
       }
 
-    },
-    profileUpdate: {
-      handler (val, oldVal) {
-        if (this.profile.firstTime === false) {
-        }
-      },
-      deep: true
     }
   },
   methods: {
@@ -58,18 +46,25 @@ export default {
       'updateProfile': 'profile/updateProfile'
     })
   },
+  mounted () {
+    // Update stats
+    EventBus.$emit('recordProgress')
+  },
   created () {
     // Set last connexion from current + update current
     this.userData.connexionDateLast = this.userData.connexionDateCurrent
     this.userData.connexionDateCurrent = Date.now()
-
     this.updateProfile(this.userData)
   }
+
 }
+
 </script>
 
 <style lang="scss">
+// Mixins
 @include btnFabCustom;
+
 #app {
   font-family: "Signika", sans-serif;
   -webkit-font-smoothing: antialiased;

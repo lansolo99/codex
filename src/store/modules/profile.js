@@ -37,12 +37,12 @@ export default {
     recordWeekScore ({
       commit
     }, {
-      isoWeek,
-      total
+      progressWeek,
+      isoWeek
     }) {
       commit('recordWeekScore', {
-        isoWeek,
-        total
+        progressWeek,
+        isoWeek
       })
     }
   },
@@ -60,10 +60,10 @@ export default {
       state.wrapper.stats.progressToday = progressToday
     },
     recordWeekScore (state, {
-      isoWeek,
-      total
+      progressWeek,
+      isoWeek
     }) {
-      Vue.set(state.wrapper.stats.weeksRecords, isoWeek, total)
+      Vue.set(state.wrapper.stats.weeksRecords, isoWeek, progressWeek)
     }
   }
 }

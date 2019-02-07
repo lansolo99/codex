@@ -17,7 +17,11 @@
       "occupation": "Webdesigner",
       "stats": {
         "progressToday": null,
-        "weeksRecords": {}
+        "weeksRecords": {
+          "W0": 0,
+          "W1": 20,
+          "W2": 76
+        }
       }
     }
   },

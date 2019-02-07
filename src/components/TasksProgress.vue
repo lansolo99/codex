@@ -36,9 +36,10 @@
 <script>
 // eslint-disable-next-line
 import { countObjectProperties, getIsoDayFromString, getStringFromIsoDay } from '@/utils'
+// eslint-disable-next-line
+import { getISODay, isThisWeek, getISOWeek } from 'date-fns'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { EventBus } from '@/bus'
-import { getISODay, isThisWeek, getISOWeek } from 'date-fns'
 
 export default {
   data () {
@@ -46,7 +47,8 @@ export default {
       progressToday: 0,
       progressWeek: 0,
       isoDay: null,
-      dailyTasks: null,
+      isoWeek: null,
+      dailyTasks: 0,
       dailyTasksChecked: null
     }
   },
@@ -64,8 +66,7 @@ export default {
   watch: {
     tasksChecked: {
       handler: function (val, oldVal) {
-        this.calcDailyCompletion()
-        this.calcWeeklyCompletion()
+        // EventBus.$emit('recordProgress')
       },
       deep: true
     }
@@ -73,7 +74,8 @@ export default {
   methods: {
     ...mapActions({
       recordProgress: 'profile/recordProgress',
-      recordWeekScore: 'profile/recordWeekScore'
+      recordWeekScore: 'profile/recordWeekScore',
+      rebootWeeklyTasksCompletions: 'tasks/rebootWeeklyTasksCompletions'
     }),
     calcDailyCompletion () {
       // todayProgress value is based on everydays + all specific days + singles
@@ -122,9 +124,6 @@ export default {
       total = Math.trunc((taskValue * countCheckedTasks) + totalSubtasks)
       if (isNaN(total)) { total = 0 }
       this.progressToday = total
-
-      // Update store -> profile.stats
-      EventBus.$emit('recordProgress')
     },
 
     calcWeeklyCompletion () {
@@ -156,36 +155,37 @@ export default {
             totalCompletions = 100
           }
         })
+
       // Set weekProgress value
       total = Math.trunc(totalCompletions)
       if (isNaN(total)) { total = 0 }
       this.progressWeek = total
-
-      // const isoWeek = 'W' + getISOWeek(Date.now())
-      const isoWeek = 'W' + getISOWeek(this.userData.connexionDateLast)
-
-      // Update store -> profile.stats
-      if (!isThisWeek(this.userData.connexionDateLast)) {
-        // Not this week
-        this.recordWeekScore({ isoWeek, total })
-      }
-      EventBus.$emit('recordProgress')
     }
-  },
-  mounted () {
-    this.calcDailyCompletion()
-    this.calcWeeklyCompletion()
+
   },
   created () {
-    // Time
-    this.calcDailyCompletion()
-    this.calcWeeklyCompletion()
+    // RECORD UPDATE EVENT
     EventBus.$on('recordProgress', () => {
-      const currentTime = Date.now()
-      const isoDay = getISODay(currentTime)
+      // Set date
+      this.isoDay = getISODay(Date.now())
+      this.isoWeek = 'W' + getISOWeek(Date.now())
+
+      // Reset weekly tasks completion
+      if (!isThisWeek(this.userData.connexionDateLast)) {
+        // Not this week
+        this.rebootWeeklyTasksCompletions()
+      }
+      // Do calculations
+      this.calcDailyCompletion()
+      this.calcWeeklyCompletion()
+
+      // Update store
       const progressToday = this.progressToday
-      this.isoDay = isoDay
+      const progressWeek = this.progressWeek
+      const isoDay = this.isoDay
+      const isoWeek = this.isoWeek
       this.recordProgress({ progressToday, isoDay })
+      this.recordWeekScore({ progressWeek, isoWeek })
     })
   }
 }

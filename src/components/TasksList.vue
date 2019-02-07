@@ -186,8 +186,9 @@ export default {
         completionValue = 1
       }
 
-      // TasksProgress & store update
+      // Update stats
       EventBus.$emit('recordProgress')
+      // Update checks
       this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId, checkTime, completionIndex, completionValue })
     },
     hasTaskSubtasks (task) {
