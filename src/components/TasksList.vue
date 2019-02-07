@@ -91,7 +91,7 @@
 
 <script>
 // eslint-disable-next-line
-import { isToday, getTime, getISODay, isThisWeek } from 'date-fns'
+import { format, isToday, getTime, getISODay, isThisWeek } from 'date-fns'
 import { mapGetters, mapActions } from 'vuex'
 import { EventBus } from '@/bus'
 
@@ -171,7 +171,7 @@ export default {
     },
     updateCheckedStatus (taskId, checkstatus, taskType, subtaskId) {
       // Task completion update
-      const checkTime = Date.now()
+
       let completionIndex = this.tasks[taskId].completion.indexOf(0)
       let completionValue
       // Everyday
@@ -186,10 +186,11 @@ export default {
         completionValue = 1
       }
 
+      // Update checks
+      const checkTime = Date.now()
+      this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId, checkTime, completionIndex, completionValue })
       // Update stats
       EventBus.$emit('recordProgress')
-      // Update checks
-      this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId, checkTime, completionIndex, completionValue })
     },
     hasTaskSubtasks (task) {
       return task.subtasks.length > 0
@@ -207,33 +208,6 @@ export default {
         }
       })
       EventBus.$emit('closeOtherPanels', managePanel)
-    }
-  },
-  created () {
-    // Time
-    console.log(getTime(new Date(2019, 0, 4, 11, 45, 5, 123)))
-
-    // TASKS RECORD PROCESSING & MIDDLEWARE
-
-    const copiedTasks = JSON.parse(JSON.stringify(this.tasks))
-
-    // All task checks automations & guards
-    for (let [key, value] of Object.entries(copiedTasks)) {
-      // Weekly
-      if (value.schedule.periodicity === 'Weekly') {
-        // Everyday
-        if (value.schedule.weekly === 'Everyday') {
-          // Reset check
-          if (!isToday(this.userData.connexionDateLast)) {
-            // console.log('no it was another day')
-            value.checked = false
-          }
-        }
-      }
-
-      const taskId = JSON.parse(JSON.stringify(key))
-      const task = JSON.parse(JSON.stringify(value))
-      this.updateTask({ taskId, task })
     }
   }
 }

@@ -63,6 +63,7 @@ export default {
       progressWeek,
       isoWeek
     }) {
+      state.wrapper.stats.progressWeek = progressWeek
       Vue.set(state.wrapper.stats.weeksRecords, isoWeek, progressWeek)
     }
   }

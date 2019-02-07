@@ -8,9 +8,11 @@
 </template>
 
 <script>
+// eslint-disable-next-line
+import { format, getISODay, isToday, isThisWeek, getISOWeek, getTime  } from 'date-fns'
 import { EventBus } from '@/bus'
 import TheNavbar from '@/components/TheNavbar'
-import { mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'App',
@@ -23,6 +25,12 @@ export default {
     TheNavbar
   },
   computed: {
+    ...mapState('tasks', {
+      tasks: state => state
+    }),
+    ...mapState('time', {
+      time: state => state
+    }),
     ...mapGetters({
       'userData': 'profile/getProfileData'
     })
@@ -43,7 +51,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      'updateProfile': 'profile/updateProfile'
+      updateProfile: 'profile/updateProfile',
+      updateTask: 'tasks/updateTask',
+      rebootWeeklyTasksCompletions: 'tasks/rebootWeeklyTasksCompletions'
     })
   },
   mounted () {
@@ -51,9 +61,40 @@ export default {
     EventBus.$emit('recordProgress')
   },
   created () {
-    // Set last connexion from current + update current
-    this.userData.connexionDateLast = this.userData.connexionDateCurrent
-    this.userData.connexionDateCurrent = Date.now()
+    // console.log(getTime(new Date(2019, 0, 2, 11, 45, 5, 123)))
+
+    // LAST CONNEXION UPDATES
+    console.log('connexionDateLast before update = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY'))
+
+    // Completions reset
+    if (!isThisWeek(this.userData.connexionDateLast)) {
+      console.log('is not this week')
+      this.rebootWeeklyTasksCompletions()
+    }
+
+    // Check reset & guards
+    const copiedTasks = JSON.parse(JSON.stringify(this.tasks))
+    // Loop
+    for (let [key, value] of Object.entries(copiedTasks)) {
+      // Weekly
+      if (value.schedule.periodicity === 'Weekly') {
+        // Everyday
+        if (value.schedule.weekly === 'Everyday') {
+          // Reset check
+          if (!isToday(this.userData.connexionDateLast)) {
+            value.checked = false
+          }
+        }
+      }
+      console.log('test')
+      const taskId = JSON.parse(JSON.stringify(key))
+      const task = JSON.parse(JSON.stringify(value))
+      this.updateTask({ taskId, task })
+    }
+
+    // Update connexionDateLast
+    this.userData.connexionDateLast = Date.now()
+    console.log('connexionDateLast after update = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY'))
     this.updateProfile(this.userData)
   }
 

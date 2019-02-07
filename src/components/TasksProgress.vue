@@ -7,11 +7,20 @@
           height="100%"
           class="taskProgressContainer taskProgressContainer--bars transparent"
         >
-          <span class="label white--text">TODAY ({{dailyTasksChecked}}/{{dailyTasks.length}} tasks)</span>
+          <span
+            class="label white--text"
+          >TODAY ({{this.userData.stats.dailyTasksChecked}}/{{this.userData.stats.dailyTasks.length}} tasks)</span>
 
           <div class="progressbarContainer">
-            <v-progress-linear v-model="progressToday" height="15" class="mt-2" width="80%"></v-progress-linear>
-            <div class="progressbarContainer__value white--text text-xs-right">{{progressToday}}%</div>
+            <v-progress-linear
+              v-model="this.userData.stats.progressToday"
+              height="15"
+              class="mt-2"
+              width="80%"
+            ></v-progress-linear>
+            <div
+              class="progressbarContainer__value white--text text-xs-right"
+            >{{this.userData.stats.progressToday}}%</div>
           </div>
         </v-card>
       </v-flex>
@@ -21,11 +30,17 @@
           height="100%"
           class="taskProgressContainer taskProgressContainer--bars taskProgressContainer--week transparent"
         >
-          <span class="label white--text">THIS WEEK (day {{isoDay}}/7)</span>
-
+          <span class="label white--text">THIS WEEK (day {{time.isoDay}}/7)</span>
           <div class="progressbarContainer">
-            <v-progress-linear v-model="progressWeek" height="15" class="mt-2" width="80%"></v-progress-linear>
-            <div class="progressbarContainer__value white--text text-xs-right">{{progressWeek}}%</div>
+            <v-progress-linear
+              v-model="this.userData.stats.progressWeek"
+              height="15"
+              class="mt-2"
+              width="80%"
+            ></v-progress-linear>
+            <div
+              class="progressbarContainer__value white--text text-xs-right"
+            >{{this.userData.stats.progressWeek}}%</div>
           </div>
         </v-card>
       </v-flex>
@@ -44,17 +59,18 @@ import { EventBus } from '@/bus'
 export default {
   data () {
     return {
-      progressToday: 0,
-      progressWeek: 0,
-      isoDay: null,
-      isoWeek: null,
-      dailyTasks: 0,
-      dailyTasksChecked: null
+      dailyTasks: null,
+      dailyTasksChecked: null,
+      progressToday: null,
+      progressWeek: null
     }
   },
   computed: {
     ...mapState('tasks', {
       tasks: state => state
+    }),
+    ...mapState('time', {
+      time: state => state
     }),
     ...mapGetters({
       userData: 'profile/getProfileData'
@@ -75,7 +91,8 @@ export default {
     ...mapActions({
       recordProgress: 'profile/recordProgress',
       recordWeekScore: 'profile/recordWeekScore',
-      rebootWeeklyTasksCompletions: 'tasks/rebootWeeklyTasksCompletions'
+      updateTime: 'time/updateTime',
+      updateProfile: 'profile/updateProfile'
     }),
     calcDailyCompletion () {
       // todayProgress value is based on everydays + all specific days + singles
@@ -86,15 +103,16 @@ export default {
           return (task.schedule.periodicity === 'Weekly' &&
         task.schedule.weekly === 'Everyday') ||
         (task.schedule.periodicity === 'On specific days' &&
-        task.schedule.specificDays.find(v => { return v === getStringFromIsoDay(this.isoDay) })) ||
+        task.schedule.specificDays.find(v => { return v === getStringFromIsoDay(this.time.isoDay) })) ||
         (task.schedule.periodicity === 'Once' &&
         task.schedule.once === 'single')
         })
 
       // UI feed
-      this.dailyTasks = dailyTasks
+      this.userData.stats.dailyTasks = dailyTasks
 
       // Distribute tasks value
+
       const taskValue = 100 / dailyTasks.length
       let total = 0
       let totalSubtasks = 0
@@ -105,7 +123,7 @@ export default {
         .length
 
       // UI feed
-      this.dailyTasksChecked = countCheckedTasks
+      this.userData.stats.dailyTasksChecked = countCheckedTasks
 
       // Distribute subtasks values
       Object.entries(dailyTasks)
@@ -164,26 +182,23 @@ export default {
 
   },
   created () {
-    // RECORD UPDATE EVENT
+    // PROGRESS UPDATES
     EventBus.$on('recordProgress', () => {
-      // Set date
-      this.isoDay = getISODay(Date.now())
-      this.isoWeek = 'W' + getISOWeek(Date.now())
+      console.log('recordprogress')
 
-      // Reset weekly tasks completion
-      if (!isThisWeek(this.userData.connexionDateLast)) {
-        // Not this week
-        this.rebootWeeklyTasksCompletions()
-      }
+      // Set date
+      const isoDay = getISODay(Date.now())
+      const isoWeek = getISOWeek(Date.now())
+      this.updateTime({ isoDay, isoWeek })
+
       // Do calculations
       this.calcDailyCompletion()
       this.calcWeeklyCompletion()
 
       // Update store
-      const progressToday = this.progressToday
-      const progressWeek = this.progressWeek
-      const isoDay = this.isoDay
-      const isoWeek = this.isoWeek
+      const progressToday = this.userData.stats.progressToday
+      const progressWeek = this.userData.stats.progressWeek
+
       this.recordProgress({ progressToday, isoDay })
       this.recordWeekScore({ progressWeek, isoWeek })
     })

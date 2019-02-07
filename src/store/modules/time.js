@@ -1,26 +1,35 @@
-import startOfDay from 'date-fns/start_of_day'
+import {
+  getISODay,
+  getISOWeek
+} from 'date-fns'
+
 export default {
   namespaced: true,
   state: {
-    now: new Date()
+    isoDay: getISODay(Date.now()),
+    isoWeek: getISOWeek(Date.now())
   },
-  getters: {
-    today (state) {
-      return startOfDay(state.now)
-    }
-  },
+  getters: {},
   actions: {
-    start ({
+    updateTime ({
       commit
+    }, {
+      isoDay,
+      isoWeek
     }) {
-      setInterval(() => {
-        commit('updateTime')
-      }, 1000 * 60)
+      commit('updateTime', {
+        isoDay,
+        isoWeek
+      })
     }
   },
   mutations: {
-    updateTime (state) {
-      state.now = new Date()
+    updateTime (state, {
+      isoDay,
+      isoWeek
+    }) {
+      state.isoDay = isoDay
+      state.isoWeek = isoWeek
     }
   }
 }

@@ -2,8 +2,7 @@
   "profile": {
     "wrapper": {
       "firstTime": false,
-      "connexionDateLast": 1549273505123,
-      "connexionDateCurrent": 1546595105123,
+      "connexionDateLast": 1546422305123,
       "avatarImage": null,
       "avatarDefault": "man",
       "pseudo": "Lansolo4",
@@ -16,7 +15,10 @@
       "country": "France",
       "occupation": "Webdesigner",
       "stats": {
+        "dailyTasks": null,
+        "dailyTasksChecked": null,
         "progressToday": null,
+        "progressWeek": null,
         "weeksRecords": {
           "W0": 0,
           "W1": 20,
@@ -44,28 +46,5 @@
       "checkTime": 1549273505123,
       "completion": [1, 1, 0, 0, 0, 0, 0]
     }
-  },
-  "utility": {
-    "periodicities": {
-      "id1": {
-        "name": "Weeklies"
-      },
-      "id2": {
-        "name": "Monthlies"
-      },
-      "id3": {
-        "name": "Yearlies"
-      },
-      "id4": {
-        "name": "Singles"
-      }
-    },
-    "currentTask": {
-      "id": "new"
-    },
-    "dialogTask": "false",
-    "dialogProfile": "false",
-    "taskPanels": [null, null, null, null],
-    "reboot": false
   }
 }

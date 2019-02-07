@@ -2,7 +2,29 @@ import sourceData from '@/data'
 
 export default {
   namespaced: true,
-  state: sourceData.utility,
+  state: {
+    periodicities: {
+      id1: {
+        name: 'Weeklies'
+      },
+      id2: {
+        name: 'Monthlies'
+      },
+      id3: {
+        name: 'Yearlies'
+      },
+      id4: {
+        name: 'Singles'
+      }
+    },
+    currentTask: {
+      id: 'new'
+    },
+    dialogTask: 'false',
+    dialogProfile: 'false',
+    taskPanels: [null, null, null, null],
+    reboot: false
+  },
   getters: {},
   actions: {
     toggleTaskDialog ({
