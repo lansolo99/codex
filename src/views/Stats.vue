@@ -35,40 +35,9 @@
             </v-flex>
           </v-layout>
         </v-container>
-        <!-- This week -->
-        <v-container>
-          <span class="label">This week trend (%)</span>
-          <v-sheet color="mb-3" elevation="0">
-            <v-sparkline
-              class="sparkline"
-              :value="levels.trends.thisWeek.value"
-              :labels="levels.trends.thisWeek.labels"
-              :stroke-linecap="'round'"
-              :gradient="levels.trends.gradients[0]"
-              :smooth="true"
-              line-width="4"
-              padding="16"
-              height="75"
-              auto-draw
-            ></v-sparkline>
-            <template slot="label" slot-scope="item">
-              {{ item.value
-              }}
-            </template>
-          </v-sheet>
-          <v-sparkline
-            class="sparkline sparkline--values"
-            :value="levels.trends.thisWeek.value"
-            padding="16"
-            height="10"
-          >
-            <template slot="label" slot-scope="item">{{ item.value }}</template>
-          </v-sparkline>
-        </v-container>
-        <v-divider></v-divider>
         <!-- Last 10 weeks -->
         <v-container>
-          <span class="label">Last 10 weeks trend (%)</span>
+          <span class="label">Last 10 weeks completion history (%)</span>
           <v-sheet color="mb-3" elevation="0">
             <v-sparkline
               class="sparkline sparkline--last10Weeks"
@@ -97,18 +66,18 @@
           </v-sparkline>
         </v-container>
       </v-card>
-      <h6 class="subheader my-3 mt-4 black--text">Daily completions</h6>
+      <h6 class="subheader my-3 mt-4 black--text">Tasks distribution chart</h6>
       <v-card>
         <v-container class="pa-3">
-          <span class="label">Last 10 weeks details</span>
+          <span class="label">Weeklies</span>
           <div class="dailyCompletionsWrapper">
             <apexcharts
+              type="bar"
               width="100%"
-              height="400"
-              type="heatmap"
-              :options="dailyCompletion.chartOptions"
-              :series="dailyCompletion.series"
-            ></apexcharts>
+              :height="taskCompletions.height"
+              :options="taskCompletions.chartOptions"
+              :series="taskCompletions.series"
+            />
           </div>
         </v-container>
       </v-card>
@@ -160,26 +129,6 @@ export default {
           gradients: [
             ['#56E39F', '#FFBA4C']
           ],
-          thisWeek: {
-            labels: [
-              'M',
-              'T',
-              'W',
-              'T',
-              'F',
-              'S',
-              'S'
-            ],
-            value: [
-              20,
-              100,
-              80,
-              100,
-              100,
-              30,
-              100
-            ]
-          },
           last10Weeks: {
             labels: [
               'W11',
@@ -208,85 +157,60 @@ export default {
           }
         }
       },
-      dailyCompletion: {
+      taskCompletions: {
+        height: 500,
+        series: [{
+          data: [400, 430, 448, 470, 540, 580, 690, 1100, 500, 500]
+        }],
         chartOptions: {
           chart: {
+            stackType: '100%',
             toolbar: {
               show: false
-            },
-            animations: {
-              enabled: false,
-              easing: 'easeinout',
-              speed: 800,
-              animateGradually: {
-                enabled: false,
-                delay: 150
-              },
-              dynamicAnimation: {
-                enabled: false,
-                speed: 350
+            }
+          },
+          plotOptions: {
+            bar: {
+              barHeight: '100%',
+              distributed: true,
+              horizontal: true,
+              dataLabels: {
+                position: 'bottom'
               }
             }
           },
+          colors: ['#33b2df', '#546E7A', '#d4526e', '#13d8aa', '#A5978B', '#2b908f', '#f9a3a4', '#90ee7e',
+            '#f48024', '#69d2e7'
+          ],
           dataLabels: {
             enabled: true,
+            textAnchor: 'start',
             style: {
-              fontSize: '14px',
-              fontFamily: 'Signika, sans-serif',
-              colors: ['#ffffff']
-            }
+              colors: ['#fff']
+            },
+            formatter: function (val, opt) {
+              return opt.w.globals.labels[opt.dataPointIndex] + ':  ' + val
+            },
+            offsetX: 0
           },
-          colors: ['#09DE77'],
+          stroke: {
+            width: 0,
+            colors: ['#fff']
+          },
           tooltip: {
             enabled: false
           },
           legend: {
             show: false
           },
-          plotOptions: {
-            heatmap: {
-              radius: 2,
-              enableShades: false,
-              colorScale: {
-                ranges: [{
-                  from: 0,
-                  to: 33,
-                  color: '#EA6060'
-                },
-                {
-                  from: 34,
-                  to: 66,
-                  color: '#FFBA4C'
-                },
-                {
-                  from: 67,
-                  to: 100,
-                  color: '#56E39F'
-                }
-                ]
-              }
-            }
-          },
-          grid: {
-            padding: {
-              top: 0,
-              right: 10,
-              bottom: 0,
-              left: 0
-            }
-          },
           xaxis: {
-            type: 'category',
-            position: 'bottom',
-            categories: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+            show: false,
             labels: {
-              style: {
-                fontSize: '13px',
-                fontFamily: 'Signika, sans-serif',
-                cssClass: 'apexcharts-xaxis-label'
-              }
+              show: false
             },
-            offsetY: '-355',
+            categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
+              'United States', 'China', 'India'
+            ],
             axisBorder: {
               show: false
             },
@@ -295,117 +219,14 @@ export default {
             }
           },
           yaxis: {
+
             labels: {
-              style: {
-                fontSize: '13px',
-                fontFamily: 'Signika, sans-serif',
-                cssClass: 'apexcharts-xaxis-label',
-                padding: {
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  bottom: 0
-                }
-              }
+              show: false
             }
-          },
-          title: {
-            text: ''
           }
-        },
-        series: [{
-          name: 'W10',
-          data: this.generateData(7, {
-            min: 0,
-            max: 90
-          })
-        },
-        {
-          name: 'W9',
-          data: this.generateData(7, {
-            min: 0,
-            max: 90
-          })
-        },
-        {
-          name: 'W8',
-          data: this.generateData(7, {
-            min: 0,
-            max: 90
-          })
-        },
-        {
-          name: 'W7',
-          data: this.generateData(7, {
-            min: 0,
-            max: 90
-          })
-        },
-        {
-          name: 'W6',
-          data: this.generateData(7, {
-            min: 0,
-            max: 90
-          })
-        },
-        {
-          name: 'W5',
-          data: this.generateData(7, {
-            min: 0,
-            max: 90
-          })
-        },
-        {
-          name: 'W4',
-          data: this.generateData(7, {
-            min: 0,
-            max: 90
-          })
-        },
-        {
-          name: 'W3',
-          data: this.generateData(7, {
-            min: 0,
-            max: 90
-          })
-        },
-        {
-          name: 'W2',
-          data: this.generateData(7, {
-            min: 0,
-            max: 90
-          })
-        },
-        {
-          name: 'W1',
-          data: [{
-            x: 'W1',
-            y: 22
-          }, {
-            x: 'W2',
-            y: 29
-          }, {
-            x: 'W3',
-            y: 13
-          }, {
-            x: 'W4',
-            y: 32
-          },
-          {
-            x: 'W4',
-            y: 32
-          },
-          {
-            x: 'W4',
-            y: 50
-          },
-          {
-            x: 'W4',
-            y: 100
-          }
-          ]
+
         }
-        ]
+
       }
     }
   },
@@ -508,18 +329,23 @@ export default {
     }
     // Apexchart
     .dailyCompletionsWrapper {
-      margin-top: 20px;
+      margin-top: 10px;
       overflow: hidden;
-      height: 363px;
+      width: 100%;
       .apexcharts-canvas {
         position: relative;
-        top: -20px;
         margin-top: 5px;
         pointer-events: none;
+      }
+      .apexcharts-inner {
+        transform: translate(0) !important;
       }
       .apexcharts-xaxis-label {
         color: black;
         opacity: 0.6;
+      }
+      .apexcharts-series path {
+        height: 40px !important;
       }
     }
     //Long terms metrics
