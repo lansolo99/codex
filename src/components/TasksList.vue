@@ -172,16 +172,33 @@ export default {
     updateCheckedStatus (taskId, checkstatus, taskType, subtaskId) {
       // Task completion update
 
-      let completionIndex = this.tasks[taskId].completion.indexOf(0)
+      let completionIndex
       let completionValue
-      // Everyday
+      let singleSlotTasks
 
-      // is today : no completionIndex progression
+      if (this.tasks[taskId].completion.length === 1) {
+        singleSlotTasks = true
+      } else {
+        singleSlotTasks = false
+      }
+
+      // Set completion Index regarding task schedule type
+
+      if (singleSlotTasks) {
+        completionIndex = 0
+      } else {
+        completionIndex = this.tasks[taskId].completion.indexOf(0)
+      }
+
+      // If task is checked
       if (this.tasks[taskId].checked === true) {
-        completionValue = 0
+        // If is today : no completionIndex progression
         if (isToday(this.tasks[taskId].checkTime)) {
-          completionIndex = this.tasks[taskId].completion.indexOf(0) - 1
+          if (!singleSlotTasks) {
+            completionIndex = this.tasks[taskId].completion.indexOf(0) - 1
+          }
         }
+        completionValue = 0
       } else {
         completionValue = 1
       }

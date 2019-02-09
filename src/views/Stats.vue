@@ -70,37 +70,6 @@
       <v-card>
         <v-container class="pa-3">
           <span class="label">Weeklies</span>
-          <div class="dailyCompletionsWrapper">
-            <apexcharts
-              type="bar"
-              width="100%"
-              :height="taskCompletions.height"
-              :options="taskCompletions.chartOptions"
-              :series="taskCompletions.series"
-            />
-          </div>
-        </v-container>
-      </v-card>
-      <h6 class="subheader my-3 mt-4 black--text">Long term metrics</h6>
-      <v-card>
-        <v-container class="longTermsMetrics pa-3">
-          <v-layout class="py-2">
-            <v-flex grow>
-              <span class="label">Passed weeks</span>
-            </v-flex>
-            <v-flex shrink>
-              <span class="value">14W</span>
-            </v-flex>
-          </v-layout>
-          <v-divider></v-divider>
-          <v-layout class="py-2">
-            <v-flex grow>
-              <span class="label">Average weekly completion</span>
-            </v-flex>
-            <v-flex shrink>
-              <span class="value">83%</span>
-            </v-flex>
-          </v-layout>
         </v-container>
       </v-card>
     </v-container>
@@ -110,15 +79,9 @@
 <script>
 
 import { mapGetters } from 'vuex'
-import Vue from 'vue'
-import VueApexCharts from 'vue-apexcharts'
-Vue.use(VueApexCharts)
 
 export default {
   name: 'Stats',
-  components: {
-    apexcharts: VueApexCharts
-  },
   data () {
     return {
       dialogHelpProfile: null,
@@ -156,77 +119,6 @@ export default {
             ]
           }
         }
-      },
-      taskCompletions: {
-        height: 500,
-        series: [{
-          data: [400, 430, 448, 470, 540, 580, 690, 1100, 500, 500]
-        }],
-        chartOptions: {
-          chart: {
-            stackType: '100%',
-            toolbar: {
-              show: false
-            }
-          },
-          plotOptions: {
-            bar: {
-              barHeight: '100%',
-              distributed: true,
-              horizontal: true,
-              dataLabels: {
-                position: 'bottom'
-              }
-            }
-          },
-          colors: ['#33b2df', '#546E7A', '#d4526e', '#13d8aa', '#A5978B', '#2b908f', '#f9a3a4', '#90ee7e',
-            '#f48024', '#69d2e7'
-          ],
-          dataLabels: {
-            enabled: true,
-            textAnchor: 'start',
-            style: {
-              colors: ['#fff']
-            },
-            formatter: function (val, opt) {
-              return opt.w.globals.labels[opt.dataPointIndex] + ':  ' + val
-            },
-            offsetX: 0
-          },
-          stroke: {
-            width: 0,
-            colors: ['#fff']
-          },
-          tooltip: {
-            enabled: false
-          },
-          legend: {
-            show: false
-          },
-          xaxis: {
-            show: false,
-            labels: {
-              show: false
-            },
-            categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
-              'United States', 'China', 'India'
-            ],
-            axisBorder: {
-              show: false
-            },
-            axisTicks: {
-              show: false
-            }
-          },
-          yaxis: {
-
-            labels: {
-              show: false
-            }
-          }
-
-        }
-
       }
     }
   },
@@ -236,10 +128,8 @@ export default {
     }),
     setProfileLevel () {
       let weeksRecord = []
-      console.log('test')
 
       for (let value of Object.values(this.userData.stats.weeksRecords)) {
-        console.log(value)
         weeksRecord.push(value)
       }
       const total = Math.round(weeksRecord.slice(-10).reduce((a, b) => a + b) / 10)
@@ -325,39 +215,6 @@ export default {
         path {
           display: none !important;
         }
-      }
-    }
-    // Apexchart
-    .dailyCompletionsWrapper {
-      margin-top: 10px;
-      overflow: hidden;
-      width: 100%;
-      .apexcharts-canvas {
-        position: relative;
-        margin-top: 5px;
-        pointer-events: none;
-      }
-      .apexcharts-inner {
-        transform: translate(0) !important;
-      }
-      .apexcharts-xaxis-label {
-        color: black;
-        opacity: 0.6;
-      }
-      .apexcharts-series path {
-        height: 40px !important;
-      }
-    }
-    //Long terms metrics
-    .longTermsMetrics {
-      .label {
-        font-size: 15px;
-        font-weight: 400;
-      }
-      .value {
-        font-size: 15px;
-        font-weight: 400;
-        color: black;
       }
     }
   }

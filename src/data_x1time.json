@@ -2,7 +2,7 @@
   "profile": {
     "wrapper": {
       "firstTime": false,
-      "connexionDateLast": 1549719677332,
+      "connexionDateLast": 1546422305123,
       "avatarImage": null,
       "avatarDefault": "man",
       "pseudo": "Lansolo4",
@@ -26,5 +26,24 @@
       }
     }
   },
-  "tasks": {}
+  "tasks": {
+    "id1": {
+      "id": "id1",
+      "startDate": 1549346534967,
+      "title": "Everyday workout",
+      "description": "Workout session",
+      "category": "Fitness",
+      "schedule": {
+        "periodicity": "Weekly",
+        "weekly": "x1 time",
+        "specificDays": [],
+        "once": "single"
+      },
+      "subtasks": [],
+      "status": "complete",
+      "checked": true,
+      "checkTime": 1549273505123,
+      "completion": [1]
+    }
+  }
 }

@@ -31,7 +31,6 @@ import { countObjectProperties, getIsoDayFromString, getStringFromIsoDay } from 
 // eslint-disable-next-line
 import { getISODay, isThisWeek, getISOWeek } from 'date-fns'
 import { mapState, mapGetters, mapActions } from 'vuex'
-import { EventBus } from '@/bus'
 
 export default {
   data () {
@@ -61,60 +60,11 @@ export default {
       updateTime: 'time/updateTime',
       recordWeekScore: 'profile/recordWeekScore',
       updateProfile: 'profile/updateProfile'
-    }),
-    calcWeeklyCompletion () {
-      // Filter weekly tasks from tasks
-      const weeklyTasks = Object.values(this.tasks)
-        .filter(task => {
-          return task.schedule.periodicity === 'Weekly' ||
-                  task.schedule.periodicity === 'On specific days' ||
-        (task.schedule.periodicity === 'Once' && task.schedule.once === 'single')
-        })
-
-      // Distribute tasks value
-      const taskValue = 100 / weeklyTasks.length
-
-      let total = 0
-      let totalCompletions = 0
-
-      // Distribute completion slots values
-      Object.entries(weeklyTasks)
-        .forEach(v => {
-          const completionLength = v[1].completion.length
-          const completionValue = taskValue / completionLength
-          const countCompletionsDone = Object.entries(v[1].completion)
-            .filter(completion => { return completion[1] === 1 })
-            .length
-
-          totalCompletions += completionValue * countCompletionsDone
-          if (totalCompletions > 100) {
-            totalCompletions = 100
-          }
-        })
-
-      // Set weekProgress value
-      total = Math.trunc(totalCompletions)
-      if (isNaN(total)) { total = 0 }
-      // Update store
-      const progressWeek = total
-      const isoWeek = this.time.isoWeek
-      this.recordWeekScore({ progressWeek, isoWeek })
-    }
+    })
 
   },
   created () {
-    // PROGRESS UPDATES
-    EventBus.$on('recordProgress', () => {
-      console.log('recordprogress')
 
-      // Set date
-      const isoDay = getISODay(Date.now())
-      const isoWeek = getISOWeek(Date.now())
-      this.updateTime({ isoDay, isoWeek })
-
-      // Do calculations
-      this.calcWeeklyCompletion()
-    })
   }
 }
 </script>
