@@ -1,8 +1,5 @@
 import Vue from 'vue'
 import sourceData from '@/data'
-import {
-  EventBus
-} from '@/bus'
 
 export default {
   namespaced: true,
@@ -101,29 +98,17 @@ export default {
           return v.checked
         })
 
-        const defineTaskId = taskId
-        let defineStatus
-        const defineTaskType = 'task'
-
         if (allSubtasksChecked) {
-          console.log('ALL SUBTASKS CHECKED !!!!!!!')
-
-          defineStatus = true
-          EventBus.$emit('updateCheckedStatus', {
-            defineTaskId,
-            defineStatus,
-            defineTaskType
-          })
+          console.log('all subtask checked')
+          task.checked = true
+          task.completion[completionIndex] = completionValue
+          task.checkTime = checkTime
         } else {
           console.log('not all subtasks checked')
-
-          // defineStatus = false
-          // EventBus.$emit('updateCheckedStatus', {
-          //   defineTaskId,
-          //   defineStatus,
-          //   defineTaskType
-          // })
-          // task.checked = false
+          if (task.checked === true) {
+            task.checked = false
+            task.completion[completionIndex] = 0
+          }
         }
       }
     },

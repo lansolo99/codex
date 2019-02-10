@@ -156,6 +156,10 @@ export default {
             // Reset check if last connexion date is not today
             if (!isTodayCustom) {
               value.checked = false
+              for (let subStatus of Object.values(value.subtasks)) {
+                // console.log('subStatus = ' + subStatus.checked)
+                subStatus.checked = null
+              }
             }
           } else {
             // all x 'n' times
