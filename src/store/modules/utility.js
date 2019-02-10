@@ -1,5 +1,3 @@
-import sourceData from '@/data'
-
 export default {
   namespaced: true,
   state: {
@@ -23,10 +21,16 @@ export default {
     dialogTask: 'false',
     dialogProfile: 'false',
     taskPanels: [null, null, null, null],
-    reboot: false
+    reboot: false,
+    addedDays: 0
   },
   getters: {},
   actions: {
+    incrementAddedDays ({
+      commit
+    }) {
+      commit('incrementAddedDays')
+    },
     toggleTaskDialog ({
       commit
     }, payload) {
@@ -44,6 +48,9 @@ export default {
     }
   },
   mutations: {
+    incrementAddedDays (state) {
+      state.addedDays += 1
+    },
     toggleTaskDialog (state, payload) {
       state.dialogTask = payload
     },

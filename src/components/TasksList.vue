@@ -14,11 +14,15 @@
               class="ma-0 pa-0"
               hide-details
               color="colorGreen"
-              :disabled="hasTaskSubtasks(task)"
+              :disabled="hasTaskSubtasks(task) || task.disabled === true"
               :input-value="task.checked"
               @change="updateCheckedStatus(task.id, $event, 'task')"
             ></v-checkbox>
-            <v-checkbox class="preventExpansion" @click.native.stop v-if="task.subtasks.length > 0"></v-checkbox>
+            <v-checkbox
+              class="preventExpansion"
+              @click.native.stop
+              v-if="task.subtasks.length > 0 || task.disabled === true"
+            ></v-checkbox>
           </v-flex>
           <v-flex shrink class="ml-2">
             <div :class="`category ${task.category}`">
@@ -91,8 +95,8 @@
 
 <script>
 // eslint-disable-next-line
-import { format, isToday, getTime, getISODay, isThisWeek } from 'date-fns'
-import { mapGetters, mapActions } from 'vuex'
+import { format, isToday, isSameDay, getTime, getISODay, isThisWeek, addDays } from 'date-fns'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import { EventBus } from '@/bus'
 
 export default {
@@ -121,6 +125,9 @@ export default {
   },
 
   computed: {
+    ...mapState('utility', {
+      utility: state => state
+    }),
     ...mapGetters({
       'userData': 'profile/getProfileData'
     }),
@@ -171,30 +178,34 @@ export default {
     },
     updateCheckedStatus (taskId, checkstatus, taskType, subtaskId) {
       // Task completion update
+      console.log('updateCheckedStatus')
 
       let completionIndex
       let completionValue
-      let singleSlotTasks
+      let singleSlotOrFullTasks
 
-      if (this.tasks[taskId].completion.length === 1) {
-        singleSlotTasks = true
+      // Is task single slot or full task ?
+      if (this.tasks[taskId].completion.length === 1 || (this.tasks[taskId].completion.length > 1 && !this.tasks[taskId].completion.includes(0))) {
+        singleSlotOrFullTasks = true
       } else {
-        singleSlotTasks = false
+        singleSlotOrFullTasks = false
       }
 
-      // Set completion Index regarding task schedule type
-
-      if (singleSlotTasks) {
-        completionIndex = 0
+      // CASE 1 : NOT CHECKED
+      // Set completion Index regarding the slots number or already checked slots
+      if (singleSlotOrFullTasks) {
+        completionIndex = this.tasks[taskId].completion.length - 1
       } else {
+        console.log('case not checked and not full')
         completionIndex = this.tasks[taskId].completion.indexOf(0)
+        console.log('completionIndex = ' + completionIndex)// undefined
       }
 
-      // If task is checked
+      // CASE 2 : CHECKED
       if (this.tasks[taskId].checked === true) {
         // If is today : no completionIndex progression
         if (isToday(this.tasks[taskId].checkTime)) {
-          if (!singleSlotTasks) {
+          if (!singleSlotOrFullTasks) {
             completionIndex = this.tasks[taskId].completion.indexOf(0) - 1
           }
         }
@@ -226,6 +237,14 @@ export default {
       })
       EventBus.$emit('closeOtherPanels', managePanel)
     }
+  },
+  mounted () {
+    EventBus.$on('updateCheckedStatus', ({ defineTaskId, defineStatus, defineTaskType }) => {
+      this.updateCheckedStatus(defineTaskId, defineStatus, defineTaskType)
+    })
+  },
+  created () {
+
   }
 }
 </script>

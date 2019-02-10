@@ -209,7 +209,8 @@ export default {
         status: 'ongoing',
         checked: false,
         checkTime: null,
-        completion: []
+        completion: [],
+        disabled: null
       },
       currentTask: 'new'
 
@@ -401,6 +402,7 @@ export default {
           this.disableFirstTimeUser()
           this.toggleTaskDialog(false)
         }
+        EventBus.$emit('globalUpdate')
       }
     },
     handleCancel () {

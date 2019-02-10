@@ -17,7 +17,8 @@
 
 <script>
 // eslint-disable-next-line
-import { format, getISODay, isToday, isSameDay, isThisWeek, isSameWeek, getISOWeek, getTime, addDays  } from 'date-fns'
+import { format, getISODay, isToday, isSameDay, isThisWeek, isSameWeek, getISOWeek, getTime, addDays } from 'date-fns'
+import { getStringFromIsoDay } from '@/utils'
 import { EventBus } from '@/bus'
 import TheNavbar from '@/components/TheNavbar'
 import { mapState, mapGetters, mapActions } from 'vuex'
@@ -28,8 +29,7 @@ export default {
     return {
       toolbarConf: 'toolbarTasks',
       isoDay: null,
-      isoWeek: null,
-      addedDays: 0
+      isoWeek: null
     }
   },
   components: {
@@ -41,6 +41,9 @@ export default {
     }),
     ...mapState('time', {
       time: state => state
+    }),
+    ...mapState('utility', {
+      utility: state => state
     }),
     ...mapGetters({
       'userData': 'profile/getProfileData'
@@ -66,6 +69,7 @@ export default {
       recordWeekScore: 'profile/recordWeekScore',
       updateTime: 'time/updateTime',
       updateTask: 'tasks/updateTask',
+      incrementAddedDays: 'utility/incrementAddedDays',
       rebootWeeklyTasksCompletions: 'tasks/rebootWeeklyTasksCompletions'
     }),
     calcWeeklyCompletion () {
@@ -73,8 +77,7 @@ export default {
       const weeklyTasks = Object.values(this.tasks)
         .filter(task => {
           return task.schedule.periodicity === 'Weekly' ||
-                  task.schedule.periodicity === 'On specific days' ||
-        (task.schedule.periodicity === 'Once' && task.schedule.once === 'single')
+                  task.schedule.periodicity === 'On specific days'
         })
 
       // Distribute tasks value
@@ -107,17 +110,23 @@ export default {
       this.recordWeekScore({ progressWeek, isoWeek })
     },
     globalUpdate (addedDays = 0) {
+      // console.log('addedDays = ' + addedDays)
+
       // GLOBAL UPDATES
-      console.log('last connexion date = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY'))
+      // console.log('last connexion date = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY'))
+
+      // console.log('is same week compare date  1 : ' + format(addDays(new Date(this.userData.connexionDateLast), 1), 'DD/MM/YYYY'))
+      // console.log('is same week compare date  2 : ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY'))
+      // console.log('today is :' + format(addDays(new Date(Date.now()), addedDays), 'DD/MM/YYYY'))
 
       const isThisWeekCustom = isSameWeek(
-        addDays(new Date(this.userData.connexionDateLast), addedDays),
+        addDays(new Date(Date.now()), addedDays),
         new Date(this.userData.connexionDateLast),
         { weekStartsOn: 1 }
       )
 
       const isTodayCustom = isSameDay(
-        addDays(new Date(this.userData.connexionDateLast), addedDays),
+        addDays(new Date(Date.now()), addedDays),
         new Date(this.userData.connexionDateLast)
       )
 
@@ -131,65 +140,103 @@ export default {
       const copiedTasks = JSON.parse(JSON.stringify(this.tasks))
       // Loop
       for (let [key, value] of Object.entries(copiedTasks)) {
-      // Weekly
-        if (value.schedule.periodicity === 'Weekly') {
-        // Reset checks if a new week has started
+        // Weeklies commons
+        if (value.schedule.periodicity === 'Weekly' ||
+        value.schedule.periodicity === 'On specific days') {
+          // Reset checks if a new week has started
           if (!isThisWeekCustom) {
             value.checked = false
           }
-          // Everyday
+        }
+
+        // Weekly
+        if (value.schedule.periodicity === 'Weekly') {
           if (value.schedule.weekly === 'Everyday') {
-          // Reset check
+          // Everyday
+            // Reset check if last connexion date is not today
             if (!isTodayCustom) {
               value.checked = false
             }
+          } else {
+            // all x 'n' times
+            // Reset check if last connexion date is not today & if there are free slots remaining
+            if (!isTodayCustom) {
+              if (value.completion.includes(0)) {
+                value.checked = false
+              }
+            }
           }
-          if (value.schedule.weekly === 'x1 time') {
-          // Do nothing
-          }
-        // if(value.schedule.weekly === 'x1 time'){
-        //   // Do nothing
-        // }
         }
+
+        // Specific days
+        if (value.schedule.periodicity === 'On specific days') {
+          // Disable check if today is not one a the specified days
+          value.disabled = true
+          // console.log(getStringFromIsoDay(isoDay));
+
+          const isoDay = getISODay(addDays(new Date(Date.now()), this.utility.addedDays))
+
+          // console.log('is today is a day specified ? = ' + value.schedule.specificDays.indexOf(getStringFromIsoDay(isoDay)))
+
+          if (value.schedule.specificDays.indexOf(getStringFromIsoDay(isoDay)) >= 0) {
+            // Enable check
+            value.disabled = false
+          }
+
+          // Reset check if last connexion date is not today & if there are free slots remaining
+          if (!isTodayCustom) {
+            if (value.completion.includes(0)) {
+              value.checked = false
+            }
+          }
+        }
+
         const taskId = JSON.parse(JSON.stringify(key))
         const task = JSON.parse(JSON.stringify(value))
         this.updateTask({ taskId, task })
       }
 
       // Update connexionDateLast
-      this.userData.connexionDateLast = addDays(new Date(Date.now()), this.addedDays)
+      this.userData.connexionDateLast = addDays(new Date(Date.now()), addedDays)
 
       this.updateProfile(this.userData)
-      console.log('updated last connexion date = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY') + 'updated')
+      // console.log('updated last connexion date = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY') + 'updated')
 
       EventBus.$emit('recordProgress')
     },
     simulateNextDay () {
       console.log('NEXT DAY')
-      this.addedDays += 1
-      this.globalUpdate(1)
+      this.incrementAddedDays()
+      this.globalUpdate(this.utility.addedDays)
     }
   },
   mounted () {
   },
   created () {
     // console.log(getTime(new Date(2019, 0, 2, 11, 45, 5, 123)))
-    // PROGRESS UPDATES
+
+    // GLOBAL UPDATES EVENT
+    EventBus.$on('globalUpdate', () => {
+      this.globalUpdate(this.utility.addedDays)
+    })
+
+    // RECORD PROGRESS EVENT
     EventBus.$on('recordProgress', () => {
-      console.log('recordProgress')
+      // console.log('recordProgress')
 
       // Set date
-      const isoDay = getISODay(addDays(new Date(Date.now()), this.addedDays))
-      console.log('isoDay =' + isoDay)
+      const isoDay = getISODay(addDays(new Date(Date.now()), this.utility.addedDays))
+      // console.log('isoDay =' + isoDay)
 
-      const isoWeek = getISOWeek(addDays(new Date(Date.now()), this.addedDays))
-      console.log('isoweek =' + isoWeek)
+      const isoWeek = getISOWeek(addDays(new Date(Date.now()), this.utility.addedDays))
+      /// console.log('isoweek =' + isoWeek)
       this.updateTime({ isoDay, isoWeek })
 
       // Do calculations
       this.calcWeeklyCompletion()
     })
 
+    // INITIAL CALL
     this.globalUpdate()
   }
 
