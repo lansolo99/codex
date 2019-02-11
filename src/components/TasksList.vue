@@ -53,6 +53,7 @@
                   class="ma-0 pa-0"
                   color="colorGreen"
                   hide-details
+                  :disabled="task.disabled === true"
                   :input-value="subtask.checked"
                   @change="updateCheckedStatus(task.id, $event, 'subtask',subtask.id)"
                 ></v-checkbox>

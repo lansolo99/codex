@@ -110,14 +110,8 @@ export default {
       this.recordWeekScore({ progressWeek, isoWeek })
     },
     globalUpdate (addedDays = 0) {
-      // console.log('addedDays = ' + addedDays)
-
       // GLOBAL UPDATES
       // console.log('last connexion date = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY'))
-
-      // console.log('is same week compare date  1 : ' + format(addDays(new Date(this.userData.connexionDateLast), 1), 'DD/MM/YYYY'))
-      // console.log('is same week compare date  2 : ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY'))
-      // console.log('today is :' + format(addDays(new Date(Date.now()), addedDays), 'DD/MM/YYYY'))
 
       const isThisWeekCustom = isSameWeek(
         addDays(new Date(Date.now()), addedDays),
@@ -157,7 +151,6 @@ export default {
             if (!isTodayCustom) {
               value.checked = false
               for (let subStatus of Object.values(value.subtasks)) {
-                // console.log('subStatus = ' + subStatus.checked)
                 subStatus.checked = null
               }
             }
@@ -167,6 +160,9 @@ export default {
             if (!isTodayCustom) {
               if (value.completion.includes(0)) {
                 value.checked = false
+                for (let subStatus of Object.values(value.subtasks)) {
+                  subStatus.checked = null
+                }
               }
             }
           }
@@ -174,16 +170,12 @@ export default {
 
         // Specific days
         if (value.schedule.periodicity === 'On specific days') {
-          // Disable check if today is not one a the specified days
+          // Disable check by default
           value.disabled = true
-          // console.log(getStringFromIsoDay(isoDay));
 
           const isoDay = getISODay(addDays(new Date(Date.now()), this.utility.addedDays))
-
-          // console.log('is today is a day specified ? = ' + value.schedule.specificDays.indexOf(getStringFromIsoDay(isoDay)))
-
           if (value.schedule.specificDays.indexOf(getStringFromIsoDay(isoDay)) >= 0) {
-            // Enable check
+            // Enable check if today is a specified day
             value.disabled = false
           }
 
@@ -191,6 +183,9 @@ export default {
           if (!isTodayCustom) {
             if (value.completion.includes(0)) {
               value.checked = false
+              for (let subStatus of Object.values(value.subtasks)) {
+                subStatus.checked = null
+              }
             }
           }
         }
