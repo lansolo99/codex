@@ -11,6 +11,27 @@
     }
 }
 
+@mixin strikethrough {
+    &:after {
+        content: " ";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 0%;
+        height: 1px;
+        background: black;
+        transition: all 0.3s ease-out;
+    }
+
+    &.completed {
+        opacity: 0.5;
+
+        &:after {
+            width: 100%;
+        }
+    }
+}
+
 // Progress bars
 @mixin progress-linear-fill {
     background-color: $color-green !important;

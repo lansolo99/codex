@@ -8,7 +8,7 @@
       <v-expansion-panel-content v-for="(task,key) in filterTasks(periodicity.name)" :key="key">
         <!-- Bar part -->
         <v-layout slot="header" row wrap :class="`task ${task.status} mr-2 px-0`">
-          <v-flex shrink>
+          <v-flex shrink class="checkboxFlexContainer">
             <v-checkbox
               @click.native.stop
               class="ma-0 pa-0"
@@ -31,7 +31,7 @@
           </v-flex>
 
           <v-flex grow class="pt-1 pl-2 pr-3 pb-1 body-1">
-            <span class="custom-title">{{task.title}}</span>
+            <span :class="['custom-title', { completed: task.checked } ]">{{task.title}}</span>
           </v-flex>
 
           <v-spacer></v-spacer>
@@ -47,7 +47,7 @@
               wrap
               :class="`task ${task.status}`"
             >
-              <v-flex shrink class="pt-1">
+              <v-flex shrink class="pt-1 checkboxFlexContainer">
                 <v-checkbox
                   @click.native.stop
                   class="ma-0 pa-0"
@@ -57,12 +57,17 @@
                   :input-value="subtask.checked"
                   @change="updateCheckedStatus(task.id, $event, 'subtask',subtask.id)"
                 ></v-checkbox>
+                <v-checkbox
+                  class="preventExpansion"
+                  @click.native.stop
+                  v-if="task.disabled === true"
+                ></v-checkbox>
               </v-flex>
               <v-flex shrink class="pt-2 ml-2 icon-slot">
                 <v-icon class="icon icon-arrow_return"></v-icon>
               </v-flex>
               <v-flex grow class="pa-1 pt-2 pl-3 pr-3 body-1">
-                <span class="name">{{subtask.name}}</span>
+                <span :class="['name', { completed: subtask.checked } ]">{{subtask.name}}</span>
               </v-flex>
             </v-layout>
           </v-flex>
@@ -259,6 +264,25 @@ export default {
   .task {
     .custom-title {
       font-size: 16px;
+      position: relative;
+      transition: all 0.3s ease-out;
+      @include strikethrough;
+      // &:after {
+      //   content: " ";
+      //   position: absolute;
+      //   top: 50%;
+      //   left: 0;
+      //   width: 0%;
+      //   height: 1px;
+      //   background: black;
+      //   transition: all 0.3s ease-out;
+      // }
+      // &.completed {
+      //   opacity: 0.5;
+      //   &:after {
+      //     width: 100%;
+      //   }
+      // }
     }
 
     .createTaskCard {
@@ -298,10 +322,17 @@ export default {
       }
     }
     // Invisible checkboxes (prevent openning panel at click when disabled state)
+    .checkboxFlexContainer {
+      position: relative;
+    }
     .preventExpansion {
       position: absolute;
-      top: -3px;
-      left: 24px;
+      // width: 100px;
+      // height: 100px;
+      background-color: green;
+      top: -19px;
+      //height: 38px;
+      // left: 24px;
       opacity: 0;
     }
   }
@@ -336,8 +367,11 @@ export default {
     .name {
       font-weight: 300;
       font-size: 16px;
-      display: block;
+      //display: block;
       margin-left: 2px;
+      position: relative;
+      transition: all 0.3s ease-out;
+      @include strikethrough;
     }
   }
 }
