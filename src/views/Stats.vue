@@ -41,8 +41,8 @@
           <v-sheet color="mb-3" elevation="0">
             <v-sparkline
               class="sparkline sparkline--last10Weeks"
-              :value="levels.trends. last10Weeks.value"
-              :labels="levels.trends. last10Weeks.labels"
+              :labels="setRecordWeeksLabels"
+              :value="setRecordWeeksValues"
               :stroke-linecap="'round'"
               :gradient="levels.trends.gradients[0]"
               :smooth="true"
@@ -58,7 +58,7 @@
           </v-sheet>
           <v-sparkline
             class="sparkline sparkline--values"
-            :value="levels.trends.last10Weeks.value"
+            :value="setRecordWeeksValues"
             padding="16"
             height="10"
           >
@@ -86,38 +86,10 @@ export default {
     return {
       dialogHelpProfile: null,
       levels: {
-        profile: this.setProfileLevel,
-        progressLevel: 50,
         trends: {
           gradients: [
             ['#56E39F', '#FFBA4C']
-          ],
-          last10Weeks: {
-            labels: [
-              'W11',
-              'W11',
-              'W11',
-              'W11',
-              'W11',
-              'W11',
-              'W11',
-              'W11',
-              'W11',
-              'W11'
-            ],
-            value: [
-              20,
-              100,
-              80,
-              100,
-              100,
-              30,
-              100,
-              80,
-              40,
-              100
-            ]
-          }
+          ]
         }
       }
     }
@@ -128,33 +100,28 @@ export default {
     }),
     setProfileLevel () {
       let weeksRecord = []
-
       for (let value of Object.values(this.userData.stats.weeksRecords)) {
         weeksRecord.push(value)
       }
       const total = Math.round(weeksRecord.slice(-10).reduce((a, b) => a + b) / 10)
-
       return total
-    }
-  },
-  methods: {
-    generateData (count, yrange) {
-      var i = 0
-      var series = []
-      while (i < count) {
-        var x = (i + 1).toString()
-        var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min
+    },
+    setRecordWeeksLabels () {
+      let labels = []
 
-        series.push({
-          x: x,
-          y: y
-        })
-        i++
+      for (let label of Object.keys(this.userData.stats.weeksRecords)) {
+        labels.push(label)
       }
-      return series
+      return labels.slice((labels.length - 10), labels.length)
+    },
+    setRecordWeeksValues () {
+      let values = []
+      for (let value of Object.values(this.userData.stats.weeksRecords)) {
+        values.push(value)
+      }
+      return values.slice((values.length - 10), values.length)
     }
   }
-
 }
 </script>
 
