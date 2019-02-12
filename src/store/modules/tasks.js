@@ -70,15 +70,17 @@ export default {
     }) {
       state[taskId] = task
     },
-    setCheckedStatus (state, {
-      taskId,
-      checkstatus,
-      taskType,
-      subtaskId,
-      checkTime,
-      completionIndex,
-      completionValue
-    }) {
+    setCheckedStatus (
+      state, {
+        taskId,
+        checkstatus,
+        taskType,
+        subtaskId,
+        checkTime,
+        completionIndex,
+        completionValue
+      }
+    ) {
       const task = state[taskId]
       console.log('completionValue' + completionValue)
 
@@ -99,9 +101,11 @@ export default {
         subtask.checked = checkstatus
         subtask.checkTime = checkTime
         // set checked status for parent task
-        const allSubtasksChecked = Object.values(state[taskId].subtasks).every(v => {
-          return v.checked
-        })
+        const allSubtasksChecked = Object.values(state[taskId].subtasks).every(
+          v => {
+            return v.checked
+          }
+        )
 
         if (allSubtasksChecked) {
           console.log('all subtask checked')
@@ -131,13 +135,31 @@ export default {
       }
     },
     updateTasksCompletionsHistory (state, payload) {
-      for (let task of Object.values(state)) {
-        console.log('task completion = ' + task.completion)
-        console.log('payload = ' + payload)
-        const currentTaskCompletion = 'W' + payload
-        const formattedIsoWeek = 'W' + payload
+      // const task = state[taskId]
+
+      // const currentTaskCompletion = [0, 0, 0]
+      // const formattedIsoWeek = 'W' + payload
+      console.log('updateTasksCompletionsHistory')
+
+      // Vue.set(state, formattedIsoWeek, currentTaskCompletion)
+      Object.values(state).forEach(task => {
+        console.log(task)
+        let currentTaskCompletion = task.completion
+        let formattedIsoWeek = 'W' + payload
+
         Vue.set(task.completionsHistory, formattedIsoWeek, currentTaskCompletion)
-      }
+      })
+
+      // for (let task of Object.values(state)) {
+      //   console.log('task completion = ' + task.completion)
+      //   console.log('payload = ' + payload)
+      //   console.log('task.completionHistory' + task.completionsHistory)
+
+      //   const currentTaskCompletion = task.completion
+      //   const formattedIsoWeek = 'W' + payload
+
+      //   Vue.set(task.completionsHistory, 'test', currentTaskCompletion)
+      // }
     }
   }
 }
