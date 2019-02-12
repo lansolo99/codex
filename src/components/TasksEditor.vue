@@ -210,7 +210,8 @@ export default {
         checked: false,
         checkTime: null,
         completion: [],
-        disabled: null
+        disabled: null,
+        completionsHistory: null
       },
       currentTask: 'new'
 

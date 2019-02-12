@@ -68,9 +68,10 @@ export default {
       updateProfile: 'profile/updateProfile',
       recordWeekScore: 'profile/recordWeekScore',
       updateTime: 'time/updateTime',
-      updateTask: 'tasks/updateTask',
       incrementAddedDays: 'utility/incrementAddedDays',
-      rebootWeeklyTasksCompletions: 'tasks/rebootWeeklyTasksCompletions'
+      updateTask: 'tasks/updateTask',
+      rebootWeeklyTasksCompletions: 'tasks/rebootWeeklyTasksCompletions',
+      updateTasksCompletionsHistory: 'tasks/updateTasksCompletionsHistory'
     }),
     calcWeeklyCompletion () {
       // Filter weekly tasks from tasks
@@ -127,6 +128,8 @@ export default {
       // Week completions reset
       if (!isThisWeekCustom) {
         console.log('not the same week')
+        const isoWeek = this.time.isoWeek
+        this.updateTasksCompletionsHistory(isoWeek)
         this.rebootWeeklyTasksCompletions()
       }
 

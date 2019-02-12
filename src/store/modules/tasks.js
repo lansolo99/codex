@@ -52,6 +52,11 @@ export default {
       commit
     }, payload) {
       commit('rebootWeeklyTasksCompletions', payload)
+    },
+    updateTasksCompletionsHistory ({
+      commit
+    }, payload) {
+      commit('updateTasksCompletionsHistory', payload)
     }
   },
   mutations: {
@@ -123,6 +128,15 @@ export default {
           newCompletionArray.push(0)
         })
         value.completion = newCompletionArray
+      }
+    },
+    updateTasksCompletionsHistory (state, payload) {
+      for (let task of Object.values(state)) {
+        console.log('task completion = ' + task.completion)
+        console.log('payload = ' + payload)
+        const currentTaskCompletion = 'W' + payload
+        const formattedIsoWeek = 'W' + payload
+        Vue.set(task.completionsHistory, formattedIsoWeek, currentTaskCompletion)
       }
     }
   }
