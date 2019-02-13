@@ -24,20 +24,20 @@
                       @click="dialogHelpProfile = false"
                     ></v-icon>
                   </v-card-title>
-                  <v-card-text>Your global level is based on the weekly scores achieved during the last 10 weeks. It can go up and down, it depends entirely to your discipline commitment throughout this time.</v-card-text>
+                  <v-card-text>Your global level is your average weekly score based on your last 10 weeks scores. It can go up and down, it depends entirely to your discipline commitment throughout this time.</v-card-text>
                 </v-card>
               </v-dialog>
             </v-flex>
           </v-layout>
           <v-layout row wrap>
-            <v-flex groww>
+            <v-flex grow>
               <v-progress-linear v-model="setProfileLevel" height="15" class="mt-2" width="80%"></v-progress-linear>
             </v-flex>
           </v-layout>
         </v-container>
         <!-- Last 10 weeks -->
         <v-container>
-          <span class="label">Last 10 weeks completion history (%)</span>
+          <span class="label">Passed weeks completions (%)</span>
           <v-sheet color="mb-3" elevation="0">
             <v-sparkline
               class="sparkline sparkline--last10Weeks"
@@ -66,19 +66,65 @@
           </v-sparkline>
         </v-container>
       </v-card>
-      <h6 class="subheader my-3 mt-4 black--text">Tasks distribution chart</h6>
-      <v-card>
-        <v-container class="pa-3">
-          <span class="label">Weeklies</span>
-        </v-container>
-      </v-card>
+      <div class="tasks_charts">
+        <h6 class="subheader my-3 mt-4 black--text">Tasks distribution chart</h6>
+        <v-expansion-panel>
+          <v-expansion-panel-content
+            v-for="(task,key) in tasks"
+            :key="key"
+            class="secondary white--text"
+          >
+            <!-- Bar part -->
+            <div slot="header">
+              <v-layout row wrap :class="`task ${task.status} mr-2 px-0`">
+                <v-flex shrink class="ml-2">
+                  <div :class="`category ${task.category}`">
+                    <img
+                      :src="require(`@/assets/images/icons_categories/${task.category}.svg`)"
+                      alt
+                    >
+                  </div>
+                </v-flex>
+
+                <v-flex grow class="pt-1 pl-3 pr-3 pb-1 body-1">
+                  <span class="custom-title">{{task.title}}</span>
+                </v-flex>
+                <v-spacer></v-spacer>
+                <v-flex shrink width="0"></v-flex>
+              </v-layout>
+              <v-layout>
+                <v-flex>
+                  <!-- <v-progress-linear v-model="setProfileLevel" height="15" class="mt-2" width="80%"></v-progress-linear> -->
+                  <div class="progressbarContainer">
+                    <v-progress-linear
+                      v-model="setProfileLevel"
+                      height="15"
+                      class="mt-2"
+                      width="80%"
+                    ></v-progress-linear>
+                    <div
+                      class="progressbarContainer__value white--text text-xs-right"
+                    >{{setProfileLevel}}%</div>
+                  </div>
+                </v-flex>
+              </v-layout>
+            </div>
+            <!-- Expanded part -->
+            <v-card class="details blue-grey lighten-5 pa-2">
+              <v-card-text>
+                <h6>Completions history</h6>
+              </v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </div>
     </v-container>
   </div>
 </template>
 
 <script>
 
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Stats',
@@ -95,6 +141,9 @@ export default {
     }
   },
   computed: {
+    ...mapState('tasks', {
+      tasks: state => state
+    }),
     ...mapGetters({
       'userData': 'profile/getProfileData'
     }),
@@ -182,6 +231,53 @@ export default {
         path {
           display: none !important;
         }
+      }
+    }
+  }
+  .tasks_charts {
+    .task {
+      .custom-title {
+        font-size: 16px;
+        position: relative;
+      }
+    }
+    .details {
+      h6 {
+        font-size: 15px !important;
+        font-weight: 600;
+        color: rgba(black, 0.6);
+      }
+      p {
+        font-weight: 300;
+        font-size: 14px;
+      }
+    }
+    //Expansions
+    .v-expansion-panel__header {
+      padding: 12px 12px;
+      align-items: flex-start !important;
+      &__icon {
+        position: relative;
+        top: 5px;
+        color: white !important;
+        .v-icon {
+          color: white !important;
+        }
+      }
+    }
+
+    // Categories
+    .category {
+      width: 34px;
+      height: 100%;
+      color: white;
+      text-align: center;
+
+      img {
+        display: block;
+        width: 34px;
+        position: relative;
+        top: -1px;
       }
     }
   }

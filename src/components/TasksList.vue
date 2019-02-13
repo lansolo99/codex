@@ -110,9 +110,7 @@ export default {
   data () {
     return {
       readonly: false,
-      panel: [null, null, null, null],
-      tooltipsZindexes: 0,
-      tooltips: [false, false, false, false, false]
+      panel: [null, null, null, null]
     }
   },
   props: {
@@ -267,26 +265,6 @@ export default {
       position: relative;
       transition: all 0.3s ease-out;
       @include strikethrough;
-      // &:after {
-      //   content: " ";
-      //   position: absolute;
-      //   top: 50%;
-      //   left: 0;
-      //   width: 0%;
-      //   height: 1px;
-      //   background: black;
-      //   transition: all 0.3s ease-out;
-      // }
-      // &.completed {
-      //   opacity: 0.5;
-      //   &:after {
-      //     width: 100%;
-      //   }
-      // }
-    }
-
-    .createTaskCard {
-      height: 800px;
     }
   }
   .details {
@@ -316,10 +294,6 @@ export default {
       .material-icons {
         font-size: 31px;
       }
-
-      .theme--light.v-icon {
-        //color: rgba(0, 0, 0, 0.35);
-      }
     }
     // Invisible checkboxes (prevent openning panel at click when disabled state)
     .checkboxFlexContainer {
@@ -327,12 +301,8 @@ export default {
     }
     .preventExpansion {
       position: absolute;
-      // width: 100px;
-      // height: 100px;
       background-color: green;
       top: -19px;
-      //height: 38px;
-      // left: 24px;
       opacity: 0;
     }
   }

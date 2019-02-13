@@ -135,31 +135,11 @@ export default {
       }
     },
     updateTasksCompletionsHistory (state, payload) {
-      // const task = state[taskId]
-
-      // const currentTaskCompletion = [0, 0, 0]
-      // const formattedIsoWeek = 'W' + payload
-      console.log('updateTasksCompletionsHistory')
-
-      // Vue.set(state, formattedIsoWeek, currentTaskCompletion)
       Object.values(state).forEach(task => {
-        console.log(task)
         let currentTaskCompletion = task.completion
         let formattedIsoWeek = 'W' + payload
-
         Vue.set(task.completionsHistory, formattedIsoWeek, currentTaskCompletion)
       })
-
-      // for (let task of Object.values(state)) {
-      //   console.log('task completion = ' + task.completion)
-      //   console.log('payload = ' + payload)
-      //   console.log('task.completionHistory' + task.completionsHistory)
-
-      //   const currentTaskCompletion = task.completion
-      //   const formattedIsoWeek = 'W' + payload
-
-      //   Vue.set(task.completionsHistory, 'test', currentTaskCompletion)
-      // }
     }
   }
 }
