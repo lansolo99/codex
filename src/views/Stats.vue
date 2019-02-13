@@ -66,7 +66,9 @@
           </v-sparkline>
         </v-container>
       </v-card>
-      <div class="tasks_charts">
+
+      <!-- Tasks distribution charts -->
+      <div v-if="Object.keys(tasks).length" class="tasks_charts">
         <h6 class="subheader my-3 mt-4 black--text">Tasks distribution chart</h6>
         <v-expansion-panel>
           <v-expansion-panel-content
@@ -75,9 +77,9 @@
             class="secondary white--text"
           >
             <!-- Bar part -->
-            <div slot="header">
+            <div slot="header" class="pb-1">
               <v-layout row wrap :class="`task ${task.status} mr-2 px-0`">
-                <v-flex shrink class="ml-2">
+                <v-flex shrink>
                   <div :class="`category ${task.category}`">
                     <img
                       :src="require(`@/assets/images/icons_categories/${task.category}.svg`)"
@@ -92,21 +94,14 @@
                 <v-spacer></v-spacer>
                 <v-flex shrink width="0"></v-flex>
               </v-layout>
-              <v-layout>
-                <v-flex>
-                  <!-- <v-progress-linear v-model="setProfileLevel" height="15" class="mt-2" width="80%"></v-progress-linear> -->
-                  <div class="progressbarContainer">
-                    <v-progress-linear
-                      v-model="setProfileLevel"
-                      height="15"
-                      class="mt-2"
-                      width="80%"
-                    ></v-progress-linear>
-                    <div
-                      class="progressbarContainer__value white--text text-xs-right"
-                    >{{setProfileLevel}}%</div>
-                  </div>
+              <v-layout class="progressbarContainer">
+                <v-flex grow>
+                  <v-progress-linear value="10" height="15" class="mt-2 mb-0" width="80%"></v-progress-linear>
                 </v-flex>
+                <v-flex
+                  class="progressbarContainer__value white--text text-xs-left pt-1 pl-2 pr-2 pb-0"
+                  shrink
+                >10 / 80 times</v-flex>
               </v-layout>
             </div>
             <!-- Expanded part -->
@@ -240,7 +235,22 @@ export default {
         font-size: 16px;
         position: relative;
       }
+      // Progressbar
     }
+    .progressbarContainer {
+      &__value {
+        min-width: 126px;
+      }
+      .v-progress-linear__bar__determinate {
+        @include progress-linear-fill;
+      }
+      .v-progress-linear__background {
+        @include progress-linear-background;
+        background-color: $color-red !important;
+        box-shadow: inset 0px 0px 2px 1px rgba(0, 0, 0, 0.2);
+      }
+    }
+
     .details {
       h6 {
         font-size: 15px !important;
@@ -253,15 +263,25 @@ export default {
       }
     }
     //Expansions
+
     .v-expansion-panel__header {
       padding: 12px 12px;
       align-items: flex-start !important;
       &__icon {
         position: relative;
         top: 5px;
+        opacity: 0.7;
         color: white !important;
         .v-icon {
           color: white !important;
+        }
+      }
+    }
+
+    .v-expansion-panel__container {
+      &.secondary {
+        &:not(:first-child) {
+          border-top: 1px solid rgba(white, 0.2) !important;
         }
       }
     }
