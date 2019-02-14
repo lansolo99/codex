@@ -302,12 +302,16 @@ export default {
     },
     scheduleChange: {
       handler (val, oldVal) {
+        console.log('scheduleChange')
+
         // Slot Generator
         const slotsGenerator = n => {
           this.task.completion = []
           for (let i = 0; i < n; i++) {
             this.task.completion.push(0)
           }
+          // Slice days if not on start of the week
+          this.task.completion = this.task.completion.slice(0, this.time.isoDay)
         }
         // Case Weekly
         if (this.task.schedule.periodicity === 'Weekly') {
@@ -397,7 +401,6 @@ export default {
           this.toggleTaskDialog(false)
         } else {
           /// Save
-
           EventBus.$emit('closeOtherPanels', [null, null, null, null])
           this.task.id = 'newTask' + parseInt(Math.random() * 1000)
           this.addNewTask(JSON.parse(JSON.stringify(this.task)))

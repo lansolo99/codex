@@ -57,11 +57,13 @@ export default {
       commit
     }, {
       isoWeek,
-      isoDay
+      isoDay,
+      weekChange
     }) {
       commit('updateTasksCompletionsHistory', {
         isoWeek,
-        isoDay
+        isoDay,
+        weekChange
       })
     }
   },
@@ -137,17 +139,55 @@ export default {
     },
     updateTasksCompletionsHistory (state, {
       isoWeek,
-      isoDay
+      isoDay,
+      weekChange
     }) {
       console.log('updateTasksCompletionsHistory')
-      console.log('isoDay =' + isoDay)
 
       Object.values(state).forEach(task => {
-        // let currentTaskCompletion = task.completion
+        console.log('weekChange = ' + weekChange)
+        // Reset completion slot (if ever sliced at init)
+        if (weekChange) {
+          // Slot Generator
+          const slotsGenerator = n => {
+            task.completion = []
+            for (let i = 0; i < n; i++) {
+              task.completion.push(0)
+            }
+          }
+
+          // Case Weekly
+          if (task.schedule.periodicity === 'Weekly') {
+            switch (task.schedule.weekly) {
+              case 'Everyday':
+                slotsGenerator(7)
+                break
+              case 'x1 time':
+                slotsGenerator(1)
+                break
+              case 'x2 times':
+                slotsGenerator(2)
+                break
+              case 'x3 times':
+                slotsGenerator(3)
+                break
+              case 'x4 times':
+                slotsGenerator(4)
+                break
+              case 'x5 times':
+                slotsGenerator(5)
+                break
+              case 'x6 times':
+                slotsGenerator(6)
+                break
+            }
+          }
+          if (task.schedule.periodicity === 'On specific days') {
+            slotsGenerator(task.schedule.specificDays.length)
+          }
+        }
         let currentTaskCompletion = JSON.parse(JSON.stringify(task.completion))
-        // Splice the array regarding the current day (heatmap real time)
-        // currentTaskCompletion = currentTaskCompletion.slice(0, (isoDay))
-        // Fill empty week slots with 2 (heatmap purpose)
+        // Fill empty week slots with "2" (heatmap purpose)
         const fillBlankCompletions = completion => {
           for (let i = completion.length; i < 7; i++) {
             completion.push(2)

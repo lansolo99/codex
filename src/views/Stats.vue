@@ -106,7 +106,7 @@
                 <v-flex
                   class="progressbarContainer__value white--text text-xs-left pt-1 pl-2 pr-2 pb-0"
                   shrink
-                >{{getHeatMapMetrics(task.completionsHistory, 1)}} / {{getHeatMapMetrics(task.completionsHistory, 0)}} times</v-flex>
+                >{{getHeatMapMetrics(task.completionsHistory, 1)}} / {{getHeatMapMetrics(task.completionsHistory,0)}} times</v-flex>
               </v-layout>
             </div>
             <!-- Expanded part -->
@@ -278,18 +278,19 @@ export default {
   },
   methods: {
     calcHeatMapProgress (done, missed) {
-      // total = Math.trunc(totalCompletions)
-      // done 3
-      // missed 10
       const coeff = missed / 100
       const total = done / coeff
       return total
     },
     getHeatMapMetrics (completionsHistory, status) {
       let metric = 0
+
       Object.values(completionsHistory).forEach(value => {
         value.forEach(v => {
-          if (v === status) {
+          if (status === 1 && v === status) {
+            metric += 1
+          }
+          if (status === 0 && (v === 0 || v === 1)) {
             metric += 1
           }
         })
