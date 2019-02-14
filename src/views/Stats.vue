@@ -96,19 +96,38 @@
               </v-layout>
               <v-layout class="progressbarContainer">
                 <v-flex grow>
-                  <v-progress-linear value="10" height="15" class="mt-2 mb-0" width="80%"></v-progress-linear>
+                  <v-progress-linear
+                    :value="calcHeatMapProgress(getHeatMapMetrics(task.completionsHistory, 1),getHeatMapMetrics(task.completionsHistory, 0),)"
+                    height="15"
+                    class="mt-2 mb-0"
+                    width="80%"
+                  ></v-progress-linear>
                 </v-flex>
                 <v-flex
                   class="progressbarContainer__value white--text text-xs-left pt-1 pl-2 pr-2 pb-0"
                   shrink
-                >10 / 80 times</v-flex>
+                >{{getHeatMapMetrics(task.completionsHistory, 1)}} / {{getHeatMapMetrics(task.completionsHistory, 0)}} times</v-flex>
               </v-layout>
             </div>
             <!-- Expanded part -->
-            <v-card class="details blue-grey lighten-5 pa-2">
-              <v-card-text>
-                <h6>Completions history</h6>
-              </v-card-text>
+            <v-card class="details">
+              <v-container>
+                <span class="label">Completions history</span>
+                <div
+                  class="heatmap"
+                  :style="{height: heatmapWrapperHeight(task.completionsHistory) + 'px' }"
+                >
+                  <div class="dailyCompletionsWrapper">
+                    <apexcharts
+                      type="heatmap"
+                      width="100%"
+                      :height="heatmapHeight(task.completionsHistory)"
+                      :series="generateHeatMap(task.completionsHistory)"
+                      :options="dailyCompletion.chartOptions"
+                    ></apexcharts>
+                  </div>
+                </div>
+              </v-container>
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -120,9 +139,15 @@
 <script>
 
 import { mapState, mapGetters } from 'vuex'
+import VueApexCharts from 'vue-apexcharts'
+import Vue from 'vue'
+Vue.use(VueApexCharts)
 
 export default {
   name: 'Stats',
+  components: {
+    apexcharts: VueApexCharts
+  },
   data () {
     return {
       dialogHelpProfile: null,
@@ -131,6 +156,91 @@ export default {
           gradients: [
             ['#56E39F', '#FFBA4C']
           ]
+        }
+      },
+      dailyCompletion: {
+        chartOptions: {
+          chart: {
+            toolbar: {
+              show: false
+            },
+            animations: {
+              enabled: false
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          tooltip: {
+            enabled: false
+          },
+          legend: {
+            show: false
+          },
+          plotOptions: {
+            heatmap: {
+              radius: 2,
+              enableShades: false,
+              colorScale: {
+                ranges: [{
+                  from: 0,
+                  to: 0,
+                  color: '#EA6060'
+                },
+                {
+                  from: 1,
+                  to: 1,
+                  color: '#56E39F'
+                },
+                {
+                  from: 2,
+                  to: 2,
+                  color: '#FFFFFF'
+                }
+                ]
+              }
+            }
+          },
+          grid: {
+            padding: {
+              top: 0,
+              right: 10,
+              bottom: 0,
+              left: 0
+            }
+          },
+          xaxis: {
+            type: 'category',
+            position: 'bottom',
+            categories: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+            labels: {
+              show: false
+            },
+            axisBorder: {
+              show: false
+            },
+            axisTicks: {
+              show: false
+            }
+          },
+          yaxis: {
+            labels: {
+              style: {
+                fontSize: '13px',
+                fontFamily: 'Signika, sans-serif',
+                cssClass: 'apexcharts-xaxis-label',
+                padding: {
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0
+                }
+              }
+            }
+          },
+          title: {
+            text: ''
+          }
         }
       }
     }
@@ -164,6 +274,68 @@ export default {
         values.push(value)
       }
       return values.slice((values.length - 10), values.length)
+    }
+  },
+  methods: {
+    calcHeatMapProgress (done, missed) {
+      // total = Math.trunc(totalCompletions)
+      // done 3
+      // missed 10
+      const coeff = missed / 100
+      const total = done / coeff
+      return total
+    },
+    getHeatMapMetrics (completionsHistory, status) {
+      let metric = 0
+      Object.values(completionsHistory).forEach(value => {
+        value.forEach(v => {
+          if (v === status) {
+            metric += 1
+          }
+        })
+      })
+
+      return metric
+    },
+    heatmapWrapperHeight (completionsHistory) {
+      const weeksNumber = Object.values(completionsHistory).length
+      let totalHeight = (weeksNumber * 40)
+      // use case for 1 or 2 completions lines
+      if (weeksNumber === 1) {
+        totalHeight = 90
+      }
+      if (weeksNumber === 2) {
+        totalHeight = 120
+      }
+
+      totalHeight -= 40
+      return totalHeight
+    },
+    heatmapHeight (completionsHistory) {
+      const weeksNumber = Object.values(completionsHistory).length
+      let totalHeight = (weeksNumber * 45)
+      // use case for 1 or 2 completions lines
+      if (weeksNumber === 1) {
+        totalHeight = 90
+      }
+      if (weeksNumber === 2) {
+        totalHeight = 120
+      }
+      return totalHeight
+    },
+    generateHeatMap (completionsHistory) {
+      let series = []
+
+      for (let [key, value] of Object.entries(completionsHistory)) {
+        // Retrieved week slot
+        const weekSlot = {
+          name: key,
+          data: value
+        }
+        series.push(weekSlot)
+      }
+
+      return series
     }
   }
 }
@@ -298,6 +470,28 @@ export default {
         width: 34px;
         position: relative;
         top: -1px;
+      }
+    }
+    // Apexchart
+    .heatmap {
+      //overflow: hidden;
+    }
+    .dailyCompletionsWrapper {
+      margin-top: 10px;
+      //overflow: hidden;
+
+      .apexcharts-canvas {
+        position: relative;
+        top: -30px;
+        left: -10px;
+        pointer-events: none;
+      }
+      .apexcharts-xaxis-label {
+        color: black;
+        opacity: 0.6;
+      }
+      .apexcharts-yaxis {
+        transform: translate(19px, 3px) !important;
       }
     }
   }

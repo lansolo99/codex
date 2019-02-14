@@ -55,8 +55,14 @@ export default {
     },
     updateTasksCompletionsHistory ({
       commit
-    }, payload) {
-      commit('updateTasksCompletionsHistory', payload)
+    }, {
+      isoWeek,
+      isoDay
+    }) {
+      commit('updateTasksCompletionsHistory', {
+        isoWeek,
+        isoDay
+      })
     }
   },
   mutations: {
@@ -82,19 +88,14 @@ export default {
       }
     ) {
       const task = state[taskId]
-      console.log('completionValue' + completionValue)
 
       if (taskType === 'task') {
         // TASK
-        console.log('tasktype : task')
-
         task.completion[completionIndex] = completionValue
         task.checked = checkstatus
         task.checkTime = checkTime
       } else {
         // SUBTASK
-        console.log('tasktype : subtask')
-
         const subtask = state[taskId].subtasks.find(sub => {
           return sub.id === subtaskId
         })
@@ -134,11 +135,30 @@ export default {
         value.completion = newCompletionArray
       }
     },
-    updateTasksCompletionsHistory (state, payload) {
+    updateTasksCompletionsHistory (state, {
+      isoWeek,
+      isoDay
+    }) {
+      console.log('updateTasksCompletionsHistory')
+      console.log('isoDay =' + isoDay)
+
       Object.values(state).forEach(task => {
-        let currentTaskCompletion = task.completion
-        let formattedIsoWeek = 'W' + payload
-        Vue.set(task.completionsHistory, formattedIsoWeek, currentTaskCompletion)
+        // let currentTaskCompletion = task.completion
+        let currentTaskCompletion = JSON.parse(JSON.stringify(task.completion))
+        // Splice the array regarding the current day (heatmap real time)
+        // currentTaskCompletion = currentTaskCompletion.slice(0, (isoDay))
+        // Fill empty week slots with 2 (heatmap purpose)
+        const fillBlankCompletions = completion => {
+          for (let i = completion.length; i < 7; i++) {
+            completion.push(2)
+          }
+          return completion
+        }
+        const completionFilled = fillBlankCompletions(currentTaskCompletion)
+        console.log('completionFilled = ' + completionFilled)
+
+        let formattedIsoWeek = 'W' + isoWeek
+        Vue.set(task.completionsHistory, formattedIsoWeek, completionFilled)
       })
     }
   }

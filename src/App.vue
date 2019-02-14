@@ -125,12 +125,22 @@ export default {
         new Date(this.userData.connexionDateLast)
       )
 
-      // Week completions reset
+      // Week completions (record in completions history + reset current week)
       if (!isThisWeekCustom) {
         console.log('not the same week')
-        const isoWeek = this.time.isoWeek
-        this.updateTasksCompletionsHistory(isoWeek)
+
+        // const isoWeek = this.time.isoWeek
+        // const isoDay = this.time.isoDay
+        // this.updateTasksCompletionsHistory({ isoWeek, isoDay })
         this.rebootWeeklyTasksCompletions()
+      }
+
+      if (!isTodayCustom) {
+        EventBus.$emit('recordProgress')
+        const isoWeek = this.time.isoWeek
+        const isoDay = this.time.isoDay
+        console.log('isoWeek = ' + isoWeek)
+        this.updateTasksCompletionsHistory({ isoWeek, isoDay })
       }
 
       // Check reset & guards

@@ -249,9 +249,9 @@ export default {
   computed: {
     ...mapState({
       storeDialogTask: state => state.utility.dialogTask,
-      storeCurrentTask: state => state.utility.currentTask.id
-    }
-    ),
+      storeCurrentTask: state => state.utility.currentTask.id,
+      time: state => state.time
+    }),
     titleErrors () {
       const errors = []
       if (!this.$v.task.title.$dirty) return errors
@@ -367,6 +367,7 @@ export default {
       addNewTask: 'tasks/addNewTask',
       updateTask: 'tasks/updateTask',
       deleteTask: 'tasks/deleteTask',
+      updateTasksCompletionsHistory: 'tasks/updateTasksCompletionsHistory',
       toggleTaskDialog: 'utility/toggleTaskDialog',
       setCurrentTask: 'utility/setCurrentTask'
     }),
@@ -404,6 +405,9 @@ export default {
           this.toggleTaskDialog(false)
         }
         EventBus.$emit('globalUpdate')
+        const isoWeek = this.time.isoWeek
+        const isoDay = this.time.isoDay
+        this.updateTasksCompletionsHistory({ isoWeek, isoDay })
       }
     },
     handleCancel () {

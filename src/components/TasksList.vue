@@ -132,6 +132,9 @@ export default {
     ...mapState('utility', {
       utility: state => state
     }),
+    ...mapState('time', {
+      time: state => state
+    }),
     ...mapGetters({
       'userData': 'profile/getProfileData'
     }),
@@ -151,8 +154,10 @@ export default {
     ...mapActions({
       setCheckedStatus: 'tasks/setCheckedStatus',
       updateTask: 'tasks/updateTask',
+      updateTasksCompletionsHistory: 'tasks/updateTasksCompletionsHistory',
       toggleTaskDialog: 'utility/toggleTaskDialog',
       setCurrentTask: 'utility/setCurrentTask'
+
     }),
     filterTasks (periodicityStr) {
       return Object.values(this.tasks)
@@ -223,6 +228,10 @@ export default {
       this.setCheckedStatus({ taskId, checkstatus, taskType, subtaskId, checkTime, completionIndex, completionValue })
       // Update stats
       EventBus.$emit('recordProgress')
+      // Record in completions history
+      const isoWeek = this.time.isoWeek
+      const isoDay = this.time.isoDay
+      this.updateTasksCompletionsHistory({ isoWeek, isoDay })
     },
     hasTaskSubtasks (task) {
       return task.subtasks.length > 0

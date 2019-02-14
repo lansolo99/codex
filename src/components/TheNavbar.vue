@@ -62,9 +62,9 @@ export default {
   &:before {
     content: "";
     position: absolute;
-    top: -81px;
+    top: -51px;
     left: 0;
-    height: 80px;
+    height: 50px;
     width: 100%;
     pointer-events: none;
     background-image: linear-gradient(
