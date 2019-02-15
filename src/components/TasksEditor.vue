@@ -143,6 +143,7 @@ import { validationMixin } from 'vuelidate'
 import { required, requiredIf } from 'vuelidate/lib/validators'
 import { EventBus } from '@/bus'
 import * as easings from 'vuetify/es5/util/easing-patterns'
+import { getStringFromIsoDay } from '@/utils'
 
 export default {
 
@@ -302,16 +303,54 @@ export default {
     },
     scheduleChange: {
       handler (val, oldVal) {
-        console.log('scheduleChange')
+        console.log('scheduleChange, apply slotGenerator')
 
         // Slot Generator
-        const slotsGenerator = n => {
+        const slotsGenerator = (n, specificDays) => {
           this.task.completion = []
           for (let i = 0; i < n; i++) {
             this.task.completion.push(0)
           }
-          // Slice days if not on start of the week
-          this.task.completion = this.task.completion.slice(0, this.time.isoDay)
+          if (!specificDays) {
+            sliceDays()
+          } else {
+            sliceSpecificDays()
+          }
+        }
+
+        // Potentially slice completon array if it's not the start of the week
+
+        // On specific days
+        const sliceSpecificDays = () => {
+          const isoDay = this.time.isoDay
+          const openDays = []
+          const openStringDays = []
+
+          for (let i = isoDay; i <= 7; i++) {
+            openDays.push(i)
+          }
+
+          openDays.forEach(v => {
+            openStringDays.push(getStringFromIsoDay(v))
+          })
+
+          this.task.schedule.specificDays.forEach(v => {
+            if (!openStringDays.includes(v)) {
+              console.log(v + 'is not included in the open String days, no slice')
+              this.task.completion = this.task.completion.slice(1)
+            }
+          })
+        }
+        // Weekly
+        const sliceDays = () => {
+          console.log('slice days')
+
+          const openDays = 7 - (this.time.isoDay - 1)
+          const daysToCut = this.task.completion.length - openDays
+          if (Math.sign(daysToCut) === -1) {
+          } else {
+            this.task.completion = this.task.completion.slice(daysToCut)
+          }
         }
         // Case Weekly
         if (this.task.schedule.periodicity === 'Weekly') {
@@ -340,7 +379,7 @@ export default {
           }
         }
         if (this.task.schedule.periodicity === 'On specific days') {
-          slotsGenerator(this.task.schedule.specificDays.length)
+          slotsGenerator(this.task.schedule.specificDays.length, true)
         }
         if (this.task.schedule.periodicity === 'Once') {
           if (this.task.schedule.once === 'single') {
@@ -378,11 +417,9 @@ export default {
     handleSave () {
       this.$v.task.$touch()
       if (this.$v.task.$invalid) {
-        // Throw form errors
-        console.log('invalid form')
+        // Invalid form, throw form errors
       } else {
         // Validation passed
-        console.log('valid form')
 
         // Time
         const currentTime = Date.now()
