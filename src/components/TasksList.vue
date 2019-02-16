@@ -129,11 +129,9 @@ export default {
   },
 
   computed: {
-    ...mapState('utility', {
-      utility: state => state
-    }),
-    ...mapState('time', {
-      time: state => state
+    ...mapState({
+      utility: state => state.utility,
+      time: state => state.time
     }),
     ...mapGetters({
       'userData': 'profile/getProfileData'
@@ -187,7 +185,6 @@ export default {
     },
     updateCheckedStatus (taskId, checkstatus, taskType, subtaskId) {
       // Task completion update
-      console.log('updateCheckedStatus')
 
       let completionIndex
       let completionValue

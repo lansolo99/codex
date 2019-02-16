@@ -42,11 +42,9 @@ export default {
     }
   },
   computed: {
-    ...mapState('tasks', {
-      tasks: state => state
-    }),
-    ...mapState('time', {
-      time: state => state
+    ...mapState({
+      tasks: state => state.tasks,
+      time: state => state.time
     }),
     ...mapGetters({
       userData: 'profile/getProfileData'

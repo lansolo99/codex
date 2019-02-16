@@ -69,7 +69,7 @@
 
       <!-- Tasks distribution charts -->
       <div v-if="Object.keys(tasks).length" class="tasks_charts">
-        <h6 class="subheader my-3 mt-4 black--text">Tasks distribution chart</h6>
+        <h6 class="subheader my-3 mt-4 black--text">Tasks completions</h6>
         <v-expansion-panel>
           <v-expansion-panel-content
             v-for="(task,key) in tasks"
@@ -246,8 +246,11 @@ export default {
     }
   },
   computed: {
-    ...mapState('tasks', {
-      tasks: state => state
+    ...mapState({
+      storeDialogTask: state => state.utility.dialogTask,
+      storeCurrentTask: state => state.utility.currentTask.id,
+      tasks: state => state.tasks,
+      time: state => state.time
     }),
     ...mapGetters({
       'userData': 'profile/getProfileData'
@@ -300,28 +303,13 @@ export default {
     },
     heatmapWrapperHeight (completionsHistory) {
       const weeksNumber = Object.values(completionsHistory).length
-      let totalHeight = (weeksNumber * 40)
-      // use case for 1 or 2 completions lines
-      if (weeksNumber === 1) {
-        totalHeight = 90
-      }
-      if (weeksNumber === 2) {
-        totalHeight = 120
-      }
-
+      let totalHeight = (weeksNumber * 30) + 60
       totalHeight -= 40
       return totalHeight
     },
     heatmapHeight (completionsHistory) {
       const weeksNumber = Object.values(completionsHistory).length
-      let totalHeight = (weeksNumber * 45)
-      // use case for 1 or 2 completions lines
-      if (weeksNumber === 1) {
-        totalHeight = 90
-      }
-      if (weeksNumber === 2) {
-        totalHeight = 120
-      }
+      let totalHeight = (weeksNumber * 30) + 60
       return totalHeight
     },
     generateHeatMap (completionsHistory) {

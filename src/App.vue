@@ -36,14 +36,10 @@ export default {
     TheNavbar
   },
   computed: {
-    ...mapState('tasks', {
-      tasks: state => state
-    }),
-    ...mapState('time', {
-      time: state => state
-    }),
-    ...mapState('utility', {
-      utility: state => state
+    ...mapState({
+      tasks: state => state.tasks,
+      time: state => state.time,
+      utility: state => state.utility
     }),
     ...mapGetters({
       'userData': 'profile/getProfileData'

@@ -41,14 +41,10 @@ export default {
     }
   },
   computed: {
-    ...mapState('tasks', {
-      tasks: state => state
-    }),
-    ...mapState('utility', {
-      utility: state => state
-    }),
-    ...mapState('profile', {
-      profile: state => state
+    ...mapState({
+      tasks: state => state.tasks,
+      utility: state => state.utility,
+      profile: state => state.profile
     })
   },
   watch: {
