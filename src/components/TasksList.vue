@@ -79,10 +79,10 @@
             <p>{{task.description}}</p>
             <h6>Schedule</h6>
             <p>
-              {{task.schedule.periodicity}} :
-              <span
-                v-if="task.schedule.periodicity === 'Weekly'"
-              >{{task.schedule.weekly}}</span>
+              <span v-if="task.schedule.periodicity === 'Weekly'">
+                <span v-if="task.schedule.weekly === 'Everyday'">{{task.schedule.weekly}}</span>
+                <span v-else>{{task.schedule.weekly}} a week</span>
+              </span>
               <span
                 v-if="task.schedule.periodicity === 'On specific days'"
               >{{getTaskDays(task.schedule.specificDays)}}</span>

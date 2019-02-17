@@ -16,7 +16,7 @@
           class="primary--text font-weight-bold"
         >{{currentTask=== "new" ? 'New Task' : 'Edit Task'}}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn depressed flat @click="handleSave">{{currentTask=== "new" ? 'Save' : 'Update'}}</v-btn>
+        <v-btn depressed flat @click="handleSave">{{currentTask=== "new" ? 'Add' : 'Update'}}</v-btn>
       </v-toolbar>
       <!-- Form -->
       <v-card-text class="pa-0">
@@ -35,15 +35,38 @@
               ></v-text-field>
               <v-textarea dark label="Description" v-model="task.description"></v-textarea>
               <v-select
+                class="categorySelect"
                 dark
                 :items="categories"
                 label="Category"
                 v-model="task.category"
+                item-text="name"
+                item-value="name"
                 required
                 :error-messages="categoryErrors"
                 @input="$v.task.category.$touch()"
                 @blur="$v.task.category.$touch()"
-              ></v-select>
+              >
+                <template slot="selection" slot-scope="data">
+                  <v-list-tile-avatar>
+                    <img :src="require(`@/assets/images/icons_categories/${data.item.name}.svg`)">
+                  </v-list-tile-avatar>
+                  {{ data.item.name }}
+                </template>
+                <template slot="item" slot-scope="data">
+                  <template v-if="typeof data.item !== 'object'">
+                    <v-list-tile-content v-text="data.item"></v-list-tile-content>
+                  </template>
+                  <template v-else>
+                    <v-list-tile-avatar>
+                      <img :src="require(`@/assets/images/icons_categories/${data.item.name}.svg`)">
+                    </v-list-tile-avatar>
+                    <v-list-tile-content>
+                      <v-list-tile-title v-html="data.item.name"></v-list-tile-title>
+                    </v-list-tile-content>
+                  </template>
+                </template>
+              </v-select>
             </div>
             <div class="primary pa-4">
               <h6 class="my-3">Schedule</h6>
@@ -96,7 +119,7 @@
               </v-tabs>
               <h6 class="my-3">Subtasks</h6>
 
-              <v-card>
+              <v-card class="mb-4">
                 <!-- Subtasks added -->
                 <div class="grey lighten-2 pa-2 pl-3" v-if="task.subtasks.length > 0">
                   <v-layout v-for="(subtask,key) in $v.task.subtasks.$each.$iter" :key="subtask.id">
@@ -119,17 +142,27 @@
                   </v-layout>
                 </div>
               </v-card>
-              <!-- Delete task -->
-              <v-layout class="mt-4 align-center justify-center">
+            </div>
+            <v-card class="flat primary darken-1 pt-4 pb-4 pr-4 pl-4" elevation="0">
+              <v-layout class="align-center justify-center">
                 <v-btn
+                  v-if="currentTask === 'new'"
+                  block
                   large
                   center
-                  v-if="currentTask !== 'new'"
-                  color="colorRed white--text px-5"
+                  color="colorGreen white--text px-5"
+                  @click="handleSave"
+                >Add task</v-btn>
+                <v-btn
+                  v-else
+                  block
+                  large
+                  center
+                  color="red white--text px-5"
                   @click="handleDelete(task.id)"
                 >Delete task</v-btn>
               </v-layout>
-            </div>
+            </v-card>
           </v-form>
         </v-container>
       </v-card-text>
@@ -152,12 +185,13 @@ export default {
       easings: Object.keys(easings),
       dialogTask: false,
       categories: [
-        'Fitness',
-        'Nutrition',
-        'Skills',
-        'Finance',
-        'Education',
-        'Lifestyle'
+        { name: 'Fitness' },
+        { name: 'Nutrition' },
+        { name: 'Skills' },
+        { name: 'Finance' },
+        { name: 'Education' },
+        { name: 'Lifestyle' },
+        { name: 'Fun' }
       ],
       schedule: {
         active: 1,
@@ -545,6 +579,23 @@ export default {
   }
   .dialogContainer {
     height: 100%;
+  }
+
+  .v-input.categorySelect {
+    .v-label--active {
+      top: 2px !important;
+    }
+    .v-select__selections {
+      .v-list__tile__avatar {
+        min-width: 50px;
+      }
+    }
+
+    .v-menu__content {
+      .v-list__tile__avatar {
+        min-width: 56px;
+      }
+    }
   }
 }
 </style>

@@ -7,7 +7,10 @@
           height="100%"
           class="taskProgressContainer taskProgressContainer--bars taskProgressContainer--week transparent"
         >
-          <span class="label white--text">THIS WEEK GLOBAL SCORE (day {{time.isoDay}}/7)</span>
+          <span class="label white--text">
+            <span class="week">Week 2 completion</span> |
+            <span class="day primary--text">{{ getStringDay }}</span>
+          </span>
           <div class="progressbarContainer">
             <v-progress-linear
               v-model="this.userData.stats.progressWeek"
@@ -29,7 +32,7 @@
 // eslint-disable-next-line
 import { countObjectProperties, getIsoDayFromString, getStringFromIsoDay } from '@/utils'
 // eslint-disable-next-line
-import { getISODay, isThisWeek, getISOWeek } from 'date-fns'
+import { getISODay, isThisWeek, getISOWeek} from 'date-fns'
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -51,7 +54,11 @@ export default {
     }),
     tasksChecked: function () {
       return this.tasks
+    },
+    getStringDay () {
+      return getStringFromIsoDay(this.time.isoDay)
     }
+
   },
   methods: {
     ...mapActions({
@@ -74,8 +81,14 @@ export default {
     border-radius: 0 !important;
 
     .label {
-      opacity: 0.7;
-      font-size: 12px;
+      .day {
+        font-size: 14px;
+        padding-left: 5px;
+      }
+      .week {
+        padding-right: 5px;
+      }
+      font-size: 16px;
     }
     &--bars {
       padding-right: 60px !important;
