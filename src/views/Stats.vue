@@ -488,6 +488,7 @@ export default {
 .standard-dialog {
   .v-card__title {
     font-weight: 600;
+    line-height: 24px;
   }
   .v-card__text {
     font-size: 16px;

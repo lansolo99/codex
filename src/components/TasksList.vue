@@ -1,10 +1,6 @@
 <template>
   <div class="taskList">
-    <h6 v-if="filterTasks(periodicity.name).length > 0" class="subheader my-3 mt-4 black--text">
-      <span>{{periodicity.name}}</span>
-    </h6>
-
-    <v-expansion-panel v-model="panel[ind]" @click.native="managePanels(ind)">
+    <v-expansion-panel v-model="panel" class="mt-2">
       <v-expansion-panel-content v-for="(task,key) in filterTasks(periodicity.name)" :key="key">
         <!-- Bar part -->
         <v-layout slot="header" row wrap :class="`task ${task.status} mr-2 px-0`">
@@ -110,7 +106,7 @@ export default {
   data () {
     return {
       readonly: false,
-      panel: [null, null, null, null]
+      panel: []
     }
   },
   props: {
@@ -236,25 +232,15 @@ export default {
     handleEdit (taskId) {
       this.setCurrentTask(taskId)
       this.toggleTaskDialog(true)
-    },
-    managePanels (ind) {
-      const managePanel = this.panel.map((v, i) => {
-        if (i === ind) {
-          return v
-        } else {
-          return null
-        }
-      })
-      EventBus.$emit('closeOtherPanels', managePanel)
     }
   },
   mounted () {
     EventBus.$on('updateCheckedStatus', ({ defineTaskId, defineStatus, defineTaskType }) => {
       this.updateCheckedStatus(defineTaskId, defineStatus, defineTaskType)
     })
-  },
-  created () {
-
+    EventBus.$on('closeTasksListPanels', () => {
+      this.panel = null
+    })
   }
 }
 </script>

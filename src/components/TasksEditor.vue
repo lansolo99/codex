@@ -105,16 +105,23 @@
                     </v-flex>
                   </v-layout>
                 </v-tab-item>
+
                 <v-tab-item :value="2">
-                  <v-radio-group
-                    v-model="task.schedule.once"
-                    :error-messages="scheduleOnceErrors"
-                    column
-                  >
-                    <v-radio color="black" label="Single task" value="single"></v-radio>
-                    <v-radio color="black" label="Monthly goal" value="monthly"></v-radio>
-                    <v-radio color="black" label="Yearly goal" value="yearly"></v-radio>
-                  </v-radio-group>
+                  <v-card class="mb-4">
+                    <v-card-text>
+                      <v-checkbox
+                        class="mt-1 mb-0"
+                        color="colorGreen"
+                        :error-messages="scheduleOnceErrors"
+                        v-model="task.schedule.once"
+                        label="Single task"
+                        value="single"
+                      ></v-checkbox>
+                      <p
+                        class="grey--text text--darken-1"
+                      >A singles task is meant to be ticked once. It automatically self-delete when starting a new week</p>
+                    </v-card-text>
+                  </v-card>
                 </v-tab-item>
               </v-tabs>
               <h6 class="my-3">Subtasks</h6>
@@ -153,14 +160,33 @@
                   color="colorGreen white--text px-5"
                   @click="handleSave"
                 >Add task</v-btn>
-                <v-btn
-                  v-else
-                  block
-                  large
-                  center
-                  color="red white--text px-5"
-                  @click="handleDelete(task.id)"
-                >Delete task</v-btn>
+                <!-- sfjs -->
+                <v-dialog v-else max-width="350" content-class="standard-dialog">
+                  <v-btn
+                    v-model="dialogDeleteTask"
+                    slot="activator"
+                    block
+                    large
+                    center
+                    color="red white--text px-5"
+                  >Delete task</v-btn>
+                  <v-card>
+                    <v-card-title
+                      class="title red white--text pt-3 pb-3"
+                      primary-title
+                    >Delete this task?</v-card-title>
+
+                    <v-card-text>All recorded data will be lost</v-card-text>
+
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+
+                      <v-btn color="red darken-1" flat="flat" @click="handleDelete(task.id)">Agree</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+
+                <!-- sfjpsodf -->
               </v-layout>
             </v-card>
           </v-form>
@@ -184,6 +210,7 @@ export default {
     return {
       easings: Object.keys(easings),
       dialogTask: false,
+      dialogDeleteTask: false,
       categories: [
         { name: 'Fitness' },
         { name: 'Nutrition' },
@@ -314,7 +341,7 @@ export default {
     scheduleOnceErrors () {
       const errors = []
       if (!this.$v.task.schedule.once.$dirty) return errors
-      !this.$v.task.schedule.once.required && errors.push('Please select a periodicity for your single task!')
+      !this.$v.task.schedule.once.required && errors.push('Please tick if you want to your task to be single!')
       return errors
     },
     periodicity: function () {
@@ -469,13 +496,14 @@ export default {
           const taskId = JSON.parse(JSON.stringify(this.task.id))
           const task = JSON.parse(JSON.stringify(this.task))
           this.updateTask({ taskId, task })
+          EventBus.$emit('closeTasksListPanels')
           this.toggleTaskDialog(false)
         } else {
           /// Save
-          EventBus.$emit('closeOtherPanels', [null, null, null, null])
           this.task.id = 'newTask' + parseInt(Math.random() * 1000)
           this.addNewTask(JSON.parse(JSON.stringify(this.task)))
           this.disableFirstTimeUser()
+          EventBus.$emit('closeTasksListPanels')
           this.toggleTaskDialog(false)
         }
         EventBus.$emit('globalUpdate')
@@ -486,6 +514,7 @@ export default {
     },
     handleCancel () {
       this.setCurrentTask('new')
+      EventBus.$emit('closeTasksListPanels')
       this.toggleTaskDialog(false)
     },
     handleCreate () {
@@ -502,6 +531,7 @@ export default {
     },
     handleDelete (taskId) {
       this.deleteTask(taskId)
+      this.dialogDeleteTask = false
       this.toggleTaskDialog(false)
     },
     addNewSubTask () {
