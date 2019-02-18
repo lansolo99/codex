@@ -70,6 +70,8 @@
         </v-container>
       </v-card>
 
+      <!-- {{ Object.keys(tasks).length }}
+      {{ Object.keys(tasks).hasOwnProperty('completionsHistory') }}-->
       <!-- Tasks distribution charts -->
       <div v-if="Object.keys(tasks).length" class="tasks_charts">
         <h6 class="subheader my-3 mt-4 black--text">Tasks completions</h6>
@@ -272,14 +274,16 @@ export default {
       for (let label of Object.keys(this.userData.stats.weeksRecords)) {
         labels.push(label)
       }
-      return labels.slice((labels.length - 10), labels.length)
+      // return labels.slice((labels.length - 10), labels.length)
+      return ['W1', 'W2']
     },
     setRecordWeeksValues () {
       let values = []
       for (let value of Object.values(this.userData.stats.weeksRecords)) {
         values.push(value)
       }
-      return values.slice((values.length - 10), values.length)
+      // return values.slice((values.length - 10), values.length)
+      return [10, 20]
     }
   },
   methods: {
