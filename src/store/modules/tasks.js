@@ -56,12 +56,12 @@ export default {
     updateTasksCompletionsHistory ({
       commit
     }, {
-      isoWeek,
+      currentUserWeek,
       isoDay,
       weekChange
     }) {
       commit('updateTasksCompletionsHistory', {
-        isoWeek,
+        currentUserWeek,
         isoDay,
         weekChange
       })
@@ -125,6 +125,8 @@ export default {
       }
     },
     deleteTask (state, payload) {
+      console.log('deleteTask & payload = ' + payload)
+
       Vue.delete(state, payload)
     },
     rebootWeeklyTasksCompletions (state, payload) {
@@ -138,12 +140,10 @@ export default {
       }
     },
     updateTasksCompletionsHistory (state, {
-      isoWeek,
+      currentUserWeek,
       isoDay,
       weekChange
     }) {
-      console.log('updateTasksCompletionsHistory')
-
       Object.values(state).forEach(task => {
         console.log('weekChange = ' + weekChange)
         // Reset completion slot (if ever sliced at init)
@@ -197,7 +197,8 @@ export default {
         const completionFilled = fillBlankCompletions(currentTaskCompletion)
         console.log('completionFilled = ' + completionFilled)
 
-        let formattedIsoWeek = 'W' + isoWeek
+        let formattedIsoWeek = 'Week ' + currentUserWeek
+        console.log('currentUserWeek from bottom of updateTasksCompletionsHistory = ' + currentUserWeek)
         Vue.set(task.completionsHistory, formattedIsoWeek, completionFilled)
       })
     }

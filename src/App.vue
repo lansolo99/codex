@@ -17,7 +17,7 @@
 
 <script>
 // eslint-disable-next-line
-import { format, getISODay, isToday, isSameDay, isThisWeek, isSameWeek, getISOWeek, getTime, addDays } from 'date-fns'
+import { format, getISODay, isToday, isSameDay, isThisWeek, isSameWeek, getISOWeek, getTime, addDays, differenceInCalendarWeeks } from 'date-fns'
 import { getStringFromIsoDay } from '@/utils'
 import { EventBus } from '@/bus'
 import TheNavbar from '@/components/TheNavbar'
@@ -30,6 +30,7 @@ export default {
       toolbarConf: 'toolbarTasks',
       isoDay: null,
       isoWeek: null
+
     }
   },
   components: {
@@ -63,51 +64,17 @@ export default {
     ...mapActions({
       updateProfile: 'profile/updateProfile',
       recordWeekScore: 'profile/recordWeekScore',
+      updateCurrentUserWeek: 'time/updateCurrentUserWeek',
       updateTime: 'time/updateTime',
       incrementAddedDays: 'utility/incrementAddedDays',
       updateTask: 'tasks/updateTask',
+      deleteTask: 'tasks/deleteTask',
       rebootWeeklyTasksCompletions: 'tasks/rebootWeeklyTasksCompletions',
       updateTasksCompletionsHistory: 'tasks/updateTasksCompletionsHistory'
     }),
-    calcWeeklyCompletion () {
-      // Filter weekly tasks from tasks
-      const weeklyTasks = Object.values(this.tasks)
-        .filter(task => {
-          return task.schedule.periodicity === 'Weekly' ||
-                  task.schedule.periodicity === 'On specific days'
-        })
-
-      // Distribute tasks value
-      const taskValue = 100 / weeklyTasks.length
-
-      let total = 0
-      let totalCompletions = 0
-
-      // Distribute completion slots values
-      Object.entries(weeklyTasks)
-        .forEach(v => {
-          const completionLength = v[1].completion.length
-          const completionValue = taskValue / completionLength
-          const countCompletionsDone = Object.entries(v[1].completion)
-            .filter(completion => { return completion[1] === 1 })
-            .length
-
-          totalCompletions += completionValue * countCompletionsDone
-          if (totalCompletions > 100) {
-            totalCompletions = 100
-          }
-        })
-
-      // Set weekProgress value
-      total = Math.trunc(totalCompletions)
-      if (isNaN(total)) { total = 0 }
-      // Update store
-      const progressWeek = total
-      const isoWeek = this.time.isoWeek
-      this.recordWeekScore({ progressWeek, isoWeek })
-    },
     globalUpdate (addedDays = 0) {
       // GLOBAL UPDATES
+
       // console.log('last connexion date = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY'))
 
       const isThisWeekCustom = isSameWeek(
@@ -121,16 +88,37 @@ export default {
         new Date(this.userData.connexionDateLast)
       )
 
-      // Reset current tasks completions
+      // Set currentUserWeek
+      const lastUserRecordedWeek = parseInt(Object.keys(this.userData.stats.weeksRecords).slice(-1))
+      const getWeeksPassedSinceLastConnexion = differenceInCalendarWeeks(
+        addDays(new Date(Date.now()), addedDays),
+        new Date(this.userData.connexionDateLast),
+        { weekStartsOn: 1 }
+      )
+
+      const currentUserWeek = parseInt(lastUserRecordedWeek + getWeeksPassedSinceLastConnexion)
+      EventBus.$emit('updateCurrentUserWeek', currentUserWeek)
+
+      // WEEK RESET : wipe current tasks completions & delete singles
       if (!isThisWeekCustom) {
         console.log('not the same week')
+        // Wipe current tasks completions
         this.rebootWeeklyTasksCompletions()
+        // Delete singles
+        Object.values(this.tasks)
+          .filter(task => {
+            return task.schedule.periodicity === 'Once' && task.schedule.once === 'single'
+          })
+          .forEach(task => {
+            this.deleteTask(task.id)
+          })
       }
 
       // Save current completions to tasks completions history
       if (!isTodayCustom) {
         EventBus.$emit('recordProgress')
-        const isoWeek = this.time.isoWeek
+        // const isoWeek = this.time.isoWeek
+        const currentUserWeek = this.time.currentUserWeek
         const isoDay = this.time.isoDay
         let weekChange
 
@@ -139,7 +127,8 @@ export default {
         } else {
           weekChange = false
         }
-        this.updateTasksCompletionsHistory({ isoWeek, isoDay, weekChange })
+
+        this.updateTasksCompletionsHistory({ currentUserWeek, isoDay, weekChange })
       }
 
       // Check reset & guards
@@ -215,6 +204,45 @@ export default {
 
       EventBus.$emit('recordProgress')
     },
+    calcWeeklyCompletion () {
+      // Filter weekly tasks from tasks
+      const weeklyTasks = Object.values(this.tasks)
+        .filter(task => {
+          return task.schedule.periodicity === 'Weekly' ||
+                  task.schedule.periodicity === 'On specific days' ||
+                  (task.schedule.periodicity === 'Once' && task.schedule.once === 'single')
+        })
+
+      // Distribute tasks value
+      const taskValue = 100 / weeklyTasks.length
+
+      let total = 0
+      let totalCompletions = 0
+
+      // Distribute completion slots values
+      Object.entries(weeklyTasks)
+        .forEach(v => {
+          const completionLength = v[1].completion.length
+          const completionValue = taskValue / completionLength
+          const countCompletionsDone = Object.entries(v[1].completion)
+            .filter(completion => { return completion[1] === 1 })
+            .length
+
+          totalCompletions += completionValue * countCompletionsDone
+          if (totalCompletions > 100) {
+            totalCompletions = 100
+          }
+        })
+
+      // Set weekProgress value
+      total = Math.trunc(totalCompletions)
+      if (isNaN(total)) { total = 0 }
+
+      // Update store
+      const progressWeek = total
+      const currentUserWeek = this.time.currentUserWeek
+      this.recordWeekScore({ progressWeek, currentUserWeek })
+    },
     simulateNextDay () {
       console.log('NEXT DAY')
       this.incrementAddedDays()
@@ -224,7 +252,9 @@ export default {
   mounted () {
   },
   created () {
-    // console.log(getTime(new Date(2019, 0, 2, 11, 45, 5, 123)))
+    // Helper for last connexion date :
+    // console.log(format(new Date(2019, 0, 18, 11, 45, 5, 123), 'DD/MM/YYYY'))
+    // console.log(getTime(new Date(2019, 0, 18, 11, 45, 5, 123)))
 
     // GLOBAL UPDATES EVENT
     EventBus.$on('globalUpdate', () => {
@@ -233,18 +263,19 @@ export default {
 
     // RECORD PROGRESS EVENT
     EventBus.$on('recordProgress', () => {
-      // console.log('recordProgress')
-
       // Set date
       const isoDay = getISODay(addDays(new Date(Date.now()), this.utility.addedDays))
-      // console.log('isoDay =' + isoDay)
-
       const isoWeek = getISOWeek(addDays(new Date(Date.now()), this.utility.addedDays))
-      /// console.log('isoweek =' + isoWeek)
+
       this.updateTime({ isoDay, isoWeek })
 
       // Do calculations
       this.calcWeeklyCompletion()
+    })
+
+    // Update current user week
+    EventBus.$on('updateCurrentUserWeek', (currentUserWeek) => {
+      this.updateCurrentUserWeek(currentUserWeek)
     })
 
     // INITIAL CALL
@@ -271,7 +302,7 @@ export default {
   padding-top: 0px !important;
 }
 .toolbarTasks {
-  padding-top: 132px !important;
+  padding-top: 135px !important;
 }
 .simulation {
   z-index: 200;

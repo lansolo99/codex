@@ -157,13 +157,9 @@ export default {
       return Object.values(this.tasks)
         .filter(task => {
           if (periodicityStr === 'Weeklies') {
-            return task.schedule.periodicity === 'Weekly' || task.schedule.periodicity === 'On specific days'
-          } else if (periodicityStr === 'Monthlies') {
-            return task.schedule.periodicity === 'Once' && task.schedule.once === 'monthly'
-          } else if (periodicityStr === 'Yearlies') {
-            return task.schedule.periodicity === 'Once' && task.schedule.once === 'yearly'
-          } else if (periodicityStr === 'Singles') {
-            return task.schedule.periodicity === 'Once' && task.schedule.once === 'single'
+            return task.schedule.periodicity === 'Weekly' ||
+            task.schedule.periodicity === 'On specific days' ||
+            (task.schedule.periodicity === 'Once' && task.schedule.once === 'single')
           }
         })
     },

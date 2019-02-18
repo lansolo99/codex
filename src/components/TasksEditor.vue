@@ -507,9 +507,6 @@ export default {
           this.toggleTaskDialog(false)
         }
         EventBus.$emit('globalUpdate')
-        const isoWeek = this.time.isoWeek
-        const isoDay = this.time.isoDay
-        this.updateTasksCompletionsHistory({ isoWeek, isoDay })
       }
     },
     handleCancel () {

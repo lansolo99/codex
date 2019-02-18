@@ -4,15 +4,6 @@ export default {
     periodicities: {
       id1: {
         name: 'Weeklies'
-      },
-      id2: {
-        name: 'Monthlies'
-      },
-      id3: {
-        name: 'Yearlies'
-      },
-      id4: {
-        name: 'Singles'
       }
     },
     currentTask: {

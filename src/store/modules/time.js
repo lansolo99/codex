@@ -7,10 +7,16 @@ export default {
   namespaced: true,
   state: {
     isoDay: getISODay(Date.now()),
-    isoWeek: getISOWeek(Date.now())
+    isoWeek: getISOWeek(Date.now()),
+    currentUserWeek: null
   },
   getters: {},
   actions: {
+    updateCurrentUserWeek ({
+      commit
+    }, payload) {
+      commit('updateCurrentUserWeek', payload)
+    },
     updateTime ({
       commit
     }, {
@@ -24,6 +30,9 @@ export default {
     }
   },
   mutations: {
+    updateCurrentUserWeek (state, payload) {
+      state.currentUserWeek = payload
+    },
     updateTime (state, {
       isoDay,
       isoWeek

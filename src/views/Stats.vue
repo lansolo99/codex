@@ -2,14 +2,17 @@
   <div class="stats mb-4">
     <v-container class="stats">
       <h1 class="black--text">Stats</h1>
-      <h6 class="subheader subheader--first my-3 black--text">Levels</h6>
+      <h6 class="subheader subheader--first my-3 black--text">Achievements</h6>
       <v-card>
         <!-- Profile Level -->
         <v-container class="secondary pa-3 ma-0">
-          <span class="label white--text">Profile level</span>
+          <span class="label white--text">Last 10 weeks average completion</span>
           <v-layout row wrap>
             <v-flex grow align-self-center>
-              <span class="profileScore white--text">{{setProfileLevel}}/100</span>
+              <span class="profileScore white--text">
+                <span class="profileScore__score colorGreen--text">{{setProfileLevel}}</span>
+                <span class="profileScore__unit">%</span>
+              </span>
             </v-flex>
             <v-flex shrink align-self-center>
               <v-dialog v-model="dialogHelpProfile" max-width="350" content-class="standard-dialog">
@@ -37,7 +40,7 @@
         </v-container>
         <!-- Last 10 weeks -->
         <v-container>
-          <span class="label">Passed weeks completions (%)</span>
+          <span class="label">Last 10 weeks completions details</span>
           <v-sheet color="mb-3" elevation="0">
             <v-sparkline
               class="sparkline sparkline--last10Weeks"
@@ -106,7 +109,7 @@
                 <v-flex
                   class="progressbarContainer__value white--text text-xs-left pt-1 pl-2 pr-2 pb-0"
                   shrink
-                >{{getHeatMapMetrics(task.completionsHistory, 1)}} / {{getHeatMapMetrics(task.completionsHistory,0)}} times</v-flex>
+                >{{getHeatMapMetrics(task.completionsHistory, 1)}} / {{getHeatMapMetrics(task.completionsHistory,0)}} day{{getHeatMapMetrics(task.completionsHistory,0) > 1 ? 's' : '' }}</v-flex>
               </v-layout>
             </div>
             <!-- Expanded part -->
@@ -303,13 +306,13 @@ export default {
     },
     heatmapWrapperHeight (completionsHistory) {
       const weeksNumber = Object.values(completionsHistory).length
-      let totalHeight = (weeksNumber * 30) + 60
+      let totalHeight = (weeksNumber * 20) + 60
       totalHeight -= 40
       return totalHeight
     },
     heatmapHeight (completionsHistory) {
       const weeksNumber = Object.values(completionsHistory).length
-      let totalHeight = (weeksNumber * 30) + 60
+      let totalHeight = (weeksNumber * 20) + 60
       return totalHeight
     },
     generateHeatMap (completionsHistory) {
@@ -352,7 +355,13 @@ export default {
     }
 
     .profileScore {
-      font-size: 29px;
+      &__score {
+        font-size: 40px;
+        padding-right: 5px;
+      }
+      &__unit {
+        font-size: 25px;
+      }
     }
     // Progressbar
     .v-progress-linear__bar__determinate {

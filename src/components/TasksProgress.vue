@@ -8,7 +8,7 @@
           class="taskProgressContainer taskProgressContainer--bars taskProgressContainer--week transparent"
         >
           <span class="label white--text">
-            <span class="week">Week 2 completion</span> |
+            <span class="week">Week {{time.currentUserWeek}} completion</span> |
             <span class="day primary--text">{{ getStringDay }}</span>
           </span>
           <div class="progressbarContainer">
