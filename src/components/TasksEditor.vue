@@ -19,7 +19,7 @@
         <v-btn depressed flat @click="handleSave">{{currentTask=== "new" ? 'Add' : 'Update'}}</v-btn>
       </v-toolbar>
       <!-- Form -->
-      <v-card-text class="pa-0">
+      <v-card-text class="pa-0 dialogTaskScrollablePart">
         <v-container class="dialogContainer pa-0">
           <v-form ref="taskForm" lazy-validation>
             <div class="secondary pa-4">
@@ -449,6 +449,7 @@ export default {
     },
     storeDialogTask () {
       this.dialogTask = this.storeDialogTask
+      document.getElementsByClassName('dialogTaskScrollablePart')[0].scrollTop = 0
     },
     storeCurrentTask () {
       if (this.storeCurrentTask !== 'new') {
@@ -589,6 +590,18 @@ export default {
       &--active {
         color: white;
         background-color: $color-green;
+        &:after {
+          content: "";
+          display: block;
+          width: 10px;
+          border-radius: 5px;
+          height: 10px;
+          background-color: #56e39f;
+          position: absolute;
+          bottom: -20px;
+          transform: translateX(-50%);
+          left: 50%;
+        }
       }
       &--active:before,
       &:focus:before,

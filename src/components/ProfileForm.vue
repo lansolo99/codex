@@ -1,6 +1,6 @@
 <template>
   <!-- ProfileForm -->
-  <v-container class="profileForm primary">
+  <v-container class="profileForm primary pa-0">
     <v-layout row wrap class="mt-4">
       <v-flex xs-12 text-xs-center>
         <v-avatar size="80px" color="rgba(0, 0, 0, 0.4)">
@@ -28,99 +28,104 @@
           <!-- Account -->
           <div class="fieldset fieldset--account">
             <h6 class="subheader subheader--first my-3 black--text">Account</h6>
-            <v-text-field
-              :disabled="!editing"
-              color="secondary"
-              class="red--text"
-              label="Pseudo"
-              v-model="userData.pseudo"
-              required
-              :error-messages="pseudoErrors"
-              @input="$v.userData.pseudo.$touch()"
-              @blur="$v.userData.pseudo.$touch()"
-            ></v-text-field>
-            <v-text-field
-              class="pt-1"
-              :disabled="!editing"
-              color="secondary"
-              label="Email"
-              v-model="userData.email"
-              required
-              :error-messages="emailErrors"
-              @input="$v.userData.email.$touch()"
-              @blur="$v.userData.email.$touch()"
-            ></v-text-field>
-            <div v-if="editing" class="fieldset fieldset--password">
+            <v-card class="pt-3 pl-3 pr-3 pb-0">
               <v-text-field
-                :type="formComponents.passwordType"
-                class="pt-1"
+                :disabled="!editing"
                 color="secondary"
-                label="Password"
-                v-model.trim="userData.password"
+                class="red--text"
+                label="Pseudo"
+                v-model="userData.pseudo"
                 required
-                :error-messages="passwordErrors"
-                @input="$v.userData.password.$touch()"
-                @blur="$v.userData.password.$touch()"
+                :error-messages="pseudoErrors"
+                @input="$v.userData.pseudo.$touch()"
+                @blur="$v.userData.pseudo.$touch()"
               ></v-text-field>
-              <v-icon
-                @click="togglePasswordVisibility('password')"
-                :class="['icon', formComponents.iconShowPassword, 'customIcon']"
-              ></v-icon>
-            </div>
+              <v-text-field
+                class="pt-1"
+                :disabled="!editing"
+                color="secondary"
+                label="Email"
+                v-model="userData.email"
+                required
+                :error-messages="emailErrors"
+                @input="$v.userData.email.$touch()"
+                @blur="$v.userData.email.$touch()"
+              ></v-text-field>
+              <div v-if="editing" class="fieldset fieldset--password">
+                <v-text-field
+                  :type="formComponents.passwordType"
+                  class="pt-1"
+                  color="secondary"
+                  label="Password"
+                  v-model.trim="userData.password"
+                  required
+                  :error-messages="passwordErrors"
+                  @input="$v.userData.password.$touch()"
+                  @blur="$v.userData.password.$touch()"
+                ></v-text-field>
+                <v-icon
+                  @click="togglePasswordVisibility('password')"
+                  :class="['icon', formComponents.iconShowPassword, 'customIcon']"
+                ></v-icon>
+              </div>
+            </v-card>
           </div>
+
           <div class="fieldset fieldset--informations">
             <h6 class="subheader subheader--first my-3 black--text">Informations</h6>
-            <v-select
-              :disabled="!editing"
-              class="pt-1"
-              color="secondary"
-              :items="formComponents.gender"
-              label="Select your gender"
-              v-model="userData.gender"
-            ></v-select>
-            <v-select
-              class="pt-1"
-              :disabled="!editing"
-              color="secondary"
-              :items="formComponents.maritalStatus"
-              label="Marital status"
-              v-model="userData.maritalStatus"
-            ></v-select>
-            <v-slider
-              :readonly="!editing"
-              class="pt-3 px-1"
-              label="Age"
-              :value="userData.age"
-              v-model="userData.age"
-              thumb-color="white"
-              thumb-size="35"
-              thumb-label="always"
-              color="white"
-              min="10"
-              max="122"
-            ></v-slider>
-            <v-text-field
-              :disabled="!editing"
-              class="pt-1"
-              color="secondary"
-              label="City"
-              v-model.trim="userData.city"
-            ></v-text-field>
-            <v-select
-              class="pt-1"
-              :disabled="!editing"
-              color="secondary"
-              :items="formComponents.countries"
-              label="Country"
-              v-model="userData.country"
-            ></v-select>
-            <v-text-field
-              :disabled="!editing"
-              class="pt-1"
-              color="secondary"
-              label="Occupation"
-              v-model.trim="userData.occupation"
-            ></v-text-field>
+            <v-card class="pt-4 pl-3 pr-3 pb-0">
+              <v-select
+                :disabled="!editing"
+                class="pt-1"
+                color="secondary"
+                :items="formComponents.gender"
+                label="Select your gender"
+                v-model="userData.gender"
+              ></v-select>
+              <v-select
+                class="pt-1"
+                :disabled="!editing"
+                color="secondary"
+                :items="formComponents.maritalStatus"
+                label="Marital status"
+                v-model="userData.maritalStatus"
+              ></v-select>
+              <v-slider
+                :readonly="!editing"
+                class="pt-3 px-1"
+                label="Age"
+                :value="userData.age"
+                v-model="userData.age"
+                thumb-color="colorGreen"
+                thumb-size="35"
+                thumb-label="always"
+                color="colorGreen"
+                min="10"
+                max="122"
+              ></v-slider>
+              <v-text-field
+                :disabled="!editing"
+                class="pt-1"
+                color="secondary"
+                label="City"
+                v-model.trim="userData.city"
+              ></v-text-field>
+              <v-select
+                class="pt-1"
+                :disabled="!editing"
+                color="secondary"
+                :items="formComponents.countries"
+                label="Country"
+                v-model="userData.country"
+              ></v-select>
+              <v-text-field
+                :disabled="!editing"
+                class="pt-1"
+                color="secondary"
+                label="Occupation"
+                v-model.trim="userData.occupation"
+              ></v-text-field>
+            </v-card>
           </div>
         </v-form>
       </v-flex>
@@ -292,7 +297,7 @@ export default {
     }
     &--informations {
       .v-slider__thumb-label {
-        color: rgba(black, 0.6);
+        color: white;
         font-size: 14px;
       }
     }
@@ -307,6 +312,16 @@ export default {
   .theme--light.v-select .v-select__selection--disabled,
   .theme--light.v-select .v-select__selections {
     color: rgba(0, 0, 0, 0.55) !important;
+  }
+  .theme--light.v-text-field.v-input--is-disabled
+    > .v-input__control
+    > .v-input__slot:before {
+    display: none;
+  }
+  .theme--light.v-text-field.v-input--is-disabled {
+    .v-input__append-inner {
+      display: none;
+    }
   }
 }
 </style>

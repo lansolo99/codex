@@ -43,7 +43,10 @@
               wrap
               :class="`task ${task.status}`"
             >
-              <v-flex shrink class="pt-1 checkboxFlexContainer">
+              <v-flex shrink class="pt-2 icon-slot">
+                <v-icon class="icon icon-arrow_return"></v-icon>
+              </v-flex>
+              <v-flex shrink class="pt-1 ml-3 checkboxFlexContainer">
                 <v-checkbox
                   @click.native.stop
                   class="ma-0 pa-0"
@@ -59,10 +62,7 @@
                   v-if="task.disabled === true"
                 ></v-checkbox>
               </v-flex>
-              <v-flex shrink class="pt-2 ml-2 icon-slot">
-                <v-icon class="icon icon-arrow_return"></v-icon>
-              </v-flex>
-              <v-flex grow class="pa-1 pt-2 pl-3 pr-3 body-1">
+              <v-flex grow class="pa-1 pt-2 pl-2 pr-3 body-1">
                 <span :class="['name', { completed: subtask.checked } ]">{{subtask.name}}</span>
               </v-flex>
             </v-layout>

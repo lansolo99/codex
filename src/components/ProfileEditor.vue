@@ -16,7 +16,7 @@
         <v-spacer></v-spacer>
         <v-btn depressed flat @click="handleSave">Save</v-btn>
       </v-toolbar>
-      <v-card-text class="pa-0">
+      <v-card-text class="dialogProfileScrollablePart pa-0">
         <v-container class="dialogContainer primary pa-0">
           <v-container class="primary">
             <!-- Form -->
@@ -53,6 +53,7 @@ export default {
   watch: {
     storeProfileTask () {
       this.dialogProfile = this.storeProfileTask
+      document.getElementsByClassName('dialogProfileScrollablePart')[0].scrollTop = 0
     }
   },
   methods: {
@@ -116,6 +117,9 @@ export default {
   }
   .dialogContainer {
     height: 100%;
+  }
+
+  .dialogProfileScrollablePart {
   }
 }
 </style>

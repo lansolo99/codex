@@ -52,6 +52,9 @@ export default {
         top: 0;
       }
     }
+    &--active {
+      background-color: #e19c2e !important;
+    }
   }
 
   .icon {
