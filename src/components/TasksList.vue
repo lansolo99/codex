@@ -194,9 +194,7 @@ export default {
       if (singleSlotOrFullTasks) {
         completionIndex = this.tasks[taskId].completion.length - 1
       } else {
-        console.log('case not checked and not full')
         completionIndex = this.tasks[taskId].completion.indexOf(0)
-        console.log('completionIndex = ' + completionIndex)// undefined
       }
 
       // CASE 2 : CHECKED
@@ -218,9 +216,9 @@ export default {
       // Update stats
       EventBus.$emit('recordProgress')
       // Record in completions history
-      const isoWeek = this.time.isoWeek
+      const currentUserWeek = this.time.currentUserWeek
       const isoDay = this.time.isoDay
-      this.updateTasksCompletionsHistory({ isoWeek, isoDay })
+      this.updateTasksCompletionsHistory({ currentUserWeek, isoDay })
     },
     hasTaskSubtasks (task) {
       return task.subtasks.length > 0

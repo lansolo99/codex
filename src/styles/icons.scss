@@ -32,40 +32,44 @@
 			$char: "\E001";
 		}
 
-		 @if $filename==arrow_return {
+		 @if $filename==arrow_chart {
 			$char: "\E002";
 		}
 
-		 @if $filename==check {
+		 @if $filename==arrow_return {
 			$char: "\E003";
 		}
 
-		 @if $filename==delete {
+		 @if $filename==check {
 			$char: "\E004";
 		}
 
-		 @if $filename==edit {
+		 @if $filename==delete {
 			$char: "\E005";
 		}
 
-		 @if $filename==eye {
+		 @if $filename==edit {
 			$char: "\E006";
 		}
 
-		 @if $filename==eye_hidden {
+		 @if $filename==eye {
 			$char: "\E007";
 		}
 
-		 @if $filename==profile {
+		 @if $filename==eye_hidden {
 			$char: "\E008";
 		}
 
-		 @if $filename==question_mark {
+		 @if $filename==profile {
 			$char: "\E009";
 		}
 
-		 @if $filename==stats {
+		 @if $filename==question_mark {
 			$char: "\E00A";
+		}
+
+		 @if $filename==stats {
+			$char: "\E00B";
 		}
 
 		@return $char;
@@ -87,6 +91,10 @@
 
 .icon-add {
 		@include icon(add);
+	}
+
+	.icon-arrow_chart {
+		@include icon(arrow_chart);
 	}
 
 	.icon-arrow_return {

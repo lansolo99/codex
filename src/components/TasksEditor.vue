@@ -364,8 +364,6 @@ export default {
     },
     scheduleChange: {
       handler (val, oldVal) {
-        console.log('scheduleChange, apply slotGenerator')
-
         // Slot Generator
         const slotsGenerator = (n, specificDays) => {
           this.task.completion = []
@@ -404,8 +402,6 @@ export default {
         }
         // Weekly
         const sliceDays = () => {
-          console.log('slice days')
-
           const openDays = 7 - (this.time.isoDay - 1)
           const daysToCut = this.task.completion.length - openDays
           if (Math.sign(daysToCut) === -1) {
@@ -471,7 +467,6 @@ export default {
       addNewTask: 'tasks/addNewTask',
       updateTask: 'tasks/updateTask',
       deleteTask: 'tasks/deleteTask',
-      updateTasksCompletionsHistory: 'tasks/updateTasksCompletionsHistory',
       toggleTaskDialog: 'utility/toggleTaskDialog',
       setCurrentTask: 'utility/setCurrentTask'
     }),

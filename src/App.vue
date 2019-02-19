@@ -117,7 +117,6 @@ export default {
       // Save current completions to tasks completions history
       if (!isTodayCustom) {
         EventBus.$emit('recordProgress')
-        // const isoWeek = this.time.isoWeek
         const currentUserWeek = this.time.currentUserWeek
         const isoDay = this.time.isoDay
         let weekChange
@@ -130,6 +129,9 @@ export default {
 
         this.updateTasksCompletionsHistory({ currentUserWeek, isoDay, weekChange })
       }
+
+      const isoDay = this.time.isoDay
+      this.updateTasksCompletionsHistory({ currentUserWeek, isoDay })
 
       // Check reset & guards
       const copiedTasks = JSON.parse(JSON.stringify(this.tasks))

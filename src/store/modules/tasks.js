@@ -70,7 +70,6 @@ export default {
   mutations: {
     addNewTask (state, payload) {
       Vue.set(state, payload.id, payload)
-      console.log(state)
     },
     updateTask (state, {
       taskId,
@@ -145,9 +144,9 @@ export default {
       weekChange
     }) {
       Object.values(state).forEach(task => {
-        console.log('weekChange = ' + weekChange)
         // Reset completion slot (if ever sliced at init)
         if (weekChange) {
+          console.log('weekChange = ' + weekChange)
           // Slot Generator
           const slotsGenerator = n => {
             task.completion = []
@@ -195,10 +194,7 @@ export default {
           return completion
         }
         const completionFilled = fillBlankCompletions(currentTaskCompletion)
-        console.log('completionFilled = ' + completionFilled)
-
         let formattedIsoWeek = 'Week ' + currentUserWeek
-        console.log('currentUserWeek from bottom of updateTasksCompletionsHistory = ' + currentUserWeek)
         Vue.set(task.completionsHistory, formattedIsoWeek, completionFilled)
       })
     }

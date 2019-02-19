@@ -12,6 +12,10 @@
               <span class="profileScore white--text">
                 <span class="profileScore__score colorGreen--text">{{setProfileLevel}}</span>
                 <span class="profileScore__unit">%</span>
+                <v-icon
+                  v-if="Object.keys(userData.stats.weeksRecords).length > 1"
+                  :class="`profileScore__icon-chart profileScore__icon-chart--${setProfileChartArrow} icon icon-arrow_chart`"
+                ></v-icon>
               </span>
             </v-flex>
             <v-flex shrink align-self-center>
@@ -39,9 +43,9 @@
           </v-layout>
         </v-container>
         <!-- Last 10 weeks -->
-        <v-container>
+        <v-container v-if="Object.keys(userData.stats.weeksRecords).length > 1">
           <span class="label">Last 10 weeks completions details</span>
-          <v-sheet color="mb-3" elevation="0">
+          <v-sheet color="sparkline-sheet mb-3" elevation="0">
             <v-sparkline
               class="sparkline sparkline--last10Weeks"
               :labels="setRecordWeeksLabels"
@@ -58,6 +62,9 @@
               {{ item.value
               }}
             </template>
+            <div class="guide guide--1"></div>
+            <div class="guide guide--2"></div>
+            <div class="guide guide--3"></div>
           </v-sheet>
           <v-sparkline
             class="sparkline sparkline--values"
@@ -69,9 +76,6 @@
           </v-sparkline>
         </v-container>
       </v-card>
-
-      <!-- {{ Object.keys(tasks).length }}
-      {{ Object.keys(tasks).hasOwnProperty('completionsHistory') }}-->
       <!-- Tasks distribution charts -->
       <div v-if="Object.keys(tasks).length" class="tasks_charts">
         <h6 class="subheader my-3 mt-4 black--text">Tasks completions</h6>
@@ -117,7 +121,7 @@
             <!-- Expanded part -->
             <v-card class="details">
               <v-container>
-                <span class="label">Completions history</span>
+                <span class="label">Last 10 weeks completions history</span>
                 <div
                   class="heatmap"
                   :style="{height: heatmapWrapperHeight(task.completionsHistory) + 'px' }"
@@ -268,22 +272,29 @@ export default {
       const total = Math.round(weeksRecord.slice(-10).reduce((a, b) => a + b) / 10)
       return total
     },
+    setProfileChartArrow () {
+      const last2WeeksMetrics = Object.values(this.userData.stats.weeksRecords).slice(-2)
+      const trend = last2WeeksMetrics[1] - last2WeeksMetrics[0]
+      let direction = ''
+      if (Math.sign(trend) === 1) { direction = 'up' }
+      if (Math.sign(trend) === 0) { direction = 'stable' }
+      if (Math.sign(trend) === -1) { direction = 'down' }
+      return direction
+    },
     setRecordWeeksLabels () {
       let labels = []
 
       for (let label of Object.keys(this.userData.stats.weeksRecords)) {
-        labels.push(label)
+        labels.push('W' + label)
       }
-      // return labels.slice((labels.length - 10), labels.length)
-      return ['W1', 'W2']
+      return labels.slice((labels.length - 10), labels.length)
     },
     setRecordWeeksValues () {
       let values = []
       for (let value of Object.values(this.userData.stats.weeksRecords)) {
         values.push(value)
       }
-      // return values.slice((values.length - 10), values.length)
-      return [10, 20]
+      return values.slice((values.length - 10), values.length)
     }
   },
   methods: {
@@ -294,8 +305,9 @@ export default {
     },
     getHeatMapMetrics (completionsHistory, status) {
       let metric = 0
+      let last10WeeksCompletions = Object.values(completionsHistory).slice(-10)
 
-      Object.values(completionsHistory).forEach(value => {
+      last10WeeksCompletions.forEach(value => {
         value.forEach(v => {
           if (status === 1 && v === status) {
             metric += 1
@@ -321,6 +333,7 @@ export default {
     },
     generateHeatMap (completionsHistory) {
       let series = []
+      // const last10Completions = Object.entries(completionsHistory)
 
       for (let [key, value] of Object.entries(completionsHistory)) {
         // Retrieved week slot
@@ -331,7 +344,7 @@ export default {
         series.push(weekSlot)
       }
 
-      return series
+      return series.slice(-10)
     }
   }
 }
@@ -366,6 +379,21 @@ export default {
       &__unit {
         font-size: 25px;
       }
+      &__icon-chart {
+        margin-left: 10px;
+        font-size: 32px;
+        &--up {
+          color: $color-green;
+          transform: rotate(-45deg);
+        }
+        &--down {
+          color: $color-red;
+          transform: rotate(45deg);
+        }
+        &--stable {
+          color: $color-golden;
+        }
+      }
     }
     // Progressbar
     .v-progress-linear__bar__determinate {
@@ -399,6 +427,26 @@ export default {
         }
         path {
           display: none !important;
+        }
+      }
+    }
+    .sparkline-sheet {
+      position: relative;
+      .guide {
+        height: 1px;
+        background-color: grey;
+        opacity: 0.2;
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        &--1 {
+          top: 23px;
+        }
+        &--2 {
+          top: 43px;
+        }
+        &--3 {
+          top: 63px;
         }
       }
     }
@@ -476,16 +524,15 @@ export default {
     }
     // Apexchart
     .heatmap {
-      //overflow: hidden;
     }
+
     .dailyCompletionsWrapper {
       margin-top: 10px;
-      //overflow: hidden;
 
       .apexcharts-canvas {
         position: relative;
         top: -30px;
-        left: -10px;
+        left: 0px;
         pointer-events: none;
       }
       .apexcharts-xaxis-label {
@@ -493,7 +540,7 @@ export default {
         opacity: 0.6;
       }
       .apexcharts-yaxis {
-        transform: translate(19px, 3px) !important;
+        transform: translate(36px, 3px) !important;
       }
     }
   }
