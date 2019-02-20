@@ -620,12 +620,10 @@ export default {
 
     if (this.storeDialogTask === true) {
       this.dialogTask = this.storeDialogTask
+      this.resetForm()
+      this.setCurrentTask('new')
+      document.getElementsByClassName('dialogTaskScrollablePart')[0].scrollTop = 0
     }
-  },
-  created () {
-    // EventBus.$on('createTask', () => {
-    //   this.handleCreate()
-    // })
   }
 }
 </script>

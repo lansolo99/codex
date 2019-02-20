@@ -2,8 +2,8 @@
   <div>
     <v-card class="welcomeCard pa-3 pl-5 pr-5 pb-4 mt-3 text-xs-center">
       <img
-        src="@/assets/images/startup_illustration.jpg"
-        srcset="@/assets/images/startup_illustration.jpg 1x, @/assets/images/startup_illustration@2x.jpg 2x"
+        src="@/assets/images/stats_init.jpg"
+        srcset="@/assets/images/stats_init.jpg 1x, @/assets/images/stats_init@2x.jpg 2x"
         alt
       >
       <h2 class="mt-3 font-weight">Nothing to show!</h2>
