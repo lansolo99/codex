@@ -1,7 +1,7 @@
 {
   "profile": {
     "wrapper": {
-      "firstTime": false,
+      "firstTime": true,
       "connexionDateLast": 1550486705123,
       "avatarImage": null,
       "avatarDefault": "man",
