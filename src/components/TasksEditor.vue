@@ -21,7 +21,7 @@
       <!-- Form -->
       <v-card-text class="pa-0 dialogTaskScrollablePart">
         <v-container class="dialogContainer pa-0">
-          <v-form ref="taskForm" lazy-validation>
+          <v-form lazy-validation>
             <div class="secondary pa-4">
               <h6 class="white--text mb-3">Informations</h6>
               <v-text-field
@@ -69,61 +69,92 @@
               </v-select>
             </div>
             <div class="primary pa-4">
-              <h6 class="my-3">Schedule</h6>
-              <v-tabs
-                v-model="schedule.active"
-                color="secondary"
-                dark
-                slider-color="colorGreen"
-                grow
-              >
-                <v-tab v-for="option in schedule.options" :key="option" ripples>{{ option }}</v-tab>
-                <v-tab-item :value="0">
-                  <v-select
-                    class="mt-3"
-                    color="secondary"
-                    :items="schedule.weekly"
-                    label="Choose a frequence"
-                    v-model="task.schedule.weekly"
-                    :error-messages="scheduleWeeklyErrors"
-                  ></v-select>
-                </v-tab-item>
-                <v-tab-item :value="1">
-                  <v-layout>
-                    <v-flex align-self-center class="pt-4">
-                      <v-input :error-messages="scheduleSpecificDaysErrors" max="100px">
-                        <v-btn-toggle v-model="task.schedule.specificDays" multiple>
-                          <v-btn class="px-3" flat value="Monday">M</v-btn>
-                          <v-btn class="px-3" flat value="Tuesday">T</v-btn>
-                          <v-btn class="px-3" flat value="Wednesday">W</v-btn>
-                          <v-btn class="px-3" flat value="Thursday">T</v-btn>
-                          <v-btn class="px-3" flat value="Friday">F</v-btn>
-                          <v-btn class="px-3" flat value="Saturday">S</v-btn>
-                          <v-btn class="px-3" flat value="Sunday">S</v-btn>
-                        </v-btn-toggle>
-                      </v-input>
-                    </v-flex>
-                  </v-layout>
-                </v-tab-item>
+              <div class="schedule">
+                <h6 class="my-3">Schedule</h6>
+                <v-tabs
+                  v-model="schedule.active"
+                  color="secondary"
+                  dark
+                  slider-color="colorGreen"
+                  grow
+                >
+                  <v-tab v-for="option in schedule.options" :key="option" ripples>{{ option }}</v-tab>
+                  <v-tab-item :value="0">
+                    <v-select
+                      class="mt-3"
+                      color="secondary"
+                      :items="schedule.weekly"
+                      label="Choose a frequence"
+                      v-model="task.schedule.weekly"
+                      :error-messages="scheduleWeeklyErrors"
+                    ></v-select>
+                  </v-tab-item>
+                  <v-tab-item :value="1">
+                    <v-layout>
+                      <v-flex align-self-center class="pt-4">
+                        <v-input :error-messages="scheduleSpecificDaysErrors" max="100px">
+                          <v-btn-toggle v-model="task.schedule.specificDays" multiple>
+                            <v-btn class="px-3" flat value="Monday">M</v-btn>
+                            <v-btn class="px-3" flat value="Tuesday">T</v-btn>
+                            <v-btn class="px-3" flat value="Wednesday">W</v-btn>
+                            <v-btn class="px-3" flat value="Thursday">T</v-btn>
+                            <v-btn class="px-3" flat value="Friday">F</v-btn>
+                            <v-btn class="px-3" flat value="Saturday">S</v-btn>
+                            <v-btn class="px-3" flat value="Sunday">S</v-btn>
+                          </v-btn-toggle>
+                        </v-input>
+                      </v-flex>
+                    </v-layout>
+                  </v-tab-item>
 
-                <v-tab-item :value="2">
-                  <v-card class="mb-4">
-                    <v-card-text>
-                      <v-checkbox
-                        class="mt-1 mb-0"
-                        color="colorGreen"
-                        :error-messages="scheduleOnceErrors"
-                        v-model="task.schedule.once"
-                        label="Single task"
-                        value="single"
-                      ></v-checkbox>
-                      <p
-                        class="grey--text text--darken-1"
-                      >A singles task is meant to be ticked once. It automatically self-delete when starting a new week</p>
-                    </v-card-text>
+                  <v-tab-item :value="2">
+                    <v-card class="mb-4">
+                      <v-card-text>
+                        <v-checkbox
+                          class="mt-1 mb-0"
+                          color="colorGreen"
+                          :error-messages="scheduleOnceErrors"
+                          v-model="task.schedule.once"
+                          label="Single task"
+                          value="single"
+                        ></v-checkbox>
+                        <p
+                          class="grey--text text--darken-1"
+                        >A singles task is meant to be ticked once. It automatically self-delete when starting a new week</p>
+                      </v-card-text>
+                    </v-card>
+                  </v-tab-item>
+                </v-tabs>
+                <v-dialog
+                  v-if="this.storeCurrentTask !== 'new'"
+                  persistent
+                  v-model="dialogEditSchedule"
+                  max-width="350"
+                  content-class="standard-dialog"
+                >
+                  <div slot="activator" :class="['guard', {guard_disabled: changeSchedule}]"></div>
+                  <v-card>
+                    <v-card-title
+                      class="title red white--text pt-3 pb-3"
+                      primary-title
+                    >Change schedule?</v-card-title>
+
+                    <v-card-text>Current week completion will be lost</v-card-text>
+
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        color="red darken-1"
+                        flat="flat"
+                        @click="dialogEditSchedule = false"
+                      >Cancel</v-btn>
+                      <v-btn color="red darken-1" flat="flat" @click="disableScheduleGuard">Modify</v-btn>
+                    </v-card-actions>
                   </v-card>
-                </v-tab-item>
-              </v-tabs>
+                </v-dialog>
+              </div>
+
+              <!-- Subtasks -->
               <h6 class="my-3">Subtasks</h6>
 
               <v-card class="mb-4">
@@ -143,7 +174,14 @@
                 <div class="white pa-2 pl-3">
                   <v-layout>
                     <v-text-field placeholder="Add a new subtask" v-model="newSubtask.name"></v-text-field>
-                    <v-btn fab dark small class="colorGreen mt-3" @click="addNewSubTask">
+                    <v-btn
+                      fab
+                      dark
+                      small
+                      :disabled="newSubtask.name === ''"
+                      class="colorGreen mt-3"
+                      @click="addNewSubTask"
+                    >
                       <v-icon class="icon icon-add"></v-icon>
                     </v-btn>
                   </v-layout>
@@ -185,8 +223,6 @@
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
-
-                <!-- sfjpsodf -->
               </v-layout>
             </v-card>
           </v-form>
@@ -210,9 +246,11 @@ export default {
     return {
       easings: Object.keys(easings),
       dialogTask: false,
+      dialogEditSchedule: false,
       dialogDeleteTask: false,
+      changeSchedule: false,
       categories: [
-        { name: 'Fitness' },
+        { name: 'Sport' },
         { name: 'Nutrition' },
         { name: 'Skills' },
         { name: 'Finance' },
@@ -364,86 +402,93 @@ export default {
     },
     scheduleChange: {
       handler (val, oldVal) {
-        // Slot Generator
-        const slotsGenerator = (n, specificDays) => {
-          this.task.completion = []
-          for (let i = 0; i < n; i++) {
-            this.task.completion.push(0)
-          }
-          if (!specificDays) {
-            sliceDays()
-          } else {
-            sliceSpecificDays()
-          }
-        }
-
-        // Potentially slice completon array if it's not the start of the week
-
-        // On specific days
-        const sliceSpecificDays = () => {
-          const isoDay = this.time.isoDay
-          const openDays = []
-          const openStringDays = []
-
-          for (let i = isoDay; i <= 7; i++) {
-            openDays.push(i)
-          }
-
-          openDays.forEach(v => {
-            openStringDays.push(getStringFromIsoDay(v))
-          })
-
-          this.task.schedule.specificDays.forEach(v => {
-            if (!openStringDays.includes(v)) {
-              console.log(v + 'is not included in the open String days, no slice')
-              this.task.completion = this.task.completion.slice(1)
+        // Change only if new task or if editing + schedule gard is passed
+        if (this.currentTask === 'new' || (this.currentTask !== 'new' && this.changeSchedule)) {
+          // Slot Generator
+          const slotsGenerator = (n, specificDays) => {
+            this.task.completion = []
+            for (let i = 0; i < n; i++) {
+              this.task.completion.push(0)
             }
-          })
-        }
-        // Weekly
-        const sliceDays = () => {
-          const openDays = 7 - (this.time.isoDay - 1)
-          const daysToCut = this.task.completion.length - openDays
-          if (Math.sign(daysToCut) === -1) {
-          } else {
-            this.task.completion = this.task.completion.slice(daysToCut)
+            if (!specificDays) {
+              sliceDays()
+            } else {
+              sliceSpecificDays()
+            }
           }
-        }
-        // Case Weekly
-        if (this.task.schedule.periodicity === 'Weekly') {
-          switch (this.task.schedule.weekly) {
-            case 'Everyday' :
-              slotsGenerator(7)
-              break
-            case 'x1 time' :
+
+          // Potentially slice completon array if it's not the start of the week
+
+          // On specific days
+          const sliceSpecificDays = () => {
+            const isoDay = this.time.isoDay
+            const openDays = []
+            const openStringDays = []
+
+            for (let i = isoDay; i <= 7; i++) {
+              openDays.push(i)
+            }
+
+            openDays.forEach(v => {
+              openStringDays.push(getStringFromIsoDay(v))
+            })
+
+            this.task.schedule.specificDays.forEach(v => {
+              if (!openStringDays.includes(v)) {
+                console.log(v + ' is not included in the open String days, no slice')
+                this.task.completion = this.task.completion.slice(1)
+              }
+            })
+          }
+
+          // Weekly
+          const sliceDays = () => {
+            const openDays = 7 - (this.time.isoDay - 1)
+            const daysToCut = this.task.completion.length - openDays
+            if (Math.sign(daysToCut) === -1) {
+            } else {
+              this.task.completion = this.task.completion.slice(daysToCut)
+            }
+          }
+
+          // Case Weekly
+          if (this.task.schedule.periodicity === 'Weekly') {
+            switch (this.task.schedule.weekly) {
+              case 'Everyday' :
+                slotsGenerator(7)
+                break
+              case 'x1 time' :
+                slotsGenerator(1)
+                break
+              case 'x2 times' :
+                slotsGenerator(2)
+                break
+              case 'x3 times' :
+                slotsGenerator(3)
+                break
+              case 'x4 times' :
+                slotsGenerator(4)
+                break
+              case 'x5 times' :
+                slotsGenerator(5)
+                break
+              case 'x6 times' :
+                slotsGenerator(6)
+                break
+            }
+          }
+          // Case Specific days
+          if (this.task.schedule.periodicity === 'On specific days') {
+            slotsGenerator(this.task.schedule.specificDays.length, true)
+          }
+
+          // Case Single
+          if (this.task.schedule.periodicity === 'Once') {
+            if (this.task.schedule.once === 'single') {
               slotsGenerator(1)
-              break
-            case 'x2 times' :
-              slotsGenerator(2)
-              break
-            case 'x3 times' :
-              slotsGenerator(3)
-              break
-            case 'x4 times' :
-              slotsGenerator(4)
-              break
-            case 'x5 times' :
-              slotsGenerator(5)
-              break
-            case 'x6 times' :
-              slotsGenerator(6)
-              break
+            }
           }
         }
-        if (this.task.schedule.periodicity === 'On specific days') {
-          slotsGenerator(this.task.schedule.specificDays.length, true)
-        }
-        if (this.task.schedule.periodicity === 'Once') {
-          if (this.task.schedule.once === 'single') {
-            slotsGenerator(1)
-          }
-        }
-        // Single -> 1
       },
       deep: true
     },
@@ -452,6 +497,7 @@ export default {
       document.getElementsByClassName('dialogTaskScrollablePart')[0].scrollTop = 0
     },
     storeCurrentTask () {
+      // Populate local datas with current task data retrieved from utility
       if (this.storeCurrentTask !== 'new') {
         const retrievedTask = JSON.parse(JSON.stringify(this.$store.state.tasks[this.storeCurrentTask]))
         this.task = retrievedTask
@@ -492,33 +538,28 @@ export default {
           const taskId = JSON.parse(JSON.stringify(this.task.id))
           const task = JSON.parse(JSON.stringify(this.task))
           this.updateTask({ taskId, task })
-          EventBus.$emit('closeTasksListPanels')
-          this.toggleTaskDialog(false)
         } else {
           /// Save
           this.task.id = 'newTask' + parseInt(Math.random() * 1000)
           this.addNewTask(JSON.parse(JSON.stringify(this.task)))
           this.disableFirstTimeUser()
-          EventBus.$emit('closeTasksListPanels')
-          this.toggleTaskDialog(false)
         }
+        this.toggleTaskDialog(false)
+        this.setCurrentTask('new')
+        this.resetForm()
+        EventBus.$emit('closeTasksListPanels')
         EventBus.$emit('globalUpdate')
       }
     },
     handleCancel () {
       this.setCurrentTask('new')
+      this.resetForm()
       EventBus.$emit('closeTasksListPanels')
       this.toggleTaskDialog(false)
     },
     handleCreate () {
-      // Scroll
       // Reset
-      this.$refs.taskForm.reset()
-      this.task.subtasks = []
-      this.task.schedule.specificDays = []
-      this.schedule.active = 0
-      this.task.schedule.active = null
-      this.$v.task.$reset()
+      this.resetForm()
       this.setCurrentTask('new')
       this.toggleTaskDialog(true)
     },
@@ -527,11 +568,25 @@ export default {
       this.dialogDeleteTask = false
       this.toggleTaskDialog(false)
     },
+    resetForm () {
+      this.$v.task.$reset()
+      this.changeSchedule = false
+      this.task.title = null
+      this.task.description = null
+      this.task.category = null
+      this.schedule.active = 0
+      this.task.schedule.weekly = null
+      this.task.schedule.specificDays = []
+      this.task.schedule.once = null
+      this.task.subtasks = []
+      this.task.status = 'ongoing'
+      this.task.checked = false
+      this.task.checkTime = null
+      this.task.completion = []
+      this.task.disabled = null
+      this.task.completionsHistory = {}
+    },
     addNewSubTask () {
-      // console.log(document.getElementsByClassName('v-dialog v-dialog--active')[0])
-      let container = document.getElementById('taskDialog')
-      container.scrollTop = 0
-
       const subtaskId = 'newSubtask' + parseInt(Math.random() * 1000)
       this.task.subtasks.push({
         id: subtaskId,
@@ -548,12 +603,29 @@ export default {
       if (!subtask.name.$dirty) return errors
       !subtask.name.required && errors.push('Please set something here')
       return errors
+    },
+    disableScheduleGuard () {
+      this.changeSchedule = true
+      this.dialogEditSchedule = false
+      this.task.checked = false
+      this.task.subtasks.forEach(subtask => { subtask.checked = false })
+      console.log('disableScheduleGuard')
     }
+
   },
-  created () {
+  mounted () {
     EventBus.$on('createTask', () => {
       this.handleCreate()
     })
+
+    if (this.storeDialogTask === true) {
+      this.dialogTask = this.storeDialogTask
+    }
+  },
+  created () {
+    // EventBus.$on('createTask', () => {
+    //   this.handleCreate()
+    // })
   }
 }
 </script>
@@ -629,6 +701,26 @@ export default {
     .v-menu__content {
       .v-list__tile__avatar {
         min-width: 56px;
+      }
+    }
+  }
+
+  .theme--dark.v-btn.v-btn--disabled:not(.v-btn--icon):not(.v-btn--flat):not(.v-btn--outline) {
+    background-color: lighten(grey, 35%) !important;
+  }
+  .theme--dark.v-btn.v-btn--disabled .v-icon {
+    color: white !important;
+  }
+  .schedule {
+    position: relative;
+    .guard {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      &_disabled {
+        display: none;
       }
     }
   }

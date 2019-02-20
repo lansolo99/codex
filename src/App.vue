@@ -191,6 +191,8 @@ export default {
               }
             }
           }
+        } else {
+          value.disabled = false
         }
 
         const taskId = JSON.parse(JSON.stringify(key))

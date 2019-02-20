@@ -154,7 +154,8 @@ export default {
 
     }),
     filterTasks (periodicityStr) {
-      return Object.values(this.tasks)
+      const sortedTasks = []
+      const weeklyTasks = Object.values(this.tasks)
         .filter(task => {
           if (periodicityStr === 'Weeklies') {
             return task.schedule.periodicity === 'Weekly' ||
@@ -162,6 +163,41 @@ export default {
             (task.schedule.periodicity === 'Once' && task.schedule.once === 'single')
           }
         })
+
+      // Everydays
+      weeklyTasks.forEach(task => {
+        if (task.schedule.periodicity === 'Weekly' && task.schedule.weekly === 'Everyday') {
+          sortedTasks.push(task)
+        }
+      })
+      // x (n) time(s)
+      weeklyTasks.forEach(task => {
+        if (task.schedule.periodicity === 'Weekly' && task.schedule.weekly !== 'Everyday') {
+          sortedTasks.push(task)
+        }
+      })
+      // Singles
+      weeklyTasks.forEach(task => {
+        if (task.schedule.periodicity === 'Once' && task.schedule.once === 'single') {
+          sortedTasks.push(task)
+        }
+      })
+
+      // Specific days (not today)
+      weeklyTasks.forEach(task => {
+        if (task.schedule.periodicity === 'On specific days' && task.disabled === true) {
+          sortedTasks.push(task)
+        }
+      })
+
+      // Specific days (not today)
+      weeklyTasks.forEach(task => {
+        if (task.schedule.periodicity === 'On specific days' && task.disabled === false) {
+          sortedTasks.unshift(task)
+        }
+      })
+
+      return sortedTasks
     },
     getTaskDays (days) {
       let daysList = []

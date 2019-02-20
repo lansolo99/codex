@@ -24,14 +24,20 @@
                   <v-icon class="icon icon-question_mark white--text"></v-icon>
                 </v-btn>
                 <v-card>
-                  <v-card-title class="title primary white--text" primary-title>Profile level
+                  <v-card-title
+                    class="title primary white--text"
+                    primary-title
+                  >Achievements completion
                     <v-icon
                       right
                       class="white--text icon icon-delete close"
                       @click="dialogHelpProfile = false"
                     ></v-icon>
                   </v-card-title>
-                  <v-card-text>Your global level is your average weekly score based on your last 10 weeks scores. It can go up and down, it depends entirely to your discipline commitment throughout this time.</v-card-text>
+                  <v-card-text>
+                    The main metric is the average amount of your last 10 weeks completions (10 completed weeks = 100%).
+                    As it’s always based on your recent achievements, it can go up and down, so it depends entirely on your discipline commitment throughout this time.
+                  </v-card-text>
                 </v-card>
               </v-dialog>
             </v-flex>
@@ -72,10 +78,14 @@
             padding="16"
             height="10"
           >
-            <template slot="label" slot-scope="item">{{ item.value }}</template>
+            <template slot="label" slot-scope="item">{{ item.value }}%</template>
           </v-sparkline>
         </v-container>
       </v-card>
+
+      <!-- Stats reboot panel -->
+      <StatsReboot v-if="showReboot"/>
+
       <!-- Tasks distribution charts -->
       <div v-if="Object.keys(tasks).length" class="tasks_charts">
         <h6 class="subheader my-3 mt-4 black--text">Tasks completions</h6>
@@ -149,16 +159,19 @@
 
 import { mapState, mapGetters } from 'vuex'
 import VueApexCharts from 'vue-apexcharts'
+import StatsReboot from '@/components/StatsReboot'
 import Vue from 'vue'
 Vue.use(VueApexCharts)
 
 export default {
   name: 'Stats',
   components: {
+    StatsReboot,
     apexcharts: VueApexCharts
   },
   data () {
     return {
+      showReboot: false,
       dialogHelpProfile: null,
       levels: {
         trends: {
@@ -287,14 +300,27 @@ export default {
       for (let label of Object.keys(this.userData.stats.weeksRecords)) {
         labels.push('W' + label)
       }
-      return labels.slice((labels.length - 10), labels.length)
+      return labels.slice(-10)
     },
     setRecordWeeksValues () {
       let values = []
       for (let value of Object.values(this.userData.stats.weeksRecords)) {
         values.push(value)
       }
-      return values.slice((values.length - 10), values.length)
+      return values.slice(-10)
+    }
+  },
+  watch: {
+    tasks: {
+      handler (val, oldVal) {
+        if (!Object.keys(this.tasks).length && !this.userData.firstTime) {
+          this.showReboot = true
+        } else {
+          this.showReboot = false
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -538,7 +564,14 @@ export default {
       .apexcharts-xaxis-label {
         color: black;
         opacity: 0.6;
+        &:nth-child(2) {
+          font-weight: bolder;
+          opacity: 0.8;
+        }
       }
+      // .apexcharts-yaxis-texts-g{
+
+      // }
       .apexcharts-yaxis {
         transform: translate(36px, 3px) !important;
       }

@@ -1,33 +1,38 @@
 <template>
   <!-- ProfileForm -->
   <v-container class="profileForm primary pa-0">
-    <v-layout row wrap class="mt-4">
-      <v-flex xs-12 text-xs-center>
-        <v-avatar size="80px" color="rgba(0, 0, 0, 0.4)">
-          <img v-if="userData.avatarImage" src alt="Avatar">
-          <img v-else :src="require(`@/assets/images/avatar/${this.userData.avatarDefault}.svg`)">
-          <v-btn
-            v-if="editing"
-            floating
-            fab
-            absolute
-            bottom
-            right
-            small
-            dark
-            class="colorGreen mr-0"
-          >
-            <v-icon class="icon icon-edit"></v-icon>
-          </v-btn>
-        </v-avatar>
-      </v-flex>
-    </v-layout>
     <v-layout>
       <v-flex xs-12>
         <v-form ref="profileForm" lazy-validation>
           <!-- Account -->
           <div class="fieldset fieldset--account">
             <h6 class="subheader subheader--first my-3 black--text">Account</h6>
+            <v-card class="secondary pa-3">
+              <v-layout row wrap>
+                <v-flex xs-12 text-xs-center>
+                  <v-avatar size="80px" color="rgba(0, 0, 0, 0.4)">
+                    <img v-if="userData.avatarImage" src alt="Avatar">
+                    <img
+                      v-else
+                      :src="require(`@/assets/images/avatar/${this.userData.avatarDefault}.svg`)"
+                    >
+                    <v-btn
+                      v-if="editing"
+                      floating
+                      fab
+                      absolute
+                      bottom
+                      right
+                      small
+                      dark
+                      class="colorGreen mr-0"
+                    >
+                      <v-icon class="icon icon-edit"></v-icon>
+                    </v-btn>
+                  </v-avatar>
+                </v-flex>
+              </v-layout>
+            </v-card>
             <v-card class="pt-3 pl-3 pr-3 pb-0">
               <v-text-field
                 :disabled="!editing"
@@ -322,6 +327,9 @@ export default {
     .v-input__append-inner {
       display: none;
     }
+  }
+  .theme--light.v-input--is-disabled .v-label {
+    opacity: 0.7;
   }
 }
 </style>
