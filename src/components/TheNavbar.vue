@@ -1,5 +1,4 @@
 <template>
-  <!-- <div class="headline text-xs-center pa-5">Active: {{ bottomNav }}</div> -->
   <v-bottom-nav :active.sync="bottomNav" :value="true" color="primary" app fixed>
     <v-btn to="/" flat color="white" value="tasks">
       <v-icon class="icon icon-check"></v-icon>

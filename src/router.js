@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+// import Login from './views/Login.vue'
 import Tasks from './views/Tasks.vue'
 import Stats from './views/Stats.vue'
 import Profile from './views/Profile.vue'

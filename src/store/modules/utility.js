@@ -1,6 +1,7 @@
 export default {
   namespaced: true,
   state: {
+    authUserID: 'userid1',
     periodicities: {
       id1: {
         name: 'Weeklies'

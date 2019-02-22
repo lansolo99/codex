@@ -22,6 +22,8 @@ import { getStringFromIsoDay } from '@/utils'
 import { EventBus } from '@/bus'
 import TheNavbar from '@/components/TheNavbar'
 import { mapState, mapGetters, mapActions } from 'vuex'
+import Vue from 'vue'
+import firebase from 'firebase'
 
 export default {
   name: 'App',
@@ -29,8 +31,11 @@ export default {
     return {
       toolbarConf: 'toolbarTasks',
       isoDay: null,
-      isoWeek: null
-
+      isoWeek: null,
+      userTest: {
+        name: 'myname',
+        age: 29
+      }
     }
   },
   components: {
@@ -67,6 +72,7 @@ export default {
       updateCurrentUserWeek: 'time/updateCurrentUserWeek',
       updateTime: 'time/updateTime',
       incrementAddedDays: 'utility/incrementAddedDays',
+      addDatas: 'tasks/addDatas',
       updateTask: 'tasks/updateTask',
       deleteTask: 'tasks/deleteTask',
       rebootWeeklyTasksCompletions: 'tasks/rebootWeeklyTasksCompletions',
@@ -253,12 +259,36 @@ export default {
       this.globalUpdate(this.utility.addedDays)
     }
   },
-  mounted () {
-  },
   created () {
     // Helper for last connexion date :
     // console.log(format(new Date(2019, 0, 18, 11, 45, 5, 123), 'DD/MM/YYYY'))
     // console.log(getTime(new Date(2019, 0, 18, 11, 45, 5, 123)))
+
+    // FIREBASE
+
+    // (Try) Add new user node
+    firebase.database()
+      .ref('users')
+      .push(this.userTest)
+
+    // (Try ) Add new user node and add the generated firebase id as its own id property
+    firebase.database().ref('users').on('value', snapshot => {
+      // this.userTest.push({ id: 'sijfisdfo' })
+      Vue.set(this.userTest, 'id', snapshot.key)
+    })
+
+    firebase.database()
+      .ref('users')
+      .child(this.utility.authUserID)
+      .child('profile')
+      .child('wrapper')
+      .on('value', snapshot => {
+        console.log(snapshot.val())
+        const key = snapshot.key
+        const val = snapshot.val()
+        // (Try) Populate tasks store with firebase data
+        this.addDatas({ key, val })
+      })
 
     // GLOBAL UPDATES EVENT
     EventBus.$on('globalUpdate', () => {

@@ -1,11 +1,22 @@
 import Vue from 'vue'
-import sourceData from '@/data'
+// import sourceData from '@/data'
 
 export default {
   namespaced: true,
-  state: sourceData.tasks,
+  state: {},
   getters: {},
   actions: {
+    addDatas ({
+      commit
+    }, {
+      key,
+      val
+    }) {
+      commit('addDatas', {
+        key,
+        val
+      })
+    },
     addNewTask ({
       commit
     }, payload) {
@@ -68,6 +79,16 @@ export default {
     }
   },
   mutations: {
+    addDatas (state, {
+      key,
+      val
+    }) {
+      console.log('key = ' + key)
+      console.log('val = ' + val)
+      // const valu = 'test'
+      // const valu = 'test'
+      Vue.set(state, key, val)
+    },
     addNewTask (state, payload) {
       Vue.set(state, payload.id, payload)
     },
