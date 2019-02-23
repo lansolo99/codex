@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import firebase from 'firebase'
 import sourceData from '@/data'
 
 export default {
@@ -14,6 +15,23 @@ export default {
     }
   },
   actions: {
+    fetchProfileDatas ({
+      commit
+    }, authUserID) {
+      console.log('fetchProfileDatas')
+      return new Promise((resolve, reject) => {
+        firebase.database()
+          .ref('users')
+          .child(authUserID)
+          .child('profile')
+          .once('value', snapshot => {
+            console.log(snapshot.val())
+            commit('updateProfile', snapshot.val())
+            resolve('yes')
+            // this.updateProfile(snapshot.val())
+          })
+      })
+    },
     disableFirstTimeUser ({
       commit
     }) {

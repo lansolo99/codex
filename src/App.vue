@@ -69,6 +69,7 @@ export default {
   },
   methods: {
     ...mapActions({
+      fetchProfileDatas: 'profile/fetchProfileDatas',
       updateProfile: 'profile/updateProfile',
       recordWeekScore: 'profile/recordWeekScore',
       updateCurrentUserWeek: 'time/updateCurrentUserWeek',
@@ -82,6 +83,7 @@ export default {
     }),
     globalUpdate (addedDays = 0) {
       // GLOBAL UPDATES
+      console.log('globalUpdate')
 
       // console.log('last connexion date = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY'))
 
@@ -288,16 +290,22 @@ export default {
     })
 
     // FIREBASE
+    this.fetchProfileDatas(this.utility.authUserID)
+      .then(res => {
+        console.log('fetchProfileDatas action done')
+        console.log(res)
+        this.globalUpdate()
+      })
 
     // Fetch profile
-    firebase.database()
-      .ref('users')
-      .child(this.utility.authUserID)
-      .child('profile')
-      .once('value', snapshot => {
-        console.log(snapshot.val())
-        this.updateProfile(snapshot.val())
-      })
+    // firebase.database()
+    //   .ref('users')
+    //   .child(this.utility.authUserID)
+    //   .child('profile')
+    //   .once('value', snapshot => {
+    //     console.log(snapshot.val())
+    //     this.updateProfile(snapshot.val())
+    //   })
 
     // (Try) Add new user node
     // firebase.database()
