@@ -20,7 +20,7 @@
             ></v-progress-linear>
             <div
               class="progressbarContainer__value white--text text-xs-right"
-            >{{this.userData.stats.progressWeek}}%</div>
+            >{{this.userData.stats.progressWeek || 0}}%</div>
           </div>
         </v-card>
       </v-flex>

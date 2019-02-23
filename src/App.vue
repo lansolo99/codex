@@ -22,7 +22,9 @@ import { getStringFromIsoDay } from '@/utils'
 import { EventBus } from '@/bus'
 import TheNavbar from '@/components/TheNavbar'
 import { mapState, mapGetters, mapActions } from 'vuex'
+// eslint-disable-next-line
 import Vue from 'vue'
+// eslint-disable-next-line
 import firebase from 'firebase'
 
 export default {
@@ -101,11 +103,11 @@ export default {
         new Date(this.userData.connexionDateLast),
         { weekStartsOn: 1 }
       )
-
       const currentUserWeek = parseInt(lastUserRecordedWeek + getWeeksPassedSinceLastConnexion)
       EventBus.$emit('updateCurrentUserWeek', currentUserWeek)
 
-      // WEEK RESET : wipe current tasks completions & delete singles
+      // WEEK RESET
+      // Wipe current tasks completions & delete singles
       if (!isThisWeekCustom) {
         console.log('not the same week')
         // Wipe current tasks completions
@@ -208,7 +210,6 @@ export default {
 
       // Update connexionDateLast
       this.userData.connexionDateLast = addDays(new Date(Date.now()), addedDays)
-
       this.updateProfile(this.userData)
       // console.log('updated last connexion date = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY') + 'updated')
 
@@ -264,56 +265,51 @@ export default {
     // console.log(format(new Date(2019, 0, 18, 11, 45, 5, 123), 'DD/MM/YYYY'))
     // console.log(getTime(new Date(2019, 0, 18, 11, 45, 5, 123)))
 
-    // FIREBASE
+    // EVENTS DEFINTIONS
 
-    // (Try) Add new user node
-    firebase.database()
-      .ref('users')
-      .push(this.userTest)
-
-    // (Try ) Add new user node and add the generated firebase id as its own id property
-    firebase.database().ref('users').on('value', snapshot => {
-      // this.userTest.push({ id: 'sijfisdfo' })
-      Vue.set(this.userTest, 'id', snapshot.key)
-    })
-
-    firebase.database()
-      .ref('users')
-      .child(this.utility.authUserID)
-      .child('profile')
-      .child('wrapper')
-      .on('value', snapshot => {
-        console.log(snapshot.val())
-        const key = snapshot.key
-        const val = snapshot.val()
-        // (Try) Populate tasks store with firebase data
-        this.addDatas({ key, val })
-      })
-
-    // GLOBAL UPDATES EVENT
+    // globalUpdate
     EventBus.$on('globalUpdate', () => {
       this.globalUpdate(this.utility.addedDays)
     })
 
-    // RECORD PROGRESS EVENT
-    EventBus.$on('recordProgress', () => {
-      // Set date
-      const isoDay = getISODay(addDays(new Date(Date.now()), this.utility.addedDays))
-      const isoWeek = getISOWeek(addDays(new Date(Date.now()), this.utility.addedDays))
-
-      this.updateTime({ isoDay, isoWeek })
-
-      // Do calculations
-      this.calcWeeklyCompletion()
-    })
-
-    // Update current user week
+    // updateCurrentUserWeek
     EventBus.$on('updateCurrentUserWeek', (currentUserWeek) => {
       this.updateCurrentUserWeek(currentUserWeek)
     })
 
+    // recordProgress
+    EventBus.$on('recordProgress', () => {
+      // Set date
+      const isoDay = getISODay(addDays(new Date(Date.now()), this.utility.addedDays))
+      const isoWeek = getISOWeek(addDays(new Date(Date.now()), this.utility.addedDays))
+      this.updateTime({ isoDay, isoWeek })
+      // Do calculations
+      this.calcWeeklyCompletion()
+    })
+
+    // FIREBASE
+
+    // Fetch profile
+    firebase.database()
+      .ref('users')
+      .child(this.utility.authUserID)
+      .child('profile')
+      .once('value', snapshot => {
+        console.log(snapshot.val())
+        this.updateProfile(snapshot.val())
+      })
+
+    // (Try) Add new user node
+    // firebase.database()
+    //   .ref('users')
+    //   .push(this.userTest)
+    // // (Try ) Add new user node and add the generated firebase id as its own id property
+    // firebase.database().ref('users').on('value', snapshot => {
+    //   Vue.set(this.userTest, 'id', snapshot.key)
+    // })
+
     // INITIAL CALL
-    this.globalUpdate()
+    // this.globalUpdate()
   }
 
 }

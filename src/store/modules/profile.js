@@ -4,10 +4,11 @@ import sourceData from '@/data'
 export default {
   namespaced: true,
   state: sourceData.profile,
+  // state: {},
   getters: {
     getProfileData (state) {
       const retrievedUserData = {
-        ...state.wrapper
+        ...state
       }
       return retrievedUserData
     }
@@ -48,23 +49,24 @@ export default {
   },
   mutations: {
     updateProfile (state, payload) {
-      Vue.set(state, 'wrapper', payload)
+      Object.assign(state, payload)
+      // Vue.set(state, 'profile', payload)
     },
     disableFirstTimeUser (state) {
-      state.wrapper.firstTime = false
+      state.firstTime = false
     },
     recordProgress (state, {
       progressToday,
       isoDay
     }) {
-      state.wrapper.stats.progressToday = progressToday
+      state.stats.progressToday = progressToday
     },
     recordWeekScore (state, {
       progressWeek,
       currentUserWeek
     }) {
-      state.wrapper.stats.progressWeek = progressWeek
-      Vue.set(state.wrapper.stats.weeksRecords, currentUserWeek, progressWeek)
+      state.stats.progressWeek = progressWeek
+      Vue.set(state.stats.weeksRecords, currentUserWeek, progressWeek)
     }
   }
 }

@@ -2,27 +2,76 @@
   "users": {
     "userid1": {
       "profile": {
-        "wrapper": {
-          "firstTime": true,
-          "connexionDateLast": 1550486705123,
-          "avatarImage": null,
-          "avatarDefault": "man",
-          "pseudo": "Lansolo4",
-          "email": "lansolo99@hotmail.fr",
-          "password": "mypassword",
-          "gender": "Female",
-          "maritalStatus": "Undefined",
-          "age": 25,
-          "city": "Marseille",
-          "country": "France",
-          "occupation": "Webdesigner",
-          "stats": {
-            "dailyTasks": null,
-            "dailyTasksChecked": null,
-            "progressWeek": null,
-            "weeksRecords": {
-              "1": 0
-            }
+        "firstTime": true,
+        "connexionDateLast": 1550486705123,
+        "avatarImage": null,
+        "avatarDefault": "man",
+        "pseudo": "Lansolo4",
+        "email": "lansolo99@hotmail.fr",
+        "password": "mypassword",
+        "gender": "Female",
+        "maritalStatus": "Undefined",
+        "age": 25,
+        "city": "Marseille",
+        "country": "France",
+        "occupation": "Webdesigner",
+        "stats": {
+          "dailyTasks": null,
+          "dailyTasksChecked": null,
+          "progressWeek": null,
+          "weeksRecords": {
+            "1": 0
+          }
+        }
+      },
+      "tasks": {
+
+        "id1": {
+          "id": "newTask45",
+          "startDate": 1550942434593,
+          "title": "dxfxdf",
+          "description": "None",
+          "category": "Nutrition",
+          "schedule": {
+            "periodicity": "Weekly",
+            "weekly": "Everyday",
+            "specificDays": [],
+            "once": null
+          },
+          "subtasks": [],
+          "status": "ongoing",
+          "checked": false,
+          "checkTime": null,
+          "completion": [0, 0],
+          "disabled": false,
+          "completionsHistory": {
+            "Week 1": [0, 0, 2, 2, 2, 2, 2]
+          }
+        }
+
+      }
+    },
+    "userid2": {
+      "profile": {
+        "firstTime": true,
+        "connexionDateLast": 1550486705123,
+        "avatarImage": null,
+        "avatarDefault": "man",
+        "pseudo": "Lansolo4",
+        "email": "lansolo99@hotmail.fr",
+        "password": "mypassword",
+        "gender": "Female",
+        "maritalStatus": "Undefined",
+        "age": 25,
+        "city": "Marseille",
+        "country": "France",
+        "occupation": "Webdesigner",
+        "stats": {
+          "dailyTasks": null,
+          "dailyTasksChecked": null,
+          "progressWeek": null,
+          "weeksRecords": {
+            "1": 0
           }
         }
       },

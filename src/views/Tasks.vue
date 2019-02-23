@@ -2,7 +2,7 @@
   <div>
     <TaskHeader/>
     <v-container fluid class="mb-4 tasks">
-      <TasksWelcome v-if="profile.wrapper.firstTime"/>
+      <TasksWelcome v-if="profile.firstTime"/>
       <TasksReboot v-if="showReboot"/>
       <div>
         <div
@@ -50,7 +50,7 @@ export default {
   watch: {
     tasks: {
       handler (val, oldVal) {
-        if (!Object.keys(this.tasks).length && !this.profile.wrapper.firstTime) {
+        if (!Object.keys(this.tasks).length && !this.profile.firstTime) {
           this.showReboot = true
         } else {
           this.showReboot = false
