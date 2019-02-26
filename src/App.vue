@@ -33,11 +33,7 @@ export default {
     return {
       toolbarConf: 'toolbarTasks',
       isoDay: null,
-      isoWeek: null,
-      userTest: {
-        name: 'myname',
-        age: 29
-      }
+      isoWeek: null
     }
   },
   components: {
@@ -45,6 +41,7 @@ export default {
   },
   computed: {
     ...mapState({
+      profile: state => state.profile,
       tasks: state => state.tasks,
       time: state => state.time,
       utility: state => state.utility
@@ -75,7 +72,8 @@ export default {
       updateCurrentUserWeek: 'time/updateCurrentUserWeek',
       updateTime: 'time/updateTime',
       incrementAddedDays: 'utility/incrementAddedDays',
-      addDatas: 'tasks/addDatas',
+      tasksReady: 'utility/tasksReady',
+      fetchTasksDatas: 'tasks/fetchTasksDatas',
       updateTask: 'tasks/updateTask',
       deleteTask: 'tasks/deleteTask',
       rebootWeeklyTasksCompletions: 'tasks/rebootWeeklyTasksCompletions',
@@ -84,6 +82,7 @@ export default {
     globalUpdate (addedDays = 0) {
       // GLOBAL UPDATES
       console.log('globalUpdate')
+      console.log('addedDays = ' + addedDays)
 
       // console.log('last connexion date = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY'))
 
@@ -218,6 +217,8 @@ export default {
       EventBus.$emit('recordProgress')
     },
     calcWeeklyCompletion () {
+      console.log('calcWeeklyCompletion')
+
       // Filter weekly tasks from tasks
       const weeklyTasks = Object.values(this.tasks)
         .filter(task => {
@@ -253,7 +254,10 @@ export default {
 
       // Update store
       const progressWeek = total
+      console.log('progressWeek = ' + progressWeek)
+
       const currentUserWeek = this.time.currentUserWeek
+
       this.recordWeekScore({ progressWeek, currentUserWeek })
     },
     simulateNextDay () {
@@ -290,22 +294,21 @@ export default {
     })
 
     // FIREBASE
+
+    // Fetch profile datas
     this.fetchProfileDatas(this.utility.authUserID)
       .then(res => {
         console.log('fetchProfileDatas action done')
-        console.log(res)
         this.globalUpdate()
       })
 
-    // Fetch profile
-    // firebase.database()
-    //   .ref('users')
-    //   .child(this.utility.authUserID)
-    //   .child('profile')
-    //   .once('value', snapshot => {
-    //     console.log(snapshot.val())
-    //     this.updateProfile(snapshot.val())
-    //   })
+    // Fetch tasks datas
+    this.fetchTasksDatas(this.utility.authUserID)
+      .then(res => {
+        console.log('fetchTasksDatas action done')
+        this.tasksReady()
+        this.globalUpdate()
+      })
 
     // (Try) Add new user node
     // firebase.database()
@@ -319,7 +322,6 @@ export default {
     // INITIAL CALL
     // this.globalUpdate()
   }
-
 }
 
 </script>

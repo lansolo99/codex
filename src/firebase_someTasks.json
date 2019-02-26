@@ -2,7 +2,7 @@
   "users": {
     "userid1": {
       "profile": {
-        "firstTime": true,
+        "firstTime": false,
         "connexionDateLast": 1550486705123,
         "avatarImage": null,
         "avatarDefault": "man",
@@ -11,14 +11,12 @@
         "password": "mypassword",
         "gender": "Female",
         "maritalStatus": "Undefined",
-        "age": 25,
+        "age": 34,
         "city": "Marseille",
         "country": "France",
         "occupation": "Webdesigner",
         "stats": {
-          "dailyTasks": null,
-          "dailyTasksChecked": null,
-          "progressWeek": null,
+          "progressWeek": 0,
           "weeksRecords": {
             "1": 0
           }

@@ -5,6 +5,9 @@ import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
 import store from './store/store'
+import {
+  mapActions
+} from 'vuex'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import Vuelidate from 'vuelidate'
@@ -26,5 +29,14 @@ firebase.initializeApp(config)
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  methods: {
+    ...mapActions({
+      fetchUser: 'utility/fetchUser'
+    })
+  },
+  beforeCreate () {
+    // maybe later use this
+    // this.fetchUser
+  }
 }).$mount('#app')

@@ -1,0 +1,21 @@
+{
+  "firstTime": false,
+  "connexionDateLast": 1550486705123,
+  "avatarImage": null,
+  "avatarDefault": "",
+  "pseudo": "",
+  "email": "",
+  "password": "",
+  "gender": "",
+  "maritalStatus": "",
+  "age": 0,
+  "city": "",
+  "country": "",
+  "occupation": "",
+  "stats": {
+    "progressWeek": 0,
+    "weeksRecords": {
+      "1": 0
+    }
+  }
+}

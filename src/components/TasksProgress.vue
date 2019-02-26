@@ -1,6 +1,6 @@
 <template>
   <v-container class="taskProgress pt-0 pb-2">
-    <v-layout>
+    <v-layout v-if="utility.appReady">
       <v-flex xs12>
         <v-card
           flat
@@ -13,14 +13,14 @@
           </span>
           <div class="progressbarContainer">
             <v-progress-linear
-              v-model="this.userData.stats.progressWeek"
+              v-model="userData.stats.progressWeek"
               height="15"
               class="mt-2"
               width="80%"
             ></v-progress-linear>
             <div
               class="progressbarContainer__value white--text text-xs-right"
-            >{{this.userData.stats.progressWeek || 0}}%</div>
+            >{{userData.stats.progressWeek || 0}}%</div>
           </div>
         </v-card>
       </v-flex>
@@ -38,27 +38,29 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      dailyTasks: null,
-      dailyTasksChecked: null,
-      progressToday: null,
-      progressWeek: null
+      dataReady: false,
+      test: 1
     }
   },
   computed: {
     ...mapState({
+      profile: state => state.profile,
       tasks: state => state.tasks,
-      time: state => state.time
+      time: state => state.time,
+      utility: state => state.utility
     }),
     ...mapGetters({
       userData: 'profile/getProfileData'
     }),
+    profileTest () {
+      return this.userData
+    },
     tasksChecked: function () {
       return this.tasks
     },
     getStringDay () {
       return getStringFromIsoDay(this.time.isoDay)
     }
-
   },
   methods: {
     ...mapActions({
@@ -66,9 +68,6 @@ export default {
       recordWeekScore: 'profile/recordWeekScore',
       updateProfile: 'profile/updateProfile'
     })
-
-  },
-  created () {
 
   }
 }

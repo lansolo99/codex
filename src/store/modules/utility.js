@@ -2,6 +2,8 @@ export default {
   namespaced: true,
   state: {
     authUserID: 'userid1',
+    appReady: false,
+    tasksReady: false,
     periodicities: {
       id1: {
         name: 'Weeklies'
@@ -18,6 +20,24 @@ export default {
   },
   getters: {},
   actions: {
+    fetchUser ({
+      commit
+    }) {
+      //
+    },
+    appReady ({
+      commit
+    }) {
+      commit('appReady')
+    },
+    tasksReady ({
+      commit
+    }) {
+      // setTimeout(function () {
+      //   commit('tasksReady')
+      // }, 1000)
+      commit('tasksReady')
+    },
     incrementAddedDays ({
       commit
     }) {
@@ -40,6 +60,14 @@ export default {
     }
   },
   mutations: {
+    appReady (state) {
+      console.log('appReady')
+      state.appReady = true
+    },
+    tasksReady (state) {
+      console.log('tasksReady')
+      state.tasksReady = true
+    },
     incrementAddedDays (state) {
       state.addedDays += 1
     },

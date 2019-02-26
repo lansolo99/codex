@@ -1,6 +1,6 @@
 {
   "profile": {
-    "firstTime": false,
+    "firstTime": true,
     "connexionDateLast": 1550486705123,
     "avatarImage": null,
     "avatarDefault": "man",
@@ -22,24 +22,5 @@
       }
     }
   },
-  "tasks": {
-    "id1": {
-      "id": "id1",
-      "startDate": 1549346534967,
-      "title": "Everyday workout",
-      "description": "Workout session",
-      "category": "Sport",
-      "schedule": {
-        "periodicity": "Weekly",
-        "weekly": "Everyday",
-        "specificDays": [],
-        "once": "single"
-      },
-      "subtasks": [],
-      "status": "complete",
-      "checked": false,
-      "checkTime": 1549723170459,
-      "completion": [1, 1, 1, 1, 1, 1, 0]
-    }
-  }
+  "tasks": {}
 }

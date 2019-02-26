@@ -1,0 +1,24 @@
+{
+    "newTask3001": {
+        "id": "newTask3001",
+        "startDate": 1550942434593,
+        "title": "local",
+        "description": "None",
+        "category": "Nutrition",
+        "schedule": {
+            "periodicity": "Weekly",
+            "weekly": "Everyday",
+            "specificDays": [],
+            "once": null
+        },
+        "subtasks": [],
+        "status": "ongoing",
+        "checked": false,
+        "checkTime": null,
+        "completion": [0, 0],
+        "disabled": false,
+        "completionsHistory": {
+            "Week 1": [0, 0, 2, 2, 2, 2, 2]
+        }
+    }
+}

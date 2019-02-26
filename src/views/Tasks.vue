@@ -1,16 +1,18 @@
 <template>
   <div>
     <TaskHeader/>
-    <v-container fluid class="mb-4 tasks">
+    <v-container fluid class="mb-4 tasks" v-if="utility.tasksReady">
       <TasksWelcome v-if="profile.firstTime"/>
       <TasksReboot v-if="showReboot"/>
+
       <div>
         <div
           class="periodicityWrapper"
           v-for="(periodicity,key,index) in utility.periodicities"
           :key="key"
         >
-          <TasksList :periodicity="periodicity" :ind="index" :tasks="tasks"/>
+          <TasksList :periodicity="periodicity" :ind="index"/>
+          <!-- tasks.length {{ Object.keys(tasks).length }} -->
         </div>
       </div>
     </v-container>
@@ -50,7 +52,9 @@ export default {
   watch: {
     tasks: {
       handler (val, oldVal) {
-        if (!Object.keys(this.tasks).length && !this.profile.firstTime) {
+        if ((!Object.keys(this.tasks).length || Object.keys(this.tasks).length === 0) && !this.profile.firstTime) {
+          console.log('this.tasks).length = ' + Object.keys(this.tasks).length)
+
           this.showReboot = true
         } else {
           this.showReboot = false

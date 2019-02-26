@@ -1,6 +1,6 @@
 <template>
   <div class="taskList">
-    <v-expansion-panel v-model="panel" class="mt-2" v-if="utility.tasksReady">
+    <v-expansion-panel v-model="panel" class="mt-2">
       <!-- <v-expansion-panel-content v-for="(task,key) in Object.values(tasks)" :key="key"> -->
       <v-expansion-panel-content v-for="(task,key) in filterTasks(periodicity.name)" :key="key">
         <!-- Bar part -->
@@ -18,7 +18,7 @@
             <v-checkbox
               class="preventExpansion"
               @click.native.stop
-              v-if="task.subtasks || task.disabled"
+              v-if="task.subtasks.length > 0 || task.disabled === true"
             ></v-checkbox>
           </v-flex>
           <v-flex shrink class="ml-2">
@@ -26,8 +26,47 @@
               <img :src="require(`@/assets/images/icons_categories/${task.category}.svg`)" alt>
             </div>
           </v-flex>
+
           <v-flex grow class="pt-1 pl-2 pr-3 pb-1 body-1">
             <span :class="['custom-title', { completed: task.checked } ]">{{task.title}}</span>
+          </v-flex>
+
+          <v-spacer></v-spacer>
+
+          <v-flex shrink width="0"></v-flex>
+
+          <!-- If subtasks -->
+          <v-flex v-if="task.subtasks.length > 0" xs12 class="subtasks">
+            <v-layout
+              v-for="(subtask,key) in task.subtasks"
+              :key="key"
+              row
+              wrap
+              :class="`task ${task.status}`"
+            >
+              <v-flex shrink class="pt-2 icon-slot">
+                <v-icon class="icon icon-arrow_return"></v-icon>
+              </v-flex>
+              <v-flex shrink class="pt-1 ml-3 checkboxFlexContainer">
+                <v-checkbox
+                  @click.native.stop
+                  class="ma-0 pa-0"
+                  color="colorGreen"
+                  hide-details
+                  :disabled="task.disabled === true"
+                  :input-value="subtask.checked"
+                  @change="updateCheckedStatus(task.id, $event, 'subtask',subtask.id)"
+                ></v-checkbox>
+                <v-checkbox
+                  class="preventExpansion"
+                  @click.native.stop
+                  v-if="task.disabled === true"
+                ></v-checkbox>
+              </v-flex>
+              <v-flex grow class="pa-1 pt-2 pl-2 pr-3 body-1">
+                <span :class="['name', { completed: subtask.checked } ]">{{subtask.name}}</span>
+              </v-flex>
+            </v-layout>
           </v-flex>
         </v-layout>
         <!-- Expanded part -->
@@ -97,6 +136,9 @@ export default {
     }),
     tasksChecked: function () {
       return this.tasks
+    },
+    testObj () {
+      return Object.values(this.tasks)[0].category
     }
   },
   watch: {
@@ -126,8 +168,8 @@ export default {
             (task.schedule.periodicity === 'Once' && task.schedule.once === 'single')
           }
         })
-      // console.log('weeklyTasks.length = ' + weeklyTasks.length)
-      // console.log(Object.values(this.tasks).length)
+      console.log('weeklyTasks.length = ' + weeklyTasks.length)
+      console.log(Object.values(this.tasks).length)
 
       // Everydays
       weeklyTasks.forEach(task => {
@@ -184,12 +226,10 @@ export default {
       let singleSlotOrFullTasks
 
       // Is task single slot or full task ?
-      if (this.tasks[taskId].completion) {
-        if (this.tasks[taskId].completion.length === 1 || (this.tasks[taskId].completion.length > 1 && !this.tasks[taskId].completion.includes(0))) {
-          singleSlotOrFullTasks = true
-        } else {
-          singleSlotOrFullTasks = false
-        }
+      if (this.tasks[taskId].completion.length === 1 || (this.tasks[taskId].completion.length > 1 && !this.tasks[taskId].completion.includes(0))) {
+        singleSlotOrFullTasks = true
+      } else {
+        singleSlotOrFullTasks = false
       }
 
       // CASE 1 : NOT CHECKED
@@ -227,7 +267,7 @@ export default {
       this.updateTasksCompletionsHistory({ currentUserWeek, isoDay })
     },
     hasTaskSubtasks (task) {
-      return !!task.subtasks
+      return task.subtasks.length > 0
     },
     handleEdit (taskId) {
       this.setCurrentTask(taskId)

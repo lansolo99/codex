@@ -1,20 +1,27 @@
 import Vue from 'vue'
-// import sourceData from '@/data'
+import firebase from 'firebase'
+// import sourceData from '@/tasks'
 
 export default {
   namespaced: true,
+  // state: sourceData,
   state: {},
   getters: {},
   actions: {
-    addDatas ({
+    fetchTasksDatas ({
       commit
-    }, {
-      key,
-      val
-    }) {
-      commit('addDatas', {
-        key,
-        val
+    }, authUserID) {
+      console.log('fetchTasksDatas')
+      return new Promise((resolve, reject) => {
+        firebase.database()
+          .ref('users')
+          .child(authUserID)
+          .child('tasks')
+          .once('value', snapshot => {
+            console.log(snapshot.val())
+            commit('fetchTasksDatas', snapshot.val())
+            resolve()
+          })
       })
     },
     addNewTask ({
@@ -79,18 +86,17 @@ export default {
     }
   },
   mutations: {
-    addDatas (state, {
-      key,
-      val
-    }) {
-      console.log('key = ' + key)
-      console.log('val = ' + val)
-      // const valu = 'test'
-      // const valu = 'test'
-      Vue.set(state, key, val)
-    },
     addNewTask (state, payload) {
       Vue.set(state, payload.id, payload)
+    },
+    fetchTasksDatas (state, payload) {
+      for (let [key, value] of Object.entries(payload)) {
+        console.log('key = ' + key)
+        console.log('value = ' + value)
+        Vue.set(state, key, value)
+      }
+
+      // Object.assign(state, payload)
     },
     updateTask (state, {
       taskId,

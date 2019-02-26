@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import firebase from 'firebase'
-import sourceData from '@/data'
+import sourceData from '@/profile'
 
 export default {
   namespaced: true,
-  state: sourceData.profile,
-  // state: {},
+  state: sourceData,
   getters: {
     getProfileData (state) {
+      // return state
       const retrievedUserData = {
         ...state
       }
@@ -27,8 +27,7 @@ export default {
           .once('value', snapshot => {
             console.log(snapshot.val())
             commit('updateProfile', snapshot.val())
-            resolve('yes')
-            // this.updateProfile(snapshot.val())
+            resolve()
           })
       })
     },
@@ -42,23 +41,16 @@ export default {
     }, payload) {
       commit('updateProfile', payload)
     },
-    recordProgress ({
-      commit
-    }, {
-      progressToday,
-      isoDay
-    }) {
-      commit('recordProgress', {
-        progressToday,
-        isoDay
-      })
-    },
     recordWeekScore ({
-      commit
+      commit,
+      dispatch
     }, {
       progressWeek,
       currentUserWeek
     }) {
+      commit('utility/appReady', null, {
+        root: true
+      })
       commit('recordWeekScore', {
         progressWeek,
         currentUserWeek
@@ -68,22 +60,15 @@ export default {
   mutations: {
     updateProfile (state, payload) {
       Object.assign(state, payload)
-      // Vue.set(state, 'profile', payload)
     },
     disableFirstTimeUser (state) {
       state.firstTime = false
-    },
-    recordProgress (state, {
-      progressToday,
-      isoDay
-    }) {
-      state.stats.progressToday = progressToday
     },
     recordWeekScore (state, {
       progressWeek,
       currentUserWeek
     }) {
-      state.stats.progressWeek = progressWeek
+      Vue.set(state.stats, 'progressWeek', progressWeek)
       Vue.set(state.stats.weeksRecords, currentUserWeek, progressWeek)
     }
   }
