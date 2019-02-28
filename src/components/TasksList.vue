@@ -13,12 +13,12 @@
               color="colorGreen"
               :disabled="hasTaskSubtasks(task) || task.disabled === true"
               :input-value="task.checked"
-              @change="updateCheckedStatus(task.id, $event, 'task')"
+              @change="updateCheckedStatus(task.id, $event, 'task', key)"
             ></v-checkbox>
             <v-checkbox
               class="preventExpansion"
               @click.native.stop
-              v-if="task.subtasks || task.disabled"
+              v-if="hasTaskSubtasks(task) || task.disabled"
             ></v-checkbox>
           </v-flex>
           <v-flex shrink class="ml-2">
@@ -28,6 +28,42 @@
           </v-flex>
           <v-flex grow class="pt-1 pl-2 pr-3 pb-1 body-1">
             <span :class="['custom-title', { completed: task.checked } ]">{{task.title}}</span>
+          </v-flex>
+          <v-spacer></v-spacer>
+
+          <v-flex shrink width="0"></v-flex>
+          <!-- If subtasks -->
+          <v-flex v-if="task.subtasks" xs12 class="subtasks">
+            <v-layout
+              v-for="(subtask,key) in task.subtasks"
+              :key="key"
+              row
+              wrap
+              :class="`task ${task.status}`"
+            >
+              <v-flex shrink class="pt-2 icon-slot">
+                <v-icon class="icon icon-arrow_return"></v-icon>
+              </v-flex>
+              <v-flex shrink class="pt-1 ml-3 checkboxFlexContainer">
+                <v-checkbox
+                  @click.native.stop
+                  class="ma-0 pa-0"
+                  color="colorGreen"
+                  hide-details
+                  :disabled="task.disabled === true"
+                  :input-value="subtask.checked"
+                  @change="updateCheckedStatus(task.id, $event, 'subtask',key,subtask.id)"
+                ></v-checkbox>
+                <v-checkbox
+                  class="preventExpansion"
+                  @click.native.stop
+                  v-if="task.disabled === true"
+                ></v-checkbox>
+              </v-flex>
+              <v-flex grow class="pa-1 pt-2 pl-2 pr-3 body-1">
+                <span :class="['name', { completed: subtask.checked } ]">{{subtask.name}}</span>
+              </v-flex>
+            </v-layout>
           </v-flex>
         </v-layout>
         <!-- Expanded part -->
@@ -176,12 +212,16 @@ export default {
       }
       return daysList.sort(daysOfWeekSorter).join(', ')
     },
-    updateCheckedStatus (taskId, checkstatus, taskType, subtaskId) {
+    updateCheckedStatus (taskId, checkstatus, taskType, key, subtaskId) {
       // Task completion update
+      console.log('updateCheckedStatus')
+      console.log('key = ' + key)
 
       let completionIndex
       let completionValue
       let singleSlotOrFullTasks
+
+      // console.log('completion = ' + this.tasks[taskId].completion)
 
       // Is task single slot or full task ?
       if (this.tasks[taskId].completion) {
@@ -227,7 +267,7 @@ export default {
       this.updateTasksCompletionsHistory({ currentUserWeek, isoDay })
     },
     hasTaskSubtasks (task) {
-      return !!task.subtasks
+      return task.subtasks.length > 0
     },
     handleEdit (taskId) {
       this.setCurrentTask(taskId)

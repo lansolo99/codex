@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import firebase from 'firebase'
 import sourceData from '@/profile'
+import {
+  EventBus
+} from '@/bus'
 
 export default {
   namespaced: true,
@@ -18,14 +21,12 @@ export default {
     fetchProfileDatas ({
       commit
     }, authUserID) {
-      console.log('fetchProfileDatas')
       return new Promise((resolve, reject) => {
         firebase.database()
           .ref('users')
           .child(authUserID)
           .child('profile')
           .once('value', snapshot => {
-            console.log(snapshot.val())
             commit('updateProfile', snapshot.val())
             resolve()
           })
@@ -48,9 +49,6 @@ export default {
       progressWeek,
       currentUserWeek
     }) {
-      commit('utility/appReady', null, {
-        root: true
-      })
       commit('recordWeekScore', {
         progressWeek,
         currentUserWeek
@@ -70,6 +68,7 @@ export default {
     }) {
       Vue.set(state.stats, 'progressWeek', progressWeek)
       Vue.set(state.stats.weeksRecords, currentUserWeek, progressWeek)
+      EventBus.$emit('updateFirebase')
     }
   }
 }

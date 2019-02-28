@@ -40,6 +40,8 @@
         "country": "France",
         "occupation": "Webdesigner",
         "stats": {
+          "dailyTasks": null,
+          "dailyTasksChecked": null,
           "progressWeek": null,
           "weeksRecords": {
             "1": 0

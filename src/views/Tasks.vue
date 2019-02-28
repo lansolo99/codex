@@ -12,7 +12,6 @@
           :key="key"
         >
           <TasksList :periodicity="periodicity" :ind="index"/>
-          <!-- tasks.length {{ Object.keys(tasks).length }} -->
         </div>
       </div>
     </v-container>
@@ -53,7 +52,7 @@ export default {
     tasks: {
       handler (val, oldVal) {
         if ((!Object.keys(this.tasks).length || Object.keys(this.tasks).length === 0) && !this.profile.firstTime) {
-          console.log('this.tasks).length = ' + Object.keys(this.tasks).length)
+          // console.log('this.tasks).length = ' + Object.keys(this.tasks).length)
 
           this.showReboot = true
         } else {

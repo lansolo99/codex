@@ -1,25 +1,38 @@
 import Vue from 'vue'
 import firebase from 'firebase'
-// import sourceData from '@/tasks'
 
 export default {
   namespaced: true,
-  // state: sourceData,
   state: {},
   getters: {},
   actions: {
     fetchTasksDatas ({
       commit
     }, authUserID) {
-      console.log('fetchTasksDatas')
       return new Promise((resolve, reject) => {
-        firebase.database()
+        firebase
+          .database()
           .ref('users')
           .child(authUserID)
           .child('tasks')
           .once('value', snapshot => {
-            console.log(snapshot.val())
-            commit('fetchTasksDatas', snapshot.val())
+            if (snapshot.exists()) {
+              // recreate empty nodes needed
+              const tasks = snapshot.val()
+
+              Object.entries(snapshot.val()).forEach((pair, index) => {
+                // Subtasks
+                if (!pair[1].hasOwnProperty('subtasks')) {
+                  tasks[pair[0]]['subtasks'] = []
+                }
+                // Specific days
+                if (!pair[1]['schedule'].hasOwnProperty('specificDays')) {
+                  tasks[pair[0]]['schedule']['specificDays'] = []
+                }
+              })
+              console.log(tasks)
+              commit('fetchTasksDatas', tasks)
+            }
             resolve()
           })
       })
@@ -95,8 +108,6 @@ export default {
         console.log('value = ' + value)
         Vue.set(state, key, value)
       }
-
-      // Object.assign(state, payload)
     },
     updateTask (state, {
       taskId,
@@ -165,11 +176,13 @@ export default {
         value.completion = newCompletionArray
       }
     },
-    updateTasksCompletionsHistory (state, {
-      currentUserWeek,
-      isoDay,
-      weekChange
-    }) {
+    updateTasksCompletionsHistory (
+      state, {
+        currentUserWeek,
+        isoDay,
+        weekChange
+      }
+    ) {
       Object.values(state).forEach(task => {
         // Reset completion slot (if ever sliced at init)
         if (weekChange) {

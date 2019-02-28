@@ -33,9 +33,6 @@ export default {
     tasksReady ({
       commit
     }) {
-      // setTimeout(function () {
-      //   commit('tasksReady')
-      // }, 1000)
       commit('tasksReady')
     },
     incrementAddedDays ({

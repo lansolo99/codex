@@ -72,6 +72,7 @@ export default {
       updateCurrentUserWeek: 'time/updateCurrentUserWeek',
       updateTime: 'time/updateTime',
       incrementAddedDays: 'utility/incrementAddedDays',
+      appReady: 'utility/appReady',
       tasksReady: 'utility/tasksReady',
       fetchTasksDatas: 'tasks/fetchTasksDatas',
       updateTask: 'tasks/updateTask',
@@ -114,12 +115,19 @@ export default {
         // Wipe current tasks completions
         this.rebootWeeklyTasksCompletions()
         // Delete singles
-        Object.values(this.tasks)
+        // Object.values(this.tasks)
+        //   .filter(task => {
+        //     return task.schedule.periodicity === 'Once' && task.schedule.once === 'single'
+        //   })
+        //   .forEach(task => {
+        //     this.deleteTask(task.id)
+        //   })
+        Object.entries(this.tasks)
           .filter(task => {
-            return task.schedule.periodicity === 'Once' && task.schedule.once === 'single'
+            return task[1].schedule.periodicity === 'Once' && task[1].schedule.once === 'single'
           })
           .forEach(task => {
-            this.deleteTask(task.id)
+            this.deleteTask(task[0])
           })
       }
 
@@ -162,8 +170,10 @@ export default {
             // Reset check if last connexion date is not today
             if (!isTodayCustom) {
               value.checked = false
-              for (let subStatus of Object.values(value.subtasks)) {
-                subStatus.checked = null
+              if (value.subtasks) {
+                for (let subStatus of Object.values(value.subtasks)) {
+                  subStatus.checked = null
+                }
               }
             }
           } else {
@@ -293,34 +303,44 @@ export default {
       this.calcWeeklyCompletion()
     })
 
-    // FIREBASE
-
-    // Fetch profile datas
-    this.fetchProfileDatas(this.utility.authUserID)
-      .then(res => {
-        console.log('fetchProfileDatas action done')
-        this.globalUpdate()
+    // FIREBASE INITIAL FEED
+    firebase.database()
+      .ref('users')
+      .child(this.utility.authUserID)
+      .once('value', snapshot => {
+        // Fetch profile datas
+        this.fetchProfileDatas(this.utility.authUserID)
+          .then(res => {
+            console.log('fetchProfileDatas action done')
+            // Fetch tasks datas
+            this.fetchTasksDatas(this.utility.authUserID)
+              .then((res) => {
+                console.log('fetchTasksDatas action done')
+                this.appReady()
+                this.tasksReady()
+                this.globalUpdate()
+              })
+          })
       })
 
-    // Fetch tasks datas
-    this.fetchTasksDatas(this.utility.authUserID)
-      .then(res => {
-        console.log('fetchTasksDatas action done')
-        this.tasksReady()
-        this.globalUpdate()
-      })
-
-    // (Try) Add new user node
-    // firebase.database()
-    //   .ref('users')
-    //   .push(this.userTest)
-    // // (Try ) Add new user node and add the generated firebase id as its own id property
-    // firebase.database().ref('users').on('value', snapshot => {
-    //   Vue.set(this.userTest, 'id', snapshot.key)
-    // })
-
-    // INITIAL CALL
-    // this.globalUpdate()
+    // Firebase updates
+    EventBus.$on('updateFirebase', () => {
+      console.log('updateFirebase')
+      firebase.database()
+        .ref('users')
+        .child(this.utility.authUserID)
+        .set({ profile: this.profile })
+        .then(() => {
+          console.log('firebase profile updated')
+          firebase.database()
+            .ref('users')
+            .child(this.utility.authUserID)
+            .set({ profile: this.profile, tasks: this.tasks })
+            .then(() => {
+              console.log('firebase tasks updated')
+            })
+        })
+    })
   }
 }
 

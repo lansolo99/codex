@@ -294,23 +294,23 @@ export default {
         name: ''
       },
       task: {
-        id: null,
-        startDate: null,
-        title: null,
-        description: null,
-        category: null,
+        id: '',
+        startDate: '',
+        title: '',
+        description: '',
+        category: '',
         schedule: {
-          periodicity: null,
-          weekly: null,
+          periodicity: '',
+          weekly: '',
           specificDays: [],
-          once: null
+          once: ''
         },
         subtasks: [],
         status: 'ongoing',
         checked: false,
-        checkTime: null,
+        checkTime: '',
         completion: [],
-        disabled: null,
+        disabled: false,
         completionsHistory: {}
       },
       currentTask: 'new'
@@ -350,7 +350,8 @@ export default {
     ...mapState({
       storeDialogTask: state => state.utility.dialogTask,
       storeCurrentTask: state => state.utility.currentTask.id,
-      time: state => state.time
+      time: state => state.time,
+      utility: state => state.utility
     }),
     titleErrors () {
       const errors = []
@@ -540,8 +541,13 @@ export default {
           this.updateTask({ taskId, task })
         } else {
           /// Save
-          this.task.id = 'newTask' + parseInt(Math.random() * 1000)
-          this.addNewTask(JSON.parse(JSON.stringify(this.task)))
+          this.task.id = '_' + Math.random().toString(36).substr(2, 9)
+
+          const payload = JSON.parse(JSON.stringify(this.task))
+          console.log('before add new task')
+
+          this.addNewTask(payload)
+          console.log('after add new task')
           this.disableFirstTimeUser()
         }
         this.toggleTaskDialog(false)
@@ -583,7 +589,7 @@ export default {
       this.task.checked = false
       this.task.checkTime = null
       this.task.completion = []
-      this.task.disabled = null
+      this.task.disabled = false
       this.task.completionsHistory = {}
     },
     addNewSubTask () {

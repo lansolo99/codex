@@ -22,7 +22,30 @@
           }
         }
       },
-      "tasks": {}
+      "tasks": {
+        "newTask45": {
+          "id": "newTask45",
+          "startDate": 1550942434593,
+          "title": "dxfxdf",
+          "description": "None",
+          "category": "Nutrition",
+          "schedule": {
+            "periodicity": "Weekly",
+            "weekly": "Everyday",
+            "specificDays": [],
+            "once": ""
+          },
+          "subtasks": [],
+          "status": "ongoing",
+          "checked": false,
+          "checkTime": null,
+          "completion": [0, 0],
+          "disabled": false,
+          "completionsHistory": {
+            "Week 1": [0, 0, 2, 2, 2, 2, 2]
+          }
+        }
+      }
     },
     "userid2": {
       "profile": {
