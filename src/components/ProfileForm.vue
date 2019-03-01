@@ -255,7 +255,9 @@ export default {
         // Validation passed
         console.log('valid form')
         const userData = JSON.parse(JSON.stringify(this.userData))
-        this.updateProfile(userData)
+        this.updateProfile(userData).then(() => {
+          EventBus.$emit('updateFirebase')
+        })
         // Everything is done :
         EventBus.$emit('editProfile', false)
         this.toggleProfileDialog(false)

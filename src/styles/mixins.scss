@@ -4,6 +4,15 @@
         height: 36px;
         width: 36px;
 
+        .v-icon {
+            &:before {
+                transform: translateY(-50%) translateX(-50%);
+                position: absolute;
+                top: 50%;
+                left: 50%;
+            }
+        }
+
         &.help {
             height: 27px;
             width: 27px;
