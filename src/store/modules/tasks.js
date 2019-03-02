@@ -162,8 +162,6 @@ export default {
       }
     },
     deleteTask (state, payload) {
-      console.log('deleteTask & payload = ' + payload)
-
       Vue.delete(state, payload)
     },
     rebootWeeklyTasksCompletions (state, payload) {

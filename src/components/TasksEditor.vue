@@ -570,7 +570,9 @@ export default {
       this.toggleTaskDialog(true)
     },
     handleDelete (taskId) {
-      this.deleteTask(taskId)
+      this.deleteTask(taskId).then(() => {
+        EventBus.$emit('updateFirebase')
+      })
       this.dialogDeleteTask = false
       this.toggleTaskDialog(false)
     },

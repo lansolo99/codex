@@ -11,18 +11,19 @@ import {
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import Vuelidate from 'vuelidate'
+require('dotenv').config()
 Vue.use(Vuelidate)
 
 Vue.config.productionTip = false
 
 // Initialize Firebase
 const config = {
-  apiKey: 'AIzaSyDHrCM-InqHNQD_Avo6m26TLSfJkiiBeqE',
-  authDomain: 'codex-208f0.firebaseapp.com',
-  databaseURL: 'https://codex-208f0.firebaseio.com',
-  projectId: 'codex-208f0',
-  storageBucket: 'codex-208f0.appspot.com',
-  messagingSenderId: '545270095530'
+  apiKey: process.env.VUE_APP_API_KEY,
+  authDomain: process.env.VUE_APP_AUTH_DOMAIN,
+  databaseURL: process.env.VUE_APP_DATABASE_URL,
+  projectId: process.env.VUE_APP_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_MESSAGING_ID
 }
 firebase.initializeApp(config)
 
