@@ -77,6 +77,7 @@
 </template>
 
 <script>
+import { EventBus } from '@/bus'
 import firebase from 'firebase'
 import Vue from 'vue'
 import { mapState, mapActions } from 'vuex'
@@ -95,6 +96,7 @@ export default {
   },
   computed: {
     ...mapState({
+      profile: state => state.profile,
       utility: state => state.utility
     })
   },
@@ -119,21 +121,22 @@ export default {
           console.log('user logged with google')
           this.authUser = user
           this.setUser(this.authUser.user.uid)
-          firebase
-            .database()
-            .ref('users')
-            .child(this.utility.authUserID)
-            .once('value', snapshot => {
-              if (snapshot.exists()) {
-                console.log('user exists')
-              } else {
-                console.log('user doesnt exists')
-              }
-            })
+          EventBus.$emit('initFirebase')
+          // firebase
+          //   .database()
+          //   .ref('users')
+          //   .child(this.utility.authUserID)
+          //   .once('value', snapshot => {
+          //     if (snapshot.exists()) {
+          //       console.log('user exists')
+          //     } else {
+          //       console.log('user doesnt exists')
 
-          //   firebase.database().ref('users').child(this.authUser.uid)
-          // .update({ gender: this.gender })
-          // .then(user => console.log('ok done' + user.data))
+          //       firebase.database().ref('users').child(this.utility.authUserID)
+          //         .set({ profile: 'test' })
+          //         .then(user => console.log('early node basically created'))
+          //     }
+          //   })
         })
         .catch((error) => console.log('catch message = ' + error.message))
     },

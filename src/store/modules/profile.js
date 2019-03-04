@@ -57,7 +57,10 @@ export default {
   },
   mutations: {
     updateProfile (state, payload) {
-      Object.assign(state, payload)
+      return new Promise((resolve, reject) => {
+        Object.assign(state, payload)
+        resolve()
+      })
     },
     disableFirstTimeUser (state) {
       state.firstTime = false

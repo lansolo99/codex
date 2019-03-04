@@ -229,7 +229,8 @@ export default {
       }
 
       // Update connexionDateLast
-      this.userData.connexionDateLast = addDays(new Date(Date.now()), addedDays)
+      // this.userData.connexionDateLast = addDays(new Date(Date.now()), addedDays)
+      this.userData.connexionDateLast = addDays(Date.now(), addedDays)
       this.updateProfile(this.userData)
       // console.log('updated last connexion date = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY') + 'updated')
 
@@ -315,24 +316,51 @@ export default {
     // FIREBASE
 
     // Initial feed
-    firebase.database()
-      .ref('users')
-      .child(this.utility.authUserID)
-      .once('value', snapshot => {
-        // Fetch profile datas
-        this.fetchProfileDatas(this.utility.authUserID)
-          .then(res => {
-            console.log('fetchProfileDatas action done')
-            // Fetch tasks datas
-            this.fetchTasksDatas(this.utility.authUserID)
-              .then((res) => {
-                console.log('fetchTasksDatas action done')
-                this.appReady()
-                this.tasksReady()
-                this.globalUpdate()
+    EventBus.$on('initFirebase', () => {
+      firebase.database()
+        .ref('users')
+        .child(this.utility.authUserID)
+        .once('value', snapshot => {
+          if (snapshot.exists()) {
+            // User exists
+
+            // Fetch profile datas
+            this.fetchProfileDatas(this.utility.authUserID)
+              .then(res => {
+                console.log('fetchProfileDatas action done')
+                // Fetch tasks datas
+                this.fetchTasksDatas(this.utility.authUserID)
+                  .then((res) => {
+                    console.log('fetchTasksDatas action done')
+                    this.appReady()
+                    this.tasksReady()
+                    this.globalUpdate()
+                  })
               })
-          })
-      })
+          } else {
+            // User doesn't exist yet
+            // Init connextionDateLast to current time
+            this.userData.connexionDateLast = Date.now()
+            console.log(Date.now())
+            console.log(new Date(Date.now()))
+
+            // this.userData.connexionDateLast = addDays(new Date(Date.now()), addedDays)
+            // this.updateProfile(this.userData)
+            this.updateProfile(this.userData).then(() => {
+              console.log('profileUpdated')
+              // Push initial profile object
+              firebase.database().ref('users').child(this.utility.authUserID)
+                .set({ profile: this.profile })
+                .then(user => {
+                  console.log('early profile node basically created')
+                  this.appReady()
+                  this.tasksReady()
+                  this.globalUpdate()
+                })
+            })
+          }
+        })
+    })
 
     // Updates
     EventBus.$on('updateFirebase', () => {
