@@ -18,12 +18,13 @@ export default {
     reboot: false,
     addedDays: 0
   },
-  getters: {},
   actions: {
-    fetchUser ({
+    setUser ({
       commit
-    }) {
-      //
+    }, payload) {
+      console.log(payload)
+
+      commit('setUser', payload)
     },
     appReady ({
       commit
@@ -57,6 +58,10 @@ export default {
     }
   },
   mutations: {
+    setUser (state, payload) {
+      console.log('setUser')
+      state.authUserID = payload
+    },
     appReady (state) {
       console.log('appReady')
       state.appReady = true

@@ -3,6 +3,7 @@
     <v-content :class="toolbarConf">
       <router-view/>
       <v-btn
+        v-if="this.view !== 'login'"
         class="red simulation white--text"
         absolute
         bottom
@@ -11,7 +12,7 @@
       >Next day</v-btn>
     </v-content>
 
-    <TheNavbar/>
+    <TheNavbar v-if="this.view !== 'login'"/>
   </v-app>
 </template>
 
@@ -31,7 +32,10 @@ export default {
   name: 'App',
   data () {
     return {
-      toolbarConf: 'toolbarTasks',
+      toolbarConf: 'toolbarNone',
+      // toolbarConf: 'toolbarTasks',
+      view: 'login',
+      logged: false,
       isoDay: null,
       isoWeek: null
     }
@@ -54,11 +58,16 @@ export default {
     '$route': {
       immediate: true,
       handler (newVal, oldVal) {
-        if (this.$route.path === '/') {
+        if (this.$route.path === '/tasks') {
         // Set proper UI padding if on tasks screen
           this.toolbarConf = 'toolbarTasks'
         } else {
           this.toolbarConf = 'toolbarNone'
+        }
+        if (this.$route.path === '/') {
+          this.view = 'login'
+        } else {
+          this.view = 'inApp'
         }
       }
 
@@ -281,7 +290,7 @@ export default {
     // console.log(format(new Date(2019, 0, 18, 11, 45, 5, 123), 'DD/MM/YYYY'))
     // console.log(getTime(new Date(2019, 0, 18, 11, 45, 5, 123)))
 
-    // EVENTS DEFINTIONS
+    // EVENTS
 
     // globalUpdate
     EventBus.$on('globalUpdate', () => {
@@ -303,7 +312,9 @@ export default {
       this.calcWeeklyCompletion()
     })
 
-    // FIREBASE INITIAL FEED
+    // FIREBASE
+
+    // Initial feed
     firebase.database()
       .ref('users')
       .child(this.utility.authUserID)
@@ -323,7 +334,7 @@ export default {
           })
       })
 
-    // Firebase updates
+    // Updates
     EventBus.$on('updateFirebase', () => {
       console.log('updateFirebase')
       firebase.database()

@@ -89,9 +89,9 @@ gulp.task('iconfont', function () {
 // Retina workflow
 gulp.task('retina-workflow', function () {
   return gulp
-    .src('src/images/**/*')
+    .src('./src/assets/images/**/*')
     .pipe(retina(retinaWorkflowOpts))
-    .pipe(gulp.dest('src/images'))
+    .pipe(gulp.dest('./src/assets/images'))
 })
 
 // tinyPng (to execute once -> limited amount of usage (500/month))

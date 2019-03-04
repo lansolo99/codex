@@ -1,8 +1,9 @@
 <template>
   <div class="login">
-    <v-container class="primary darken-2">
-      <!-- USER AUTENTHICATED -->
-      <div v-if="authUser">
+    <v-container fill-height>
+      <v-layout align-center class="elementsWrapper mx-4">
+        <!-- USER AUTENTHICATED -->
+        <!-- <div v-if="authUser">
         <p>Signed in as {{authUser.email}}</p>
         <v-btn @click="signOut">Sign out</v-btn>
         <p>gender = {{ authUser.gender}}</p>
@@ -36,63 +37,71 @@
           </v-layout>
           <v-btn @click="updateCustomDetails">Update additionnal infos</v-btn>
         </v-form>
-      </div>
-
-      <!-- USER NOT AUTENTHICATED -->
-      <div v-else>
-        <div class="register">
-          <h2>Register</h2>
-          <v-form>
-            <v-layout>
-              <v-text-field v-model="email" label="Email"></v-text-field>
-            </v-layout>
-            <v-layout>
-              <v-text-field type="password" v-model="password" label="Password"></v-text-field>
-            </v-layout>
-            <v-layout>
-              <v-btn @click="register">Register</v-btn>
-            </v-layout>
-          </v-form>
-        </div>
-
-        <div class="signIn">
-          <h2>Sign In with email and pwd</h2>
-          <v-form>
-            <v-layout>
-              <v-text-field v-model="email" label="Email"></v-text-field>
-            </v-layout>
-            <v-layout>
-              <v-text-field type="password" v-model="password" label="Password"></v-text-field>
-            </v-layout>
-            <v-layout>
-              <v-btn @click="signIn">Sign in</v-btn>
-            </v-layout>
-          </v-form>
-          <h2>Sign In with Google</h2>
-          <v-btn @click="signInWithGoogle">Sign in with google</v-btn>
-        </div>
-      </div>
+        </div>-->
+        <!-- End authenticated -->
+        <v-flex xs12>
+          <v-layout>
+            <v-flex xs12>
+              <img class="logo my-3 mb-5" src="@/assets/images/logo.svg">
+            </v-flex>
+          </v-layout>
+          <v-layout>
+            <v-flex xs12>
+              <v-btn block large>Sign Up</v-btn>
+            </v-flex>
+          </v-layout>
+          <v-layout>
+            <v-flex xs12>
+              <v-btn block large class="colorGreen white--text">Email Sign In</v-btn>
+            </v-flex>
+          </v-layout>
+          <v-layout>
+            <v-flex xs12>
+              <v-btn large class="colorGoogle white--text" block @click="signInWithGoogle">Google</v-btn>
+            </v-flex>
+          </v-layout>
+          <v-layout>
+            <v-flex xs12>
+              <v-btn to="/tasks" block large class="secondary white--text">Test as guest</v-btn>
+            </v-flex>
+          </v-layout>
+          <v-layout v-if="authUser">
+            <v-flex xs12>
+              <v-btn block large @click="signOut">Sign out</v-btn>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+      </v-layout>
     </v-container>
   </div>
 </template>
 
 <script>
+import firebase from 'firebase'
 import Vue from 'vue'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'Login',
   data () {
     return {
+      authUser: null,
+      pseudo: null,
       email: '',
       password: '',
-      authUser: null,
-      photoUrl: null,
-      displayName: null,
       newPassword: null,
       gender: null
     }
   },
+  computed: {
+    ...mapState({
+      utility: state => state.utility
+    })
+  },
   methods: {
+    ...mapActions({
+      setUser: 'utility/setUser'
+    }),
     register () {
       console.log('firebase register')
       firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
@@ -103,14 +112,29 @@ export default {
         .then(user => { this.authUser = user })
         .catch(error => console.log(error.message))
     },
-    signOut () {
-      console.log('firebase sign out')
-      firebase.auth().signOut()
-    },
     signInWithGoogle () {
       const provider = new firebase.auth.GoogleAuthProvider()
       firebase.auth().signInWithPopup(provider)
-        .then(user => console.log(user.data))
+        .then(user => {
+          console.log('user logged with google')
+          this.authUser = user
+          this.setUser(this.authUser.user.uid)
+          firebase
+            .database()
+            .ref('users')
+            .child(this.utility.authUserID)
+            .once('value', snapshot => {
+              if (snapshot.exists()) {
+                console.log('user exists')
+              } else {
+                console.log('user doesnt exists')
+              }
+            })
+
+          //   firebase.database().ref('users').child(this.authUser.uid)
+          // .update({ gender: this.gender })
+          // .then(user => console.log('ok done' + user.data))
+        })
         .catch((error) => console.log('catch message = ' + error.message))
     },
     updateProfile () {
@@ -130,10 +154,14 @@ export default {
       firebase.database().ref('users').child(this.authUser.uid)
         .update({ gender: this.gender })
         .then(user => console.log('ok done' + user.data))
+    },
+    signOut () {
+      console.log('firebase sign out')
+      firebase.auth().signOut()
+      this.displayName = null
+      this.email = ''
+      this.email = ''
     }
-  },
-  beforeCreate () {
-    console.log('beforecreate')
   },
   created () {
     firebase.auth().onAuthStateChanged(user => {
@@ -157,5 +185,20 @@ export default {
 
 <style lang="scss">
 .login {
+  height: 100%;
+  .logo {
+    max-width: 120px;
+    display: block;
+    margin: auto;
+    text-align: center;
+  }
+
+  background: url("../assets/images/app_theme.jpg");
+  background-image: -webkit-image-set(
+    url("../assets/images/app_theme.jpg") 1x,
+    url("../assets/images/app_theme@2x.jpg") 2x
+  );
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 </style>
