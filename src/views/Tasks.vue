@@ -26,6 +26,7 @@ import TasksList from '@/components/TasksList'
 import TasksWelcome from '@/components/TasksWelcome'
 import TasksReboot from '@/components/TasksReboot'
 import { mapState } from 'vuex'
+import store from '@/store/store'
 
 export default {
   name: 'Tasks',
@@ -66,6 +67,13 @@ export default {
   methods: {
     getTaskFilter (periodicityName) {
       return this.taskFilters.find(v => v.periodicity === periodicityName).filter
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    if (store.state.utility.authUserID) {
+      next()
+    } else {
+      next({ name: 'login' })
     }
   }
 }

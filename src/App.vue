@@ -124,13 +124,6 @@ export default {
         // Wipe current tasks completions
         this.rebootWeeklyTasksCompletions()
         // Delete singles
-        // Object.values(this.tasks)
-        //   .filter(task => {
-        //     return task.schedule.periodicity === 'Once' && task.schedule.once === 'single'
-        //   })
-        //   .forEach(task => {
-        //     this.deleteTask(task.id)
-        //   })
         Object.entries(this.tasks)
           .filter(task => {
             return task[1].schedule.periodicity === 'Once' && task[1].schedule.once === 'single'
@@ -229,10 +222,8 @@ export default {
       }
 
       // Update connexionDateLast
-      // this.userData.connexionDateLast = addDays(new Date(Date.now()), addedDays)
-      this.userData.connexionDateLast = addDays(Date.now(), addedDays)
+      this.userData.connexionDateLast = format(new Date(addDays(new Date(Date.now()), addedDays)), 'x')
       this.updateProfile(this.userData)
-      // console.log('updated last connexion date = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY') + 'updated')
 
       EventBus.$emit('recordProgress')
     },
@@ -339,13 +330,11 @@ export default {
               })
           } else {
             // User doesn't exist yet
+            console.log('User doesnt exist yet')
+
             // Init connextionDateLast to current time
             this.userData.connexionDateLast = Date.now()
-            console.log(Date.now())
-            console.log(new Date(Date.now()))
 
-            // this.userData.connexionDateLast = addDays(new Date(Date.now()), addedDays)
-            // this.updateProfile(this.userData)
             this.updateProfile(this.userData).then(() => {
               console.log('profileUpdated')
               // Push initial profile object

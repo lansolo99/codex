@@ -161,6 +161,7 @@ import { mapState, mapGetters } from 'vuex'
 import VueApexCharts from 'vue-apexcharts'
 import StatsReboot from '@/components/StatsReboot'
 import Vue from 'vue'
+import store from '@/store/store'
 Vue.use(VueApexCharts)
 
 export default {
@@ -371,6 +372,13 @@ export default {
       }
 
       return series.slice(-10)
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    if (store.state.utility.authUserID) {
+      next()
+    } else {
+      next({ name: 'login' })
     }
   }
 }

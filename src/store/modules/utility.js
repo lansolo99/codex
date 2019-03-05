@@ -1,7 +1,7 @@
 export default {
   namespaced: true,
   state: {
-    authUserID: 'userid1',
+    authUserID: null,
     appReady: false,
     tasksReady: false,
     periodicities: {

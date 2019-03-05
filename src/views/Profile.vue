@@ -24,6 +24,7 @@ import ProfileForm from '@/components/ProfileForm'
 import ProfileEditor from '@/components/ProfileEditor'
 import { mapActions } from 'vuex'
 import { EventBus } from '@/bus'
+import store from '@/store/store'
 
 export default {
   name: 'Profile',
@@ -38,6 +39,17 @@ export default {
     handleEditProfile () {
       EventBus.$emit('editProfile', true)
       this.toggleProfileDialog(true)
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    if (store.state.utility.authUserID && store.state.utility.authUserID !== 'guest') {
+      next()
+    } else {
+      if (store.state.utility.authUserID === 'guest') {
+        next({ name: 'tasks' })
+      } else {
+        next({ name: 'login' })
+      }
     }
   }
 

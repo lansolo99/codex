@@ -40,18 +40,23 @@ export default {
     updateProfile ({
       commit
     }, payload) {
+      console.log(payload)
+
       commit('updateProfile', payload)
     },
     recordWeekScore ({
       commit,
-      dispatch
+      dispatch,
+      rootState
     }, {
       progressWeek,
       currentUserWeek
     }) {
+      const authUserID = rootState.utility.authUserID
       commit('recordWeekScore', {
         progressWeek,
-        currentUserWeek
+        currentUserWeek,
+        authUserID
       })
     }
   },
@@ -67,11 +72,14 @@ export default {
     },
     recordWeekScore (state, {
       progressWeek,
-      currentUserWeek
+      currentUserWeek,
+      authUserID
     }) {
       Vue.set(state.stats, 'progressWeek', progressWeek)
       Vue.set(state.stats.weeksRecords, currentUserWeek, progressWeek)
-      EventBus.$emit('updateFirebase')
+      console.log('authUserID = ' + authUserID)
+      return authUserID === 'guest' ? '' : EventBus.$emit('updateFirebase')
+      // EventBus.$emit('updateFirebase')
     }
   }
 }

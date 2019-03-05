@@ -62,7 +62,13 @@
           </v-layout>
           <v-layout>
             <v-flex xs12>
-              <v-btn to="/tasks" block large class="secondary white--text">Test as guest</v-btn>
+              <v-btn
+                to="/tasks"
+                block
+                large
+                class="secondary white--text"
+                @click="signInAsGuest"
+              >Test as guest</v-btn>
             </v-flex>
           </v-layout>
           <v-layout v-if="authUser">
@@ -80,7 +86,7 @@
 import { EventBus } from '@/bus'
 import firebase from 'firebase'
 import Vue from 'vue'
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'Login',
@@ -98,11 +104,17 @@ export default {
     ...mapState({
       profile: state => state.profile,
       utility: state => state.utility
+    }),
+    ...mapGetters({
+      'userData': 'profile/getProfileData'
     })
   },
   methods: {
     ...mapActions({
-      setUser: 'utility/setUser'
+      setUser: 'utility/setUser',
+      appReady: 'utility/appReady',
+      tasksReady: 'utility/tasksReady',
+      updateProfile: 'profile/updateProfile'
     }),
     register () {
       console.log('firebase register')
@@ -119,32 +131,25 @@ export default {
       firebase.auth().signInWithPopup(provider)
         .then(user => {
           console.log('user logged with google')
+          // Define user in state & utility store
           this.authUser = user
           this.setUser(this.authUser.user.uid)
+          // InitFirebase & route to tasks
           EventBus.$emit('initFirebase')
-          // firebase
-          //   .database()
-          //   .ref('users')
-          //   .child(this.utility.authUserID)
-          //   .once('value', snapshot => {
-          //     if (snapshot.exists()) {
-          //       console.log('user exists')
-          //     } else {
-          //       console.log('user doesnt exists')
-
-          //       firebase.database().ref('users').child(this.utility.authUserID)
-          //         .set({ profile: 'test' })
-          //         .then(user => console.log('early node basically created'))
-          //     }
-          //   })
+          this.successRedirect()
         })
         .catch((error) => console.log('catch message = ' + error.message))
     },
-    updateProfile () {
-      console.log('updateProfile')
-      this.authUser.updateProfile({
-        displayName: this.displayName,
-        photoURL: this.photoUrl
+    signInAsGuest () {
+      this.setUser('guest')
+      // Init connextionDateLast to current time
+      this.userData.connexionDateLast = Date.now()
+      this.updateProfile(this.userData).then(() => {
+        // Set data & route to tasks
+        this.appReady()
+        this.tasksReady()
+        EventBus.$emit('globalUpdate')
+        this.successRedirect()
       })
     },
     updateAccount () {
@@ -161,9 +166,14 @@ export default {
     signOut () {
       console.log('firebase sign out')
       firebase.auth().signOut()
+      this.authUser = null
+      this.setUser(this.authUser)
       this.displayName = null
       this.email = ''
       this.email = ''
+    },
+    successRedirect () {
+      this.$router.push({ name: 'tasks' })
     }
   },
   created () {

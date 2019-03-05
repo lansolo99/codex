@@ -1,6 +1,6 @@
 <template>
   <v-bottom-nav :active.sync="bottomNav" :value="true" color="primary" app fixed>
-    <v-btn to="/" flat color="white" value="tasks">
+    <v-btn to="/tasks" flat color="white" value="tasks">
       <v-icon class="icon icon-check"></v-icon>
     </v-btn>
 
@@ -8,19 +8,32 @@
       <v-icon class="icon icon-stats"></v-icon>
     </v-btn>
 
-    <v-btn to="/profile" color="white" flat value="profile">
+    <v-btn
+      to="/profile"
+      color="white"
+      flat
+      value="profile"
+      :disabled="utility.authUserID === 'guest'"
+    >
       <v-icon class="icon icon-profile"></v-icon>
     </v-btn>
   </v-bottom-nav>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
       bottomNav: ''
     }
+  },
+  computed: {
+    ...mapState({
+      utility: state => state.utility
+    })
   }
+
 }
 </script>
 
