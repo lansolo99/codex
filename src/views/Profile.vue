@@ -14,6 +14,12 @@
       </v-layout>
       <!-- Form -->
       <ProfileForm/>
+
+      <v-layout v-if="utility.authUserID" class="mx-3 mt-4">
+        <v-flex xs12>
+          <v-btn block large @click="signOut" class="red white--text">Sign out</v-btn>
+        </v-flex>
+      </v-layout>
     </v-container>
     <ProfileEditor/>
   </div>
@@ -22,7 +28,7 @@
 <script>
 import ProfileForm from '@/components/ProfileForm'
 import ProfileEditor from '@/components/ProfileEditor'
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { EventBus } from '@/bus'
 import store from '@/store/store'
 
@@ -32,6 +38,11 @@ export default {
     ProfileForm,
     ProfileEditor
   },
+  computed: {
+    ...mapState({
+      utility: state => state.utility
+    })
+  },
   methods: {
     ...mapActions({
       toggleProfileDialog: 'utility/toggleProfileDialog'
@@ -39,6 +50,10 @@ export default {
     handleEditProfile () {
       EventBus.$emit('editProfile', true)
       this.toggleProfileDialog(true)
+    },
+    signOut () {
+      EventBus.$emit('signOut')
+      this.$router.push({ name: 'login' })
     }
   },
   beforeRouteEnter (to, from, next) {

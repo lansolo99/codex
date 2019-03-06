@@ -34,9 +34,9 @@
               >Test as guest</v-btn>
             </v-flex>
           </v-layout>
-          <v-layout v-if="authUser">
+          <v-layout v-if="authUser" class="mx-4">
             <v-flex xs12>
-              <v-btn block large @click="signOut">Sign out</v-btn>
+              <v-btn block large @click="signOut" class="red white--text">Sign out</v-btn>
             </v-flex>
           </v-layout>
         </v-flex>
@@ -154,6 +154,10 @@ export default {
           }
         })
       }
+    })
+
+    EventBus.$on('signOut', () => {
+      this.signOut()
     })
   }
 }

@@ -16,19 +16,6 @@
                       v-else
                       :src="require(`@/assets/images/avatar/${this.userData.avatarDefault}.svg`)"
                     >
-                    <v-btn
-                      v-if="editing"
-                      floating
-                      fab
-                      absolute
-                      bottom
-                      right
-                      small
-                      dark
-                      class="colorGreen mr-0"
-                    >
-                      <v-icon class="icon icon-edit"></v-icon>
-                    </v-btn>
                   </v-avatar>
                 </v-flex>
               </v-layout>
@@ -167,13 +154,6 @@ export default {
           'widowed'
         ],
         countries: []
-        // countries: [
-        //   'France',
-        //   'Belgium',
-        //   'USA',
-        //   'Spain',
-        //   'South Africa'
-        // ]
       }
     }
   },
