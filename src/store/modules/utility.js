@@ -1,7 +1,9 @@
+// import Vue from 'vue'
 export default {
   namespaced: true,
   state: {
     authUserID: null,
+    authUserEmail: null,
     appReady: false,
     tasksReady: false,
     periodicities: {
@@ -22,8 +24,6 @@ export default {
     setUser ({
       commit
     }, payload) {
-      console.log(payload)
-
       commit('setUser', payload)
     },
     appReady ({
@@ -59,8 +59,13 @@ export default {
   },
   mutations: {
     setUser (state, payload) {
-      console.log('setUser')
-      state.authUserID = payload
+      if (payload === 'null') {
+        state.authUserID = null
+        state.authUserEmail = null
+      } else {
+        state.authUserID = payload.uid
+        state.authUserEmail = payload.email
+      }
     },
     appReady (state) {
       console.log('appReady')

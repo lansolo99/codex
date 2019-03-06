@@ -133,10 +133,13 @@ export default {
           console.log('user logged with google')
           // Define user in state & utility store
           this.authUser = user
-          this.setUser(this.authUser.user.uid)
-          // InitFirebase & route to tasks
-          EventBus.$emit('initFirebase')
-          this.successRedirect()
+          this.setUser(this.authUser.user)
+          this.userData.email = this.authUser.user.email
+          this.updateProfile(this.userData).then(() => {
+            // InitFirebase & route to tasks
+            EventBus.$emit('initFirebase')
+            this.successRedirect()
+          })
         })
         .catch((error) => console.log('catch message = ' + error.message))
     },
@@ -167,7 +170,7 @@ export default {
       console.log('firebase sign out')
       firebase.auth().signOut()
       this.authUser = null
-      this.setUser(this.authUser)
+      this.setUser('null')
       this.displayName = null
       this.email = ''
       this.email = ''

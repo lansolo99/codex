@@ -114,6 +114,7 @@ export default {
         new Date(this.userData.connexionDateLast),
         { weekStartsOn: 1 }
       )
+
       const currentUserWeek = parseInt(lastUserRecordedWeek + getWeeksPassedSinceLastConnexion)
       EventBus.$emit('updateCurrentUserWeek', currentUserWeek)
 
@@ -222,7 +223,7 @@ export default {
       }
 
       // Update connexionDateLast
-      this.userData.connexionDateLast = format(new Date(addDays(new Date(Date.now()), addedDays)), 'x')
+      this.userData.connexionDateLast = Number(format(new Date(addDays(new Date(Date.now()), addedDays)), 'x'))
       this.updateProfile(this.userData)
 
       EventBus.$emit('recordProgress')
