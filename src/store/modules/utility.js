@@ -1,10 +1,11 @@
-// import Vue from 'vue'
+import countries from '@/store/datas/countries'
 export default {
   namespaced: true,
   state: {
     authUserID: null,
     authUserEmail: null,
     appReady: false,
+    countries: countries,
     tasksReady: false,
     periodicities: {
       id1: {
@@ -19,6 +20,14 @@ export default {
     taskPanels: [null, null, null, null],
     reboot: false,
     addedDays: 0
+  },
+  getters: {
+    getCountries (state) {
+      const named = state.countries.map(v => {
+        return v['name']
+      })
+      return named
+    }
   },
   actions: {
     setUser ({

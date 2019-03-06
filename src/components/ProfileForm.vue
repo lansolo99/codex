@@ -166,13 +166,14 @@ export default {
           'divorced',
           'widowed'
         ],
-        countries: [
-          'France',
-          'Belgium',
-          'USA',
-          'Spain',
-          'South Africa'
-        ]
+        countries: []
+        // countries: [
+        //   'France',
+        //   'Belgium',
+        //   'USA',
+        //   'Spain',
+        //   'South Africa'
+        // ]
       }
     }
   },
@@ -194,8 +195,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('profile', {
-      userData: 'getProfileData'
+    ...mapGetters({
+      userData: 'profile/getProfileData',
+      getCountries: 'utility/getCountries'
     }),
     pseudoErrors () {
       const errors = []
@@ -224,7 +226,7 @@ export default {
   watch: {
     genderUpdate: {
       handler (val, oldVal) {
-        if (val === 'Undefined' || val === 'Male') {
+        if (val === 'Undefined' || val === '' || val === 'Male') {
           this.userData.avatarDefault = 'man'
         } else {
           this.userData.avatarDefault = 'woman'
@@ -265,6 +267,8 @@ export default {
     }
   },
   created () {
+    this.formComponents.countries = this.getCountries
+
     EventBus.$on('editProfile', (status) => {
       this.editing = status
     })

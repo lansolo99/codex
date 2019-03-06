@@ -2,43 +2,6 @@
   <div class="login">
     <v-container fill-height>
       <v-layout align-center class="elementsWrapper mx-4">
-        <!-- USER AUTENTHICATED -->
-        <!-- <div v-if="authUser">
-        <p>Signed in as {{authUser.email}}</p>
-        <v-btn @click="signOut">Sign out</v-btn>
-        <p>gender = {{ authUser.gender}}</p>
-
-        <h3>Update profile infos (google)</h3>
-        <v-form>
-          <v-layout>
-            <v-text-field v-model="displayName" label="Display name"></v-text-field>
-          </v-layout>
-          <v-layout>
-            <v-text-field v-model="photoUrl" label="Photo URL"></v-text-field>
-          </v-layout>
-          <v-btn @click="updateProfile">Update profile</v-btn>
-        </v-form>
-
-        <h3>Update account infos (email + pwd)</h3>
-        <v-form>
-          <v-layout>
-            <v-text-field v-model="email" label="email"></v-text-field>
-          </v-layout>
-          <v-layout>
-            <v-text-field v-model="newPassword" label="Password"></v-text-field>
-          </v-layout>
-          <v-btn @click="updateAccount">Update account</v-btn>
-        </v-form>
-
-        <h3>Update additionnal infos (genre)</h3>
-        <v-form>
-          <v-layout>
-            <v-text-field v-model="gender" label="gender"></v-text-field>
-          </v-layout>
-          <v-btn @click="updateCustomDetails">Update additionnal infos</v-btn>
-        </v-form>
-        </div>-->
-        <!-- End authenticated -->
         <v-flex xs12>
           <v-layout>
             <v-flex xs12>
@@ -47,12 +10,12 @@
           </v-layout>
           <v-layout>
             <v-flex xs12>
-              <v-btn block large>Sign Up</v-btn>
+              <v-btn block large @click="emailSignUp">Sign Up</v-btn>
             </v-flex>
           </v-layout>
           <v-layout>
             <v-flex xs12>
-              <v-btn block large class="colorGreen white--text">Email Sign In</v-btn>
+              <v-btn block large class="colorGreen white--text" @click="emailSignIn">Email Sign In</v-btn>
             </v-flex>
           </v-layout>
           <v-layout>
@@ -85,7 +48,6 @@
 <script>
 import { EventBus } from '@/bus'
 import firebase from 'firebase'
-import Vue from 'vue'
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -93,11 +55,10 @@ export default {
   data () {
     return {
       authUser: null,
-      pseudo: null,
+      displayName: null,
       email: '',
       password: '',
-      newPassword: null,
-      gender: null
+      newPassword: null
     }
   },
   computed: {
@@ -116,12 +77,12 @@ export default {
       tasksReady: 'utility/tasksReady',
       updateProfile: 'profile/updateProfile'
     }),
-    register () {
-      console.log('firebase register')
+    emailSignUp () {
+      console.log('firebase email signup')
       firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
     },
-    signIn () {
-      console.log('firebase sign in')
+    emailSignIn () {
+      console.log('firebase email signin')
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
         .then(user => { this.authUser = user })
         .catch(error => console.log(error.message))
@@ -135,6 +96,7 @@ export default {
           this.authUser = user
           this.setUser(this.authUser.user)
           this.userData.email = this.authUser.user.email
+          this.userData.pseudo = this.authUser.user.displayName
           this.updateProfile(this.userData).then(() => {
             // InitFirebase & route to tasks
             EventBus.$emit('initFirebase')
@@ -173,7 +135,6 @@ export default {
       this.setUser('null')
       this.displayName = null
       this.email = ''
-      this.email = ''
     },
     successRedirect () {
       this.$router.push({ name: 'tasks' })
@@ -182,15 +143,14 @@ export default {
   created () {
     firebase.auth().onAuthStateChanged(user => {
       this.authUser = user
-      // Only update data if user object exists (to prevent sign out empty the datas)
+      // Only update data if user object exists (to prevent that sign-out empty the datas)
       if (user) {
-        this.displayName = user.displayName
-        this.photoUrl = user.photoURL
         this.email = user.email
+        this.displayName = user.displayName
         firebase.database().ref('users').child(user.uid).once('value', snap => {
           if (snap.val()) {
             this.gender = snap.val().gender
-            Vue.set(this.authUser, 'gender', this.gender)
+            // Vue.set(this.authUser, 'gender', this.gender)
           }
         })
       }

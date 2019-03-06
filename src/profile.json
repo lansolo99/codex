@@ -6,12 +6,12 @@
   "pseudo": "",
   "email": "",
   "password": "",
-  "gender": "",
-  "maritalStatus": "",
-  "age": 0,
-  "city": "",
-  "country": "",
-  "occupation": "",
+  "gender": "Male",
+  "maritalStatus": "Undefined",
+  "age": 20,
+  "city": "Your city",
+  "country": "France",
+  "occupation": "Your occupation",
   "stats": {
     "progressWeek": 0,
     "weeksRecords": {
