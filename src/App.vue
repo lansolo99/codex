@@ -32,8 +32,8 @@ export default {
   name: 'App',
   data () {
     return {
+      authUser: null,
       toolbarConf: 'toolbarNone',
-      // toolbarConf: 'toolbarTasks',
       view: 'login',
       logged: false,
       isoDay: null,
@@ -284,6 +284,11 @@ export default {
     // console.log(getTime(new Date(2019, 0, 18, 11, 45, 5, 123)))
 
     // EVENTS
+
+    // login
+    EventBus.$on('storeAuthUser', (authUser) => {
+      this.authUser = authUser
+    })
 
     // globalUpdate
     EventBus.$on('globalUpdate', () => {

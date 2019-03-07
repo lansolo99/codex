@@ -50,7 +50,6 @@
                   color="secondary"
                   label="Password"
                   v-model.trim="userData.password"
-                  required
                   :error-messages="passwordErrors"
                   @input="$v.userData.password.$touch()"
                   @blur="$v.userData.password.$touch()"
@@ -129,7 +128,8 @@
 import { EventBus } from '@/bus'
 import { mapGetters, mapActions } from 'vuex'
 import { validationMixin } from 'vuelidate'
-import { required, email, sameAs, minLength } from 'vuelidate/lib/validators'
+import { helpers, required, email, sameAs, minLength } from 'vuelidate/lib/validators'
+const optionnalPasswordRule = (value) => !helpers.req(value) || value.length >= 6
 
 export default {
   comments: true,
@@ -168,7 +168,10 @@ export default {
       pseudo: { required },
       email: { required, email },
       password: {
-        required,
+        optionnalPasswordRule,
+        // required: requiredIf(function () {
+        //   return this.userData.password.length > 0
+        // }),
         minLength: minLength(6)
       }
 
@@ -247,6 +250,8 @@ export default {
     }
   },
   created () {
+    console.log('password.length = ' + this.userData.password.length)
+
     this.formComponents.countries = this.getCountries
 
     EventBus.$on('editProfile', (status) => {

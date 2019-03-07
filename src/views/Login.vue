@@ -8,37 +8,74 @@
               <img class="logo my-3 mb-5" src="@/assets/images/logo.svg">
             </v-flex>
           </v-layout>
-          <v-layout>
-            <v-flex xs12>
-              <v-btn block large @click="emailSignUp">Sign Up</v-btn>
-            </v-flex>
-          </v-layout>
-          <v-layout>
-            <v-flex xs12>
-              <v-btn block large class="colorGreen white--text" @click="emailSignIn">Email Sign In</v-btn>
-            </v-flex>
-          </v-layout>
-          <v-layout>
-            <v-flex xs12>
-              <v-btn large class="colorGoogle white--text" block @click="signInWithGoogle">Google</v-btn>
-            </v-flex>
-          </v-layout>
-          <v-layout>
-            <v-flex xs12>
-              <v-btn
-                to="/tasks"
-                block
-                large
-                class="secondary white--text"
-                @click="signInAsGuest"
-              >Test as guest</v-btn>
-            </v-flex>
-          </v-layout>
-          <v-layout v-if="authUser" class="mx-4">
-            <v-flex xs12>
-              <v-btn block large @click="signOut" class="red white--text">Sign out</v-btn>
-            </v-flex>
-          </v-layout>
+
+          <!-- Sign-up -->
+          <div v-if="loginDisplay === 'signUp'">
+            <v-form ref="profileForm" lazy-validation>
+              <v-card class="pa-3">
+                <v-text-field
+                  class="pt-1"
+                  color="secondary"
+                  label="Email"
+                  v-model="email"
+                  required
+                  :error-messages="emailErrors"
+                  @input="$v.email.$touch()"
+                  @blur="$v.email.$touch()"
+                ></v-text-field>
+                <v-text-field
+                  :type="password"
+                  class="pt-1"
+                  color="secondary"
+                  label="Password"
+                  v-model.trim="password"
+                  :error-messages="passwordErrors"
+                  @input="$v.password.$touch()"
+                  @blur="$v.password.$touch()"
+                ></v-text-field>
+              </v-card>
+            </v-form>
+            <v-layout class="mx-4 mt-3">
+              <v-flex xs12>
+                <v-btn large @click="backToAllButtons" class="red white--text">Back</v-btn>
+              </v-flex>
+            </v-layout>
+          </div>
+
+          <!-- All Buttons -->
+          <div v-if="loginDisplay === 'allButtons'">
+            <v-layout>
+              <v-flex xs12>
+                <v-btn block large @click="emailSignUp">Sign Up</v-btn>
+              </v-flex>
+            </v-layout>
+            <v-layout>
+              <v-flex xs12>
+                <v-btn block large class="colorGreen white--text" @click="emailSignIn">Email Sign In</v-btn>
+              </v-flex>
+            </v-layout>
+            <v-layout>
+              <v-flex xs12>
+                <v-btn large class="colorGoogle white--text" block @click="signInWithGoogle">Google</v-btn>
+              </v-flex>
+            </v-layout>
+            <v-layout>
+              <v-flex xs12>
+                <v-btn
+                  to="/tasks"
+                  block
+                  large
+                  class="secondary white--text"
+                  @click="signInAsGuest"
+                >Test as guest</v-btn>
+              </v-flex>
+            </v-layout>
+            <v-layout v-if="authUser" class="mx-4">
+              <v-flex xs12>
+                <v-btn block large @click="signOut" class="red white--text">Sign out</v-btn>
+              </v-flex>
+            </v-layout>
+          </div>
         </v-flex>
       </v-layout>
     </v-container>
@@ -49,6 +86,8 @@
 import { EventBus } from '@/bus'
 import firebase from 'firebase'
 import { mapState, mapGetters, mapActions } from 'vuex'
+import { validationMixin } from 'vuelidate'
+import { required, email, minLength } from 'vuelidate/lib/validators'
 
 export default {
   name: 'Login',
@@ -58,7 +97,16 @@ export default {
       displayName: null,
       email: '',
       password: '',
-      newPassword: null
+      newPassword: null,
+      loginDisplay: 'allButtons'
+    }
+  },
+  mixins: [validationMixin],
+  validations: {
+    email: { required, email },
+    password: {
+      required,
+      minLength: minLength(6)
     }
   },
   computed: {
@@ -68,7 +116,21 @@ export default {
     }),
     ...mapGetters({
       'userData': 'profile/getProfileData'
-    })
+    }),
+    emailErrors () {
+      const errors = []
+      if (!this.$v.email.$dirty) return errors
+      !this.$v.email.email && errors.push('Must be a valid e-mail')
+      !this.$v.email.required && errors.push('Email is required')
+      return errors
+    },
+    passwordErrors () {
+      const errors = []
+      if (!this.$v.password.$dirty) return errors
+      !this.$v.password.required && errors.push('Password is required')
+      !this.$v.password.minLength && errors.push(`Password must have at least ${this.$v.userData.password.$params.minLength.min} letters.`)
+      return errors
+    }
   },
   methods: {
     ...mapActions({
@@ -79,7 +141,8 @@ export default {
     }),
     emailSignUp () {
       console.log('firebase email signup')
-      firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+      this.loginDisplay = 'signUp'
+      // firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
     },
     emailSignIn () {
       console.log('firebase email signin')
@@ -93,7 +156,9 @@ export default {
         .then(user => {
           console.log('user logged with google')
           // Define user in state & utility store
+
           this.authUser = user
+          EventBus.$emit('storeAuthUser', user.user)
           this.setUser(this.authUser.user)
           this.userData.email = this.authUser.user.email
           this.userData.pseudo = this.authUser.user.displayName
@@ -138,6 +203,9 @@ export default {
     },
     successRedirect () {
       this.$router.push({ name: 'tasks' })
+    },
+    backToAllButtons () {
+      this.loginDisplay = 'allButtons'
     }
   },
   created () {
