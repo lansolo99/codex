@@ -14,7 +14,17 @@
             <v-form ref="profileForm" lazy-validation>
               <v-card class="pa-3">
                 <v-text-field
-                  class="pt-1"
+                  color="secondary"
+                  class="red--text mt-1"
+                  label="Pseudo"
+                  v-model="pseudo"
+                  required
+                  :error-messages="pseudoErrors"
+                  @input="$v.pseudo.$touch()"
+                  @blur="$v.pseudo.$touch()"
+                ></v-text-field>
+                <v-text-field
+                  class="pt-1 mt-3"
                   color="secondary"
                   label="Email"
                   v-model="email"
@@ -25,7 +35,7 @@
                 ></v-text-field>
                 <v-text-field
                   :type="password"
-                  class="pt-1"
+                  class="pt-1 mt-3"
                   color="secondary"
                   label="Password"
                   v-model.trim="password"
@@ -33,12 +43,14 @@
                   @input="$v.password.$touch()"
                   @blur="$v.password.$touch()"
                 ></v-text-field>
+                <v-btn large block depressed flat outline class="mt-3">Sign Up</v-btn>
+                <v-layout justify-center class="mt-2">
+                  <a class="passwordForgotten" href>Forgot your password ?</a>
+                </v-layout>
               </v-card>
             </v-form>
-            <v-layout class="mx-4 mt-3">
-              <v-flex xs12>
-                <v-btn large @click="backToAllButtons" class="red white--text">Back</v-btn>
-              </v-flex>
+            <v-layout class="mx-4 mt-3" justify-center>
+              <v-btn large @click="backToAllButtons" class="red white--text">Back</v-btn>
             </v-layout>
           </div>
 
@@ -95,6 +107,7 @@ export default {
     return {
       authUser: null,
       displayName: null,
+      pseudo: null,
       email: '',
       password: '',
       newPassword: null,
@@ -103,6 +116,7 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
+    pseudo: { required },
     email: { required, email },
     password: {
       required,
@@ -117,6 +131,12 @@ export default {
     ...mapGetters({
       'userData': 'profile/getProfileData'
     }),
+    pseudoErrors () {
+      const errors = []
+      if (!this.$v.pseudo.$dirty) return errors
+      !this.$v.pseudo.required && errors.push('Pseudo is required')
+      return errors
+    },
     emailErrors () {
       const errors = []
       if (!this.$v.email.$dirty) return errors
@@ -248,5 +268,9 @@ export default {
   );
   background-size: cover;
   background-repeat: no-repeat;
+  .passwordForgotten {
+    color: gray;
+    text-decoration: none;
+  }
 }
 </style>
