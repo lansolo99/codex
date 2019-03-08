@@ -199,6 +199,7 @@ export default {
   methods: {
     ...mapActions({
       setUser: 'utility/setUser',
+      setAuthUser: 'utility/setAuthUser',
       appReady: 'utility/appReady',
       tasksReady: 'utility/tasksReady',
       updateProfile: 'profile/updateProfile'
@@ -235,7 +236,12 @@ export default {
       console.log('firebase email signin')
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
         .then(user => {
+          // User object to local data
           this.authUser = user
+          // User object to vuex
+          this.setAuthUser(JSON.parse(JSON.stringify(user)))
+
+          // Maybe delete this line on vuex is resolved
           EventBus.$emit('storeAuthUser', user.user)
           this.setUser(this.authUser.user)
           // InitFirebase & route to tasks
@@ -277,17 +283,6 @@ export default {
         EventBus.$emit('globalUpdate')
         this.successRedirect()
       })
-    },
-    updateAccount () {
-      this.authUser.updateEmail(this.email)
-      this.authUser.updatePassword(this.newPassword)
-        .then(() => { this.newPassword = '' })
-        .catch((error) => console.log('catch message = ' + error.message))
-    },
-    updateCustomDetails () {
-      firebase.database().ref('users').child(this.authUser.uid)
-        .update({ gender: this.gender })
-        .then(user => console.log('ok done' + user.data))
     },
     signOut () {
       console.log('firebase sign out')

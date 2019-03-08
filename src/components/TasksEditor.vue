@@ -34,39 +34,43 @@
                 @blur="$v.task.title.$touch()"
               ></v-text-field>
               <v-textarea dark label="Description" v-model="task.description"></v-textarea>
-              <v-select
-                class="categorySelect"
-                dark
-                :items="categories"
-                label="Category"
-                v-model="task.category"
-                item-text="name"
-                item-value="name"
-                required
-                :error-messages="categoryErrors"
-                @input="$v.task.category.$touch()"
-                @blur="$v.task.category.$touch()"
-              >
-                <template slot="selection" slot-scope="data">
-                  <v-list-tile-avatar>
-                    <img :src="require(`@/assets/images/icons_categories/${data.item.name}.svg`)">
-                  </v-list-tile-avatar>
-                  {{ data.item.name }}
-                </template>
-                <template slot="item" slot-scope="data">
-                  <template v-if="typeof data.item !== 'object'">
-                    <v-list-tile-content v-text="data.item"></v-list-tile-content>
-                  </template>
-                  <template v-else>
+              <div @click="resetSelectsScroll()">
+                <v-select
+                  class="categorySelect"
+                  dark
+                  :items="categories"
+                  label="Category"
+                  v-model="task.category"
+                  item-text="name"
+                  item-value="name"
+                  required
+                  :error-messages="categoryErrors"
+                  @input="$v.task.category.$touch()"
+                  @blur="$v.task.category.$touch()"
+                >
+                  <template slot="selection" slot-scope="data">
                     <v-list-tile-avatar>
                       <img :src="require(`@/assets/images/icons_categories/${data.item.name}.svg`)">
                     </v-list-tile-avatar>
-                    <v-list-tile-content>
-                      <v-list-tile-title v-html="data.item.name"></v-list-tile-title>
-                    </v-list-tile-content>
+                    {{ data.item.name }}
                   </template>
-                </template>
-              </v-select>
+                  <template slot="item" slot-scope="data">
+                    <template v-if="typeof data.item !== 'object'">
+                      <v-list-tile-content v-text="data.item"></v-list-tile-content>
+                    </template>
+                    <template v-else>
+                      <v-list-tile-avatar>
+                        <img
+                          :src="require(`@/assets/images/icons_categories/${data.item.name}.svg`)"
+                        >
+                      </v-list-tile-avatar>
+                      <v-list-tile-content>
+                        <v-list-tile-title v-html="data.item.name"></v-list-tile-title>
+                      </v-list-tile-content>
+                    </template>
+                  </template>
+                </v-select>
+              </div>
             </div>
             <div class="primary pa-4">
               <div class="schedule">
@@ -80,14 +84,16 @@
                 >
                   <v-tab v-for="option in schedule.options" :key="option" ripples>{{ option }}</v-tab>
                   <v-tab-item :value="0">
-                    <v-select
-                      class="mt-3"
-                      color="secondary"
-                      :items="schedule.weekly"
-                      label="Choose a frequence"
-                      v-model="task.schedule.weekly"
-                      :error-messages="scheduleWeeklyErrors"
-                    ></v-select>
+                    <div @click="resetSelectsScroll()">
+                      <v-select
+                        class="mt-3"
+                        color="secondary"
+                        :items="schedule.weekly"
+                        label="Choose a frequence"
+                        v-model="task.schedule.weekly"
+                        :error-messages="scheduleWeeklyErrors"
+                      ></v-select>
+                    </div>
                   </v-tab-item>
                   <v-tab-item :value="1">
                     <v-layout>
@@ -496,6 +502,11 @@ export default {
     storeDialogTask () {
       this.dialogTask = this.storeDialogTask
       document.getElementsByClassName('dialogTaskScrollablePart')[0].scrollTop = 0
+      console.log('storeDialogTask')
+      console.log(document.getElementsByClassName('v-menu__content')[0].scrollTop)
+      document.getElementsByClassName('v-menu__content')[0].scrollTop = 0
+      document.getElementsByClassName('v-menu__content')[1].scrollTop = 0
+      // console.log(document.getElementsByClassName('v-menu__content')[0].scrollY)
     },
     storeCurrentTask () {
       // Populate local datas with current task data retrieved from utility
@@ -618,6 +629,11 @@ export default {
       this.task.checked = false
       this.task.subtasks.forEach(subtask => { subtask.checked = false })
       console.log('disableScheduleGuard')
+    },
+    resetSelectsScroll () {
+      setTimeout(function () {
+        document.getElementsByClassName('menuable__content__active')[0].scrollTop = 0
+      }, 100)
     }
 
   },

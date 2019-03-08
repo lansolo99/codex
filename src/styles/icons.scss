@@ -44,32 +44,44 @@
 			$char: "\E004";
 		}
 
-		 @if $filename==delete {
+		 @if $filename==checkbox_off {
 			$char: "\E005";
 		}
 
-		 @if $filename==edit {
+		 @if $filename==checkbox_off_inside {
 			$char: "\E006";
 		}
 
-		 @if $filename==eye {
+		 @if $filename==checkbox_on {
 			$char: "\E007";
 		}
 
-		 @if $filename==eye_hidden {
+		 @if $filename==delete {
 			$char: "\E008";
 		}
 
-		 @if $filename==profile {
+		 @if $filename==edit {
 			$char: "\E009";
 		}
 
-		 @if $filename==question_mark {
+		 @if $filename==eye {
 			$char: "\E00A";
 		}
 
-		 @if $filename==stats {
+		 @if $filename==eye_hidden {
 			$char: "\E00B";
+		}
+
+		 @if $filename==profile {
+			$char: "\E00C";
+		}
+
+		 @if $filename==question_mark {
+			$char: "\E00D";
+		}
+
+		 @if $filename==stats {
+			$char: "\E00E";
 		}
 
 		@return $char;
@@ -103,6 +115,18 @@
 
 	.icon-check {
 		@include icon(check);
+	}
+
+	.icon-checkbox_off {
+		@include icon(checkbox_off);
+	}
+
+	.icon-checkbox_off_inside {
+		@include icon(checkbox_off_inside);
+	}
+
+	.icon-checkbox_on {
+		@include icon(checkbox_on);
 	}
 
 	.icon-delete {

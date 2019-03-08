@@ -20,7 +20,7 @@
                 </v-flex>
               </v-layout>
             </v-card>
-            <v-card class="pt-3 pl-3 pr-3 pb-0">
+            <v-card class="pa-3">
               <v-text-field
                 :disabled="!editing"
                 color="secondary"
@@ -39,9 +39,6 @@
                 label="Email"
                 v-model="userData.email"
                 required
-                :error-messages="emailErrors"
-                @input="$v.userData.email.$touch()"
-                @blur="$v.userData.email.$touch()"
               ></v-text-field>
               <div v-if="editing" class="fieldset fieldset--password">
                 <v-text-field
@@ -50,15 +47,15 @@
                   color="secondary"
                   label="Password"
                   v-model.trim="userData.password"
-                  :error-messages="passwordErrors"
-                  @input="$v.userData.password.$touch()"
-                  @blur="$v.userData.password.$touch()"
                 ></v-text-field>
                 <v-icon
                   @click="togglePasswordVisibility('password')"
                   :class="['icon', formComponents.iconShowPassword, 'customIcon']"
                 ></v-icon>
               </div>
+              <v-layout>
+                <div class="updateAccountCatchError">{{updateAccountCatchError}}</div>
+              </v-layout>
             </v-card>
           </div>
 
@@ -126,7 +123,8 @@
 
 <script>
 import { EventBus } from '@/bus'
-import { mapGetters, mapActions } from 'vuex'
+import firebase from 'firebase'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { helpers, required, email, sameAs, minLength } from 'vuelidate/lib/validators'
 const optionnalPasswordRule = (value) => !helpers.req(value) || value.length >= 6
@@ -137,6 +135,8 @@ export default {
   data () {
     return {
       editing: false,
+      authUser: null,
+      updateAccountCatchError: '',
       formComponents: {
         passwordType: 'password',
         iconShowPassword: 'icon-eye',
@@ -178,6 +178,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      utility: state => state.utility
+    }),
     ...mapGetters({
       userData: 'profile/getProfileData',
       getCountries: 'utility/getCountries'
@@ -239,13 +242,22 @@ export default {
       } else {
         // Validation passed
         console.log('valid form')
-        const userData = JSON.parse(JSON.stringify(this.userData))
-        this.updateProfile(userData).then(() => {
-          EventBus.$emit('updateFirebase')
-        })
-        // Everything is done :
-        EventBus.$emit('editProfile', false)
-        this.toggleProfileDialog(false)
+        // Account update before record
+
+        firebase.auth().currentUser.updateEmail(this.userData.email)
+        firebase.auth().currentUser.updatePassword(this.userData.password)
+          .then(() => { this.userData.password = '' })
+          .catch((error) => {
+            console.log('catch message = ' + error.message)
+            this.updateAccountCatchError = error.message
+          })
+        // Profile datas update (vuex + firebase)
+        // const userData = JSON.parse(JSON.stringify(this.userData))
+        // this.updateProfile(userData).then(() => {
+        //   EventBus.$emit('updateFirebase')
+        //   EventBus.$emit('editProfile', false)
+        //   this.toggleProfileDialog(false)
+        // })
       }
     }
   },
@@ -321,6 +333,10 @@ export default {
   }
   .theme--light.v-input--is-disabled .v-label {
     opacity: 0.7;
+  }
+  .updateAccountCatchError {
+    color: red;
+    font-size: 12px;
   }
 }
 </style>

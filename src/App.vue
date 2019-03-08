@@ -285,7 +285,7 @@ export default {
 
     // EVENTS
 
-    // login
+    // Store AuthUser object
     EventBus.$on('storeAuthUser', (authUser) => {
       this.authUser = authUser
     })

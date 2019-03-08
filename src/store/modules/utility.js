@@ -2,6 +2,7 @@ import countries from '@/store/datas/countries'
 export default {
   namespaced: true,
   state: {
+    authUser: null,
     authUserID: null,
     authUserEmail: null,
     appReady: false,
@@ -34,6 +35,11 @@ export default {
       commit
     }, payload) {
       commit('setUser', payload)
+    },
+    setAuthUser ({
+      commit
+    }, payload) {
+      commit('setAuthUser', payload)
     },
     appReady ({
       commit
@@ -74,6 +80,17 @@ export default {
       } else {
         state.authUserID = payload.uid
         state.authUserEmail = payload.email
+      }
+    },
+    setAuthUser (state, payload) {
+      console.log('setAuthUser')
+
+      console.log(payload)
+
+      if (payload === 'null') {
+        state.authUser = null
+      } else {
+        state.authUser = payload
       }
     },
     appReady (state) {

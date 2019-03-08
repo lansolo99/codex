@@ -8,9 +8,11 @@
           <v-flex shrink class="checkboxFlexContainer">
             <v-checkbox
               @click.native.stop
-              class="ma-0 pa-0"
               hide-details
-              color="colorGreen"
+              class="ma-0 pa-0 pt-1"
+              color="black"
+              off-icon
+              on-icon="icon-checkbox_on"
               :disabled="hasTaskSubtasks(task) || task.disabled === true"
               :input-value="task.checked"
               @change="updateCheckedStatus(task.id, $event, 'task', key)"
@@ -20,6 +22,7 @@
               @click.native.stop
               v-if="hasTaskSubtasks(task) || task.disabled"
             ></v-checkbox>
+            <v-icon class="icon icon-checkbox_off"></v-icon>
           </v-flex>
           <v-flex shrink class="ml-2">
             <div :class="`category ${task.category}`">
@@ -42,13 +45,15 @@
               :class="`task ${task.status}`"
             >
               <v-flex shrink class="pt-2 icon-slot">
-                <v-icon class="icon icon-arrow_return"></v-icon>
+                <v-icon class="icon icon-arrow_return pl-1"></v-icon>
               </v-flex>
-              <v-flex shrink class="pt-1 ml-3 checkboxFlexContainer">
+              <v-flex shrink class="pt-1 checkboxFlexContainer">
                 <v-checkbox
                   @click.native.stop
                   class="ma-0 pa-0"
-                  color="colorGreen"
+                  color="black"
+                  off-icon
+                  on-icon="icon-checkbox_on"
                   hide-details
                   :disabled="task.disabled === true"
                   :input-value="subtask.checked"
@@ -59,6 +64,7 @@
                   @click.native.stop
                   v-if="task.disabled === true"
                 ></v-checkbox>
+                <v-icon class="icon icon-checkbox_off"></v-icon>
               </v-flex>
               <v-flex grow class="pa-1 pt-2 pl-2 pr-3 body-1">
                 <span :class="['name', { completed: subtask.checked } ]">{{subtask.name}}</span>
@@ -322,14 +328,29 @@ export default {
     .v-input--selection-controls {
       position: relative;
       top: 1px;
-
-      .material-icons {
-        font-size: 31px;
+      z-index: 2;
+      .v-input--selection-controls__ripple {
+        left: -9px !important;
+      }
+      .v-icon {
+        font-size: 32px;
       }
     }
     // Invisible checkboxes (prevent openning panel at click when disabled state)
     .checkboxFlexContainer {
       position: relative;
+      .icon-checkbox_off,
+      .icon-checkbox_off_inside {
+        position: absolute;
+        font-size: 31px;
+        top: 2px;
+        left: 0;
+        z-index: 0;
+        color: $color-golden;
+      }
+      .icon-checkbox_off_inside {
+        opacity: 0.4;
+      }
     }
     .preventExpansion {
       position: absolute;
@@ -356,20 +377,19 @@ export default {
   .subtasks {
     .flex {
       height: 38px;
+      &.checkboxFlexContainer {
+        margin-left: 13px;
+        margin-top: 2px;
+      }
     }
 
     .icon {
       &:before {
-        font-size: 25px;
-        position: relative;
-        top: 1px;
-        left: 4px;
       }
     }
     .name {
       font-weight: 300;
       font-size: 16px;
-      //display: block;
       margin-left: 2px;
       position: relative;
       transition: all 0.3s ease-out;
