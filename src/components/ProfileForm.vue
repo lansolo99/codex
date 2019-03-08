@@ -70,7 +70,7 @@
                 class="pt-1"
                 color="secondary"
                 :items="formComponents.gender"
-                label="Select your gender"
+                label="Gender"
                 v-model="userData.gender"
               ></v-select>
               <v-select

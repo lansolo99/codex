@@ -9,9 +9,9 @@
             </v-flex>
           </v-layout>
 
-          <!-- Sign-up -->
+          <!-- Sign-up form -->
           <div v-if="loginDisplay === 'signUp'">
-            <v-form ref="profileForm" lazy-validation>
+            <v-form lazy-validation>
               <v-card class="pa-3">
                 <v-text-field
                   color="secondary"
@@ -34,7 +34,7 @@
                   @blur="$v.email.$touch()"
                 ></v-text-field>
                 <v-text-field
-                  :type="password"
+                  type="password"
                   class="pt-1 mt-3"
                   color="secondary"
                   label="Password"
@@ -43,14 +43,43 @@
                   @input="$v.password.$touch()"
                   @blur="$v.password.$touch()"
                 ></v-text-field>
-                <v-btn large block depressed flat outline class="mt-3">Sign Up</v-btn>
+                <div class="signInCatchError">{{signInCatchError}}</div>
+                <v-btn large block depressed flat outline class="mt-3" @click="emailSignUp">Sign Up</v-btn>
+              </v-card>
+            </v-form>
+            <v-layout class="mx-4 mt-3" justify-center>
+              <v-btn large @click="loginElementsDisplay('allButtons')" class="red white--text">Back</v-btn>
+            </v-layout>
+          </div>
+
+          <!-- Sign-in form -->
+          <div v-if="loginDisplay === 'signIn'">
+            <v-form>
+              <v-card class="pa-3">
+                <v-text-field class="pt-1 mt-3" color="secondary" label="Email" v-model="email"></v-text-field>
+                <v-text-field
+                  type="password"
+                  class="pt-1 mt-3"
+                  color="secondary"
+                  label="Password"
+                  v-model.trim="password"
+                ></v-text-field>
+                <div class="signInCatchError">{{signInCatchError}}</div>
+                <v-btn
+                  large
+                  block
+                  depressed
+                  flat
+                  class="mt-3 colorGreen white--text"
+                  @click="emailSignIn"
+                >Sign In</v-btn>
                 <v-layout justify-center class="mt-2">
                   <a class="passwordForgotten" href>Forgot your password ?</a>
                 </v-layout>
               </v-card>
             </v-form>
             <v-layout class="mx-4 mt-3" justify-center>
-              <v-btn large @click="backToAllButtons" class="red white--text">Back</v-btn>
+              <v-btn large @click="loginElementsDisplay('allButtons')" class="red white--text">Back</v-btn>
             </v-layout>
           </div>
 
@@ -58,17 +87,22 @@
           <div v-if="loginDisplay === 'allButtons'">
             <v-layout>
               <v-flex xs12>
-                <v-btn block large @click="emailSignUp">Sign Up</v-btn>
+                <v-btn
+                  block
+                  large
+                  class="colorGreen white--text"
+                  @click="loginElementsDisplay('signIn')"
+                >Email Sign In</v-btn>
               </v-flex>
             </v-layout>
             <v-layout>
               <v-flex xs12>
-                <v-btn block large class="colorGreen white--text" @click="emailSignIn">Email Sign In</v-btn>
-              </v-flex>
-            </v-layout>
-            <v-layout>
-              <v-flex xs12>
-                <v-btn large class="colorGoogle white--text" block @click="signInWithGoogle">Google</v-btn>
+                <v-btn
+                  large
+                  class="colorGoogle white--text"
+                  block
+                  @click="signInWithGoogle"
+                >Google Sign in</v-btn>
               </v-flex>
             </v-layout>
             <v-layout>
@@ -79,12 +113,18 @@
                   large
                   class="secondary white--text"
                   @click="signInAsGuest"
-                >Test as guest</v-btn>
+                >Test as a guest</v-btn>
               </v-flex>
             </v-layout>
-            <v-layout v-if="authUser" class="mx-4">
+
+            <v-layout class="mt-3">
               <v-flex xs12>
-                <v-btn block large @click="signOut" class="red white--text">Sign out</v-btn>
+                <v-btn block large @click="loginElementsDisplay('signUp')">Email Sign Up</v-btn>
+              </v-flex>
+            </v-layout>
+            <v-layout v-if="authUser" class="mt-3">
+              <v-flex xs12>
+                <v-btn block large @click="signOut" class="red white--text">Sign out helper</v-btn>
               </v-flex>
             </v-layout>
           </div>
@@ -93,6 +133,10 @@
     </v-container>
   </div>
 </template>
+
+<!-- *************************************************************************
+     * SCRIPT
+****************************************************************************** -->
 
 <script>
 import { EventBus } from '@/bus'
@@ -110,8 +154,8 @@ export default {
       pseudo: null,
       email: '',
       password: '',
-      newPassword: null,
-      loginDisplay: 'allButtons'
+      loginDisplay: 'allButtons',
+      signInCatchError: ''
     }
   },
   mixins: [validationMixin],
@@ -148,7 +192,7 @@ export default {
       const errors = []
       if (!this.$v.password.$dirty) return errors
       !this.$v.password.required && errors.push('Password is required')
-      !this.$v.password.minLength && errors.push(`Password must have at least ${this.$v.userData.password.$params.minLength.min} letters.`)
+      !this.$v.password.minLength && errors.push(`Password must have at least ${this.$v.password.$params.minLength.min} letters.`)
       return errors
     }
   },
@@ -161,14 +205,46 @@ export default {
     }),
     emailSignUp () {
       console.log('firebase email signup')
-      this.loginDisplay = 'signUp'
-      // firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+      // Form validation
+      this.$v.$touch()
+      if (this.$v.$invalid) {
+        // Throw form errors
+        console.log('invalid form')
+      } else {
+        // Validation passed
+        console.log('valid form')
+        firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+          .then(user => {
+            this.authUser = user
+            EventBus.$emit('storeAuthUser', user.user)
+            this.setUser(this.authUser.user)
+            this.userData.email = this.authUser.user.email
+            this.userData.pseudo = this.pseudo
+            this.updateProfile(this.userData).then(() => {
+            // InitFirebase & route to tasks
+              EventBus.$emit('initFirebase')
+              this.successRedirect()
+            })
+          })
+          .catch(error => {
+            this.signInCatchError = error.message
+          })
+      }
     },
     emailSignIn () {
       console.log('firebase email signin')
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
-        .then(user => { this.authUser = user })
-        .catch(error => console.log(error.message))
+        .then(user => {
+          this.authUser = user
+          EventBus.$emit('storeAuthUser', user.user)
+          this.setUser(this.authUser.user)
+          // InitFirebase & route to tasks
+          EventBus.$emit('initFirebase')
+          this.successRedirect()
+        })
+        .catch(error => {
+          this.signInCatchError = error.message
+        })
     },
     signInWithGoogle () {
       const provider = new firebase.auth.GoogleAuthProvider()
@@ -216,31 +292,37 @@ export default {
     signOut () {
       console.log('firebase sign out')
       firebase.auth().signOut()
-      this.authUser = null
-      this.setUser('null')
-      this.displayName = null
-      this.email = ''
+      this.resetDatas()
     },
     successRedirect () {
       this.$router.push({ name: 'tasks' })
     },
-    backToAllButtons () {
-      this.loginDisplay = 'allButtons'
+    resetDatas () {
+      // Reset forms
+      this.$v.$reset()
+      // Reset local datas
+      this.authUser = null
+      this.setUser('null')
+      this.displayName = null
+      this.pseudo = null
+      this.email = ''
+      this.password = ''
+      this.signInCatchError = ''
+    },
+    loginElementsDisplay (configuration) {
+      // Elements to display
+      this.loginDisplay = configuration
+      this.resetDatas()
     }
   },
   created () {
     firebase.auth().onAuthStateChanged(user => {
+      console.log('onAuthStateChanged')
       this.authUser = user
       // Only update data if user object exists (to prevent that sign-out empty the datas)
       if (user) {
         this.email = user.email
         this.displayName = user.displayName
-        firebase.database().ref('users').child(user.uid).once('value', snap => {
-          if (snap.val()) {
-            this.gender = snap.val().gender
-            // Vue.set(this.authUser, 'gender', this.gender)
-          }
-        })
       }
     })
 
@@ -250,6 +332,10 @@ export default {
   }
 }
 </script>
+
+<!-- *************************************************************************
+     * STYLE
+****************************************************************************** -->
 
 <style lang="scss">
 .login {
@@ -268,9 +354,15 @@ export default {
   );
   background-size: cover;
   background-repeat: no-repeat;
+
   .passwordForgotten {
     color: gray;
     text-decoration: none;
+  }
+
+  .signInCatchError {
+    color: red;
+    font-size: 12px;
   }
 }
 </style>
