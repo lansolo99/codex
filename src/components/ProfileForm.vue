@@ -20,7 +20,7 @@
                 </v-flex>
               </v-layout>
             </v-card>
-            <v-card class="pa-3">
+            <v-card class="pt-3 pl-3 pr-3 pb-0">
               <v-text-field
                 :disabled="!editing"
                 color="secondary"
@@ -37,6 +37,7 @@
                 :disabled="!editing"
                 color="secondary"
                 label="Email"
+                readonly
                 v-model="userData.email"
                 required
               ></v-text-field>
@@ -46,6 +47,7 @@
                   class="pt-1"
                   color="secondary"
                   label="Password"
+                  readonly
                   v-model.trim="userData.password"
                 ></v-text-field>
                 <v-icon
@@ -53,9 +55,6 @@
                   :class="['icon', formComponents.iconShowPassword, 'customIcon']"
                 ></v-icon>
               </div>
-              <v-layout>
-                <div class="updateAccountCatchError">{{updateAccountCatchError}}</div>
-              </v-layout>
             </v-card>
           </div>
 
@@ -123,11 +122,9 @@
 
 <script>
 import { EventBus } from '@/bus'
-import firebase from 'firebase'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { validationMixin } from 'vuelidate'
-import { helpers, required, email, sameAs, minLength } from 'vuelidate/lib/validators'
-const optionnalPasswordRule = (value) => !helpers.req(value) || value.length >= 6
+import { required } from 'vuelidate/lib/validators'
 
 export default {
   comments: true,
@@ -161,21 +158,9 @@ export default {
   mixins: [validationMixin],
   validations: {
     formComponents: {
-      repeatPassword: {
-        sameAsPassword: sameAs('password')
-      }
     },
     userData: {
-      pseudo: { required },
-      email: { required, email },
-      password: {
-        optionnalPasswordRule,
-        // required: requiredIf(function () {
-        //   return this.userData.password.length > 0
-        // }),
-        minLength: minLength(6)
-      }
-
+      pseudo: { required }
     }
   },
   computed: {
@@ -244,47 +229,13 @@ export default {
       } else {
         // Validation passed
         console.log('valid form')
-
-        // Firebase vars
-        const user = firebase.auth().currentUser
-        const credential = firebase.auth.EmailAuthProvider.credential(
-          user.email,
-          this.profile.password
-        )
-
-        // EMAIL UPDATE
-
-        // ReAuthenticate user
-        user.reauthenticateAndRetrieveDataWithCredential(credential)
-          .then(() => {
-            console.log('User re-authenticated.')
-            // Update email
-            user.updateEmail(this.userData.email)
-              .then(() => {
-                console.log('email updated')
-
-                // Update profile (vuex + firebase)
-                const userData = JSON.parse(JSON.stringify(this.userData))
-                this.updateProfile(userData).then(() => {
-                  console.log('vuex profile updated')
-
-                  // Update firebase + close edit view
-                  EventBus.$emit('updateFirebase')
-                  EventBus.$emit('editProfile', false)
-                  this.toggleProfileDialog(false)
-                })
-              })
-              .catch((error) => {
-                console.log('update email message = ' + error.message)
-                this.updateAccountCatchError = error.message
-              })
-          })
-          .catch((error) => {
-            console.log('reauthenticate user message = ' + error.message)
-            this.updateAccountCatchError = error.message
-          })
-
-        // PASSWORD UPDATE
+        const userData = JSON.parse(JSON.stringify(this.userData))
+        this.updateProfile(userData).then(() => {
+          EventBus.$emit('updateFirebase')
+        })
+        // Everything is done :
+        EventBus.$emit('editProfile', false)
+        this.toggleProfileDialog(false)
       }
     }
   },
