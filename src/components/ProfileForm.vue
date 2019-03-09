@@ -26,6 +26,7 @@
                 color="secondary"
                 class="red--text"
                 label="Pseudo"
+                readonly
                 v-model="userData.pseudo"
                 required
                 :error-messages="pseudoErrors"

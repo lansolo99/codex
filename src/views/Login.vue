@@ -74,8 +74,33 @@
                   @click="emailSignIn"
                 >Sign In</v-btn>
                 <v-layout justify-center class="mt-2">
-                  <a class="passwordForgotten" href>Forgot your password ?</a>
+                  <a
+                    class="passwordForgotten"
+                    @click="loginElementsDisplay('resetPassword')"
+                  >Forgot your password ?</a>
                 </v-layout>
+              </v-card>
+            </v-form>
+            <v-layout class="mx-4 mt-3" justify-center>
+              <v-btn large @click="loginElementsDisplay('allButtons')" class="red white--text">Back</v-btn>
+            </v-layout>
+          </div>
+
+          <!-- Reset password form -->
+          <div v-if="loginDisplay === 'resetPassword'">
+            <v-form>
+              <v-card class="pa-3">
+                <v-text-field class="pt-1 mt-3" color="secondary" label="Email" v-model="email"></v-text-field>
+                <div class="resetPasswordError">{{resetPasswordCatchError}}</div>
+                <div class="resetPasswordResolved">{{resetPasswordResolved}}</div>
+                <v-btn
+                  large
+                  block
+                  depressed
+                  flat
+                  class="mt-3 colorGreen white--text"
+                  @click="resetPassword"
+                >Reset my password</v-btn>
               </v-card>
             </v-form>
             <v-layout class="mx-4 mt-3" justify-center>
@@ -154,7 +179,9 @@ export default {
       email: '',
       password: '',
       loginDisplay: 'allButtons',
-      signInCatchError: ''
+      signInCatchError: '',
+      resetPasswordCatchError: '',
+      resetPasswordResolved: ''
     }
   },
   mixins: [validationMixin],
@@ -201,7 +228,8 @@ export default {
       setAuthUser: 'utility/setAuthUser',
       appReady: 'utility/appReady',
       tasksReady: 'utility/tasksReady',
-      updateProfile: 'profile/updateProfile'
+      updateProfile: 'profile/updateProfile',
+      resetProfileDatas: 'profile/resetProfileDatas'
     }),
     emailSignUp () {
       console.log('firebase email signup')
@@ -273,13 +301,22 @@ export default {
       firebase.auth().signInWithPopup(provider)
         .then(user => {
           console.log('user logged with google')
-          // Define user in state & utility store
 
+          // User object to vuex (the one we want to keep)
+          this.setAuthUser(JSON.parse(JSON.stringify(user)))
+
+          // User object to login.vue local data (eventually keep for local forms)
           this.authUser = user
+
+          // User object to app.vue local data (Maybe delete this once vuex is resolved)
           EventBus.$emit('storeAuthUser', user.user)
+
+          // authUserID & authUserEmail to vuex (Maybe delete this once vuex is resolved)
           this.setUser(this.authUser.user)
+
           this.userData.email = this.authUser.user.email
           this.userData.pseudo = this.authUser.user.displayName
+
           this.updateProfile(this.userData).then(() => {
             // InitFirebase & route to tasks
             EventBus.$emit('initFirebase')
@@ -309,6 +346,8 @@ export default {
       this.$router.push({ name: 'tasks' })
     },
     resetDatas () {
+      // Reset vuex profile
+      this.resetProfileDatas()
       // Reset forms
       this.$v.$reset()
       // Reset local datas
@@ -318,11 +357,25 @@ export default {
       this.email = ''
       this.password = ''
       this.signInCatchError = ''
+      this.resetPasswordCatchError = ''
+      this.resetPasswordResolved = ''
     },
     loginElementsDisplay (configuration) {
       // Elements to display
       this.loginDisplay = configuration
       this.resetDatas()
+    },
+    resetPassword () {
+      const auth = firebase.auth()
+      const emailAddress = this.email
+
+      auth.sendPasswordResetEmail(emailAddress).then(() => {
+        // Email sent.
+        console.log('Email sent')
+        this.resetPasswordResolved = 'An email has been sent to ' + this.email
+      }).catch((error) => {
+        this.resetPasswordCatchError = error.message
+      })
     }
   },
   created () {
@@ -331,6 +384,7 @@ export default {
       console.log('onAuthStateChanged')
 
       if (user) {
+        this.authUser = user
         console.log('user is signed in')
       } else {
         console.log('user is signed out')
@@ -371,8 +425,13 @@ export default {
     text-decoration: none;
   }
 
-  .signInCatchError {
+  .signInCatchError,
+  .resetPasswordError {
     color: red;
+    font-size: 12px;
+  }
+  .resetPasswordResolved {
+    color: $color-green;
     font-size: 12px;
   }
 }

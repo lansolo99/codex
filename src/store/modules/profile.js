@@ -5,6 +5,10 @@ import {
   EventBus
 } from '@/bus'
 
+const getDefaultState = {
+  ...sourceData
+}
+
 export default {
   namespaced: true,
   state: sourceData,
@@ -18,6 +22,11 @@ export default {
     }
   },
   actions: {
+    resetProfileDatas ({
+      commit
+    }) {
+      commit('resetProfileDatas')
+    },
     fetchProfileDatas ({
       commit
     }, authUserID) {
@@ -60,6 +69,12 @@ export default {
     }
   },
   mutations: {
+    resetProfileDatas (state) {
+      console.log('resetProfileDatas')
+      console.log(getDefaultState)
+      // state = sourceData
+      Object.assign(state, getDefaultState)
+    },
     updateProfile (state, payload) {
       return new Promise((resolve, reject) => {
         Object.assign(state, payload)
