@@ -299,7 +299,7 @@ export default {
       let labels = []
 
       for (let label of Object.keys(this.userData.stats.weeksRecords)) {
-        labels.push('W' + label)
+        labels.push(label)
       }
       return labels.slice(-10)
     },

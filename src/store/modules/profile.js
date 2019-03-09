@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import firebase from 'firebase'
-import sourceData from '@/profile'
+import sourceData from '@/store/datas/profile'
 import {
   EventBus
 } from '@/bus'
@@ -70,9 +70,6 @@ export default {
   },
   mutations: {
     resetProfileDatas (state) {
-      console.log('resetProfileDatas')
-      console.log(getDefaultState)
-      // state = sourceData
       Object.assign(state, getDefaultState)
     },
     updateProfile (state, payload) {
@@ -90,7 +87,8 @@ export default {
       authUserID
     }) {
       Vue.set(state.stats, 'progressWeek', progressWeek)
-      Vue.set(state.stats.weeksRecords, currentUserWeek, progressWeek)
+      const weekKey = 'W' + currentUserWeek.toString()
+      Vue.set(state.stats.weeksRecords, weekKey, progressWeek)
       return authUserID === 'guest' ? '' : EventBus.$emit('updateFirebase')
     }
   }

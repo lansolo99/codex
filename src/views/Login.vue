@@ -229,7 +229,10 @@ export default {
       appReady: 'utility/appReady',
       tasksReady: 'utility/tasksReady',
       updateProfile: 'profile/updateProfile',
-      resetProfileDatas: 'profile/resetProfileDatas'
+      resetProfileDatas: 'profile/resetProfileDatas',
+      resetUtilityDatas: 'utility/resetUtilityDatas',
+      resetCurrentUserWeek: 'time/resetCurrentUserWeek',
+      resetTasksDatas: 'tasks/resetTasksDatas'
     }),
     emailSignUp () {
       console.log('firebase email signup')
@@ -348,8 +351,12 @@ export default {
     resetDatas () {
       // Reset vuex profile
       this.resetProfileDatas()
+      this.resetUtilityDatas()
+      this.resetCurrentUserWeek()
+      this.resetTasksDatas()
+      // this.$store.tasks.replaceState({})
       // Reset forms
-      this.$v.$reset()
+      // this.$v.$reset()
       // Reset local datas
       this.authUser = null
       this.setUser('null')

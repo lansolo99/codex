@@ -1,27 +1,12 @@
-import countries from '@/store/datas/countries'
+import sourceData from '@/store/datas/utility'
+
+const getDefaultState = {
+  ...sourceData
+}
+
 export default {
   namespaced: true,
-  state: {
-    authUser: null,
-    authUserID: null,
-    authUserEmail: null,
-    appReady: false,
-    countries: countries,
-    tasksReady: false,
-    periodicities: {
-      id1: {
-        name: 'Weeklies'
-      }
-    },
-    currentTask: {
-      id: 'new'
-    },
-    dialogTask: 'false',
-    dialogProfile: 'false',
-    taskPanels: [null, null, null, null],
-    reboot: false,
-    addedDays: 0
-  },
+  state: sourceData,
   getters: {
     getCountries (state) {
       const named = state.countries.map(v => {
@@ -31,6 +16,11 @@ export default {
     }
   },
   actions: {
+    resetUtilityDatas ({
+      commit
+    }) {
+      commit('resetUtilityDatas')
+    },
     setUser ({
       commit
     }, payload) {
@@ -73,6 +63,9 @@ export default {
     }
   },
   mutations: {
+    resetUtilityDatas (state) {
+      Object.assign(state, getDefaultState)
+    },
     setUser (state, payload) {
       if (payload === 'null') {
         state.authUserID = null

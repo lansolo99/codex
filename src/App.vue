@@ -108,7 +108,7 @@ export default {
       )
 
       // Set currentUserWeek
-      const lastUserRecordedWeek = parseInt(Object.keys(this.userData.stats.weeksRecords).slice(-1))
+      const lastUserRecordedWeek = parseInt(Object.keys(this.userData.stats.weeksRecords).slice(-1).join('').substr(1))
       const getWeeksPassedSinceLastConnexion = differenceInCalendarWeeks(
         addDays(new Date(Date.now()), addedDays),
         new Date(this.userData.connexionDateLast),
@@ -116,6 +116,8 @@ export default {
       )
 
       const currentUserWeek = parseInt(lastUserRecordedWeek + getWeeksPassedSinceLastConnexion)
+      console.log('currentUserWeek = ' + currentUserWeek)
+
       EventBus.$emit('updateCurrentUserWeek', currentUserWeek)
 
       // WEEK RESET
@@ -320,6 +322,7 @@ export default {
         .once('value', snapshot => {
           if (snapshot.exists()) {
             // User exists
+            console.log('User exists')
 
             // Fetch profile datas
             this.fetchProfileDatas(this.utility.authUserID)
@@ -357,22 +360,15 @@ export default {
         })
     })
 
-    // Updates
+    // Firebase Updates
     EventBus.$on('updateFirebase', () => {
       console.log('updateFirebase')
       firebase.database()
         .ref('users')
         .child(this.utility.authUserID)
-        .set({ profile: this.profile })
+        .set({ profile: this.profile, tasks: this.tasks })
         .then(() => {
-          console.log('firebase profile updated')
-          firebase.database()
-            .ref('users')
-            .child(this.utility.authUserID)
-            .set({ profile: this.profile, tasks: this.tasks })
-            .then(() => {
-              console.log('firebase tasks updated')
-            })
+          console.log('firebase profile + tasks updated')
         })
     })
   }

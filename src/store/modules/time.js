@@ -12,6 +12,11 @@ export default {
   },
   getters: {},
   actions: {
+    resetCurrentUserWeek ({
+      commit
+    }) {
+      commit('resetCurrentUserWeek')
+    },
     updateCurrentUserWeek ({
       commit
     }, payload) {
@@ -30,6 +35,9 @@ export default {
     }
   },
   mutations: {
+    resetCurrentUserWeek (state) {
+      state.currentUserWeek = null
+    },
     updateCurrentUserWeek (state, payload) {
       state.currentUserWeek = payload
     },

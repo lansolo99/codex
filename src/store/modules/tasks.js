@@ -6,6 +6,11 @@ export default {
   state: {},
   getters: {},
   actions: {
+    resetTasksDatas ({
+      commit
+    }) {
+      commit('resetTasksDatas')
+    },
     fetchTasksDatas ({
       commit
     }, authUserID) {
@@ -99,6 +104,13 @@ export default {
     }
   },
   mutations: {
+    resetTasksDatas (state) {
+      console.log('resetTasksDatas')
+      for (let key of Object.keys(state)) {
+        console.log('key = ' + key)
+        Vue.delete(state, key)
+      }
+    },
     addNewTask (state, payload) {
       Vue.set(state, payload.id, payload)
     },
