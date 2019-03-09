@@ -227,8 +227,6 @@ export default {
       let completionValue
       let singleSlotOrFullTasks
 
-      // console.log('completion = ' + this.tasks[taskId].completion)
-
       // Is task single slot or full task ?
       if (this.tasks[taskId].completion) {
         if (this.tasks[taskId].completion.length === 1 || (this.tasks[taskId].completion.length > 1 && !this.tasks[taskId].completion.includes(0))) {

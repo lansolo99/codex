@@ -35,7 +35,6 @@ export default {
                   tasks[pair[0]]['schedule']['specificDays'] = []
                 }
               })
-              console.log(tasks)
               commit('fetchTasksDatas', tasks)
             }
             resolve()
@@ -105,9 +104,7 @@ export default {
   },
   mutations: {
     resetTasksDatas (state) {
-      console.log('resetTasksDatas')
       for (let key of Object.keys(state)) {
-        console.log('key = ' + key)
         Vue.delete(state, key)
       }
     },
@@ -116,8 +113,6 @@ export default {
     },
     fetchTasksDatas (state, payload) {
       for (let [key, value] of Object.entries(payload)) {
-        console.log('key = ' + key)
-        console.log('value = ' + value)
         Vue.set(state, key, value)
       }
     },
@@ -160,12 +155,10 @@ export default {
         )
 
         if (allSubtasksChecked) {
-          console.log('all subtask checked')
           task.checked = true
           task.completion[completionIndex] = completionValue
           task.checkTime = checkTime
         } else {
-          console.log('not all subtasks checked')
           if (task.checked === true) {
             task.checked = false
             task.completion[completionIndex] = 0
@@ -196,7 +189,6 @@ export default {
       Object.values(state).forEach(task => {
         // Reset completion slot (if ever sliced at init)
         if (weekChange) {
-          console.log('weekChange = ' + weekChange)
           // Slot Generator
           const slotsGenerator = n => {
             task.completion = []

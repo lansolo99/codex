@@ -1,6 +1,7 @@
 <template>
   <header>
     <v-toolbar dark app class="taskHeader secondary">
+      <TheStatusBar/>
       <v-toolbar-title class="primary--text font-weight-bold">Tasks</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn fab small class="colorGreen" @click="handleCreate">
@@ -13,10 +14,12 @@
 
 <script>
 import TasksProgress from '@/components/TasksProgress'
+import TheStatusBar from '@/components/TheStatusBar'
 import { EventBus } from '@/bus'
 export default {
   components: {
-    TasksProgress
+    TasksProgress,
+    TheStatusBar
   },
   methods: {
     handleCreate () {

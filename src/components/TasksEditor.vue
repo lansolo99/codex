@@ -502,11 +502,6 @@ export default {
     storeDialogTask () {
       this.dialogTask = this.storeDialogTask
       document.getElementsByClassName('dialogTaskScrollablePart')[0].scrollTop = 0
-      console.log('storeDialogTask')
-      console.log(document.getElementsByClassName('v-menu__content')[0].scrollTop)
-      document.getElementsByClassName('v-menu__content')[0].scrollTop = 0
-      document.getElementsByClassName('v-menu__content')[1].scrollTop = 0
-      // console.log(document.getElementsByClassName('v-menu__content')[0].scrollY)
     },
     storeCurrentTask () {
       // Populate local datas with current task data retrieved from utility
@@ -555,10 +550,8 @@ export default {
           this.task.id = '_' + Math.random().toString(36).substr(2, 9)
 
           const payload = JSON.parse(JSON.stringify(this.task))
-          console.log('before add new task')
 
           this.addNewTask(payload)
-          console.log('after add new task')
           this.disableFirstTimeUser()
         }
         this.toggleTaskDialog(false)

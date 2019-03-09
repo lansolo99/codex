@@ -1,6 +1,8 @@
 <template>
   <v-app class="primary">
     <v-content :class="toolbarConf">
+      <!-- <TheStatusBar v-if="view !== 'login' && view !== 'profile' "/> -->
+      <!-- <TheStatusBar/> -->
       <router-view/>
       <v-btn
         v-if="this.view !== 'login'"
@@ -21,7 +23,10 @@
 import { format, getISODay, isToday, isSameDay, isThisWeek, isSameWeek, getISOWeek, getTime, addDays, differenceInCalendarWeeks } from 'date-fns'
 import { getStringFromIsoDay } from '@/utils'
 import { EventBus } from '@/bus'
+
 import TheNavbar from '@/components/TheNavbar'
+// eslint-disable-next-line
+import TheStatusBar from '@/components/TheStatusBar'
 import { mapState, mapGetters, mapActions } from 'vuex'
 // eslint-disable-next-line
 import Vue from 'vue'
@@ -41,6 +46,7 @@ export default {
     }
   },
   components: {
+    // TheStatusBar,
     TheNavbar
   },
   computed: {
@@ -94,8 +100,6 @@ export default {
       console.log('globalUpdate')
       console.log('addedDays = ' + addedDays)
 
-      // console.log('last connexion date = ' + format(new Date(this.userData.connexionDateLast), 'DD/MM/YYYY'))
-
       const isThisWeekCustom = isSameWeek(
         addDays(new Date(Date.now()), addedDays),
         new Date(this.userData.connexionDateLast),
@@ -114,10 +118,8 @@ export default {
         new Date(this.userData.connexionDateLast),
         { weekStartsOn: 1 }
       )
-
       const currentUserWeek = parseInt(lastUserRecordedWeek + getWeeksPassedSinceLastConnexion)
-      console.log('currentUserWeek = ' + currentUserWeek)
-
+      console.log('currentUserWeek from globalUpdate = ' + currentUserWeek)
       EventBus.$emit('updateCurrentUserWeek', currentUserWeek)
 
       // WEEK RESET
@@ -140,6 +142,8 @@ export default {
       if (!isTodayCustom) {
         EventBus.$emit('recordProgress')
         const currentUserWeek = this.time.currentUserWeek
+        console.log('currentUserWeek from !isTodayCustom =' + currentUserWeek)
+
         const isoDay = this.time.isoDay
         let weekChange
 
@@ -268,9 +272,9 @@ export default {
 
       // Update store
       const progressWeek = total
-      console.log('progressWeek = ' + progressWeek)
 
       const currentUserWeek = this.time.currentUserWeek
+      console.log('currentUserWeek from calcDailyCompletion = ' + currentUserWeek)
 
       this.recordWeekScore({ progressWeek, currentUserWeek })
     },
@@ -286,11 +290,6 @@ export default {
     // console.log(getTime(new Date(2019, 0, 18, 11, 45, 5, 123)))
 
     // EVENTS
-
-    // Store AuthUser object
-    EventBus.$on('storeAuthUser', (authUser) => {
-      this.authUser = authUser
-    })
 
     // globalUpdate
     EventBus.$on('globalUpdate', () => {
@@ -327,11 +326,11 @@ export default {
             // Fetch profile datas
             this.fetchProfileDatas(this.utility.authUserID)
               .then(res => {
-                console.log('fetchProfileDatas action done')
+                console.log('firebase fetchProfileDatas + vuex update done')
                 // Fetch tasks datas
                 this.fetchTasksDatas(this.utility.authUserID)
                   .then((res) => {
-                    console.log('fetchTasksDatas action done')
+                    console.log('firebase fetchTasksDatas + vuex update done')
                     this.appReady()
                     this.tasksReady()
                     this.globalUpdate()
@@ -341,7 +340,7 @@ export default {
             // User doesn't exist yet
             console.log('User doesnt exist yet')
 
-            // Init connextionDateLast to current time
+            // Init connexionDateLast to current time
             this.userData.connexionDateLast = Date.now()
 
             this.updateProfile(this.userData).then(() => {
@@ -368,7 +367,7 @@ export default {
         .child(this.utility.authUserID)
         .set({ profile: this.profile, tasks: this.tasks })
         .then(() => {
-          console.log('firebase profile + tasks updated')
+          console.log('CYCLE DONE ! : firebase profile + tasks updated')
         })
     })
   }

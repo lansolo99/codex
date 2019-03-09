@@ -49,7 +49,6 @@ export default {
     updateProfile ({
       commit
     }, payload) {
-      console.log(payload)
       commit('updateProfile', payload)
     },
     recordWeekScore ({
@@ -89,6 +88,8 @@ export default {
       Vue.set(state.stats, 'progressWeek', progressWeek)
       const weekKey = 'W' + currentUserWeek.toString()
       Vue.set(state.stats.weeksRecords, weekKey, progressWeek)
+      console.log('authUserID =' + authUserID)
+
       return authUserID === 'guest' ? '' : EventBus.$emit('updateFirebase')
     }
   }

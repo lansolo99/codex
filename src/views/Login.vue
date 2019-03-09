@@ -225,7 +225,6 @@ export default {
   methods: {
     ...mapActions({
       setUser: 'utility/setUser',
-      setAuthUser: 'utility/setAuthUser',
       appReady: 'utility/appReady',
       tasksReady: 'utility/tasksReady',
       updateProfile: 'profile/updateProfile',
@@ -235,7 +234,7 @@ export default {
       resetTasksDatas: 'tasks/resetTasksDatas'
     }),
     emailSignUp () {
-      console.log('firebase email signup')
+      console.log('EMAIL SIGN UP')
       // Form validation
       this.$v.$touch()
       if (this.$v.$invalid) {
@@ -246,18 +245,11 @@ export default {
         console.log('valid form')
         firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
           .then(user => {
-            console.log('createdUserWithEmailAndPassword')
+            console.log('new user created')
 
-            // User object to vuex (the one we want to keep)
-            this.setAuthUser(JSON.parse(JSON.stringify(user)))
-
-            // User object to login.vue local data (eventually keep for local forms)
+            // User object to local data
             this.authUser = user
-
-            // User object to app.vue local data (Maybe delete this once vuex is resolved)
-            EventBus.$emit('storeAuthUser', user.user)
-
-            // authUserID & authUserEmail to vuex (Maybe delete this once vuex is resolved)
+            // authUserID & authUserEmail to vuex
             this.setUser(this.authUser.user)
 
             this.userData.email = this.authUser.user.email
@@ -276,19 +268,12 @@ export default {
       }
     },
     emailSignIn () {
-      console.log('firebase email signin')
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
         .then(user => {
-          // User object to vuex (the one we want to keep)
-          this.setAuthUser(JSON.parse(JSON.stringify(user)))
-
-          // User object to login.vue local data (eventually keep for local forms)
+          console.log('EMAIL SIGN IN')
+          // User object to local data
           this.authUser = user
-
-          // User object to app.vue local data (Maybe delete this once vuex is resolved)
-          EventBus.$emit('storeAuthUser', user.user)
-
-          // authUserID & authUserEmail to vuex (Maybe delete this once vuex is resolved)
+          // authUserID & authUserEmail to vuex
           this.setUser(this.authUser.user)
 
           // InitFirebase & route to tasks
@@ -303,18 +288,11 @@ export default {
       const provider = new firebase.auth.GoogleAuthProvider()
       firebase.auth().signInWithPopup(provider)
         .then(user => {
-          console.log('user logged with google')
+          console.log('SIGN IN WITH GOOGLE')
 
-          // User object to vuex (the one we want to keep)
-          this.setAuthUser(JSON.parse(JSON.stringify(user)))
-
-          // User object to login.vue local data (eventually keep for local forms)
+          // User object to local data
           this.authUser = user
-
-          // User object to app.vue local data (Maybe delete this once vuex is resolved)
-          EventBus.$emit('storeAuthUser', user.user)
-
-          // authUserID & authUserEmail to vuex (Maybe delete this once vuex is resolved)
+          // authUserID & authUserEmail to vuex
           this.setUser(this.authUser.user)
 
           this.userData.email = this.authUser.user.email
@@ -329,6 +307,7 @@ export default {
         .catch((error) => console.log('catch message = ' + error.message))
     },
     signInAsGuest () {
+      console.log('TEST AS GUEST')
       this.setUser('guest')
       // Init connextionDateLast to current time
       this.userData.connexionDateLast = Date.now()
@@ -341,7 +320,6 @@ export default {
       })
     },
     signOut () {
-      console.log('firebase sign out')
       firebase.auth().signOut()
       this.resetDatas()
     },
@@ -349,14 +327,11 @@ export default {
       this.$router.push({ name: 'tasks' })
     },
     resetDatas () {
-      // Reset vuex profile
+      // Reset vuex states
       this.resetProfileDatas()
       this.resetUtilityDatas()
       this.resetCurrentUserWeek()
       this.resetTasksDatas()
-      // this.$store.tasks.replaceState({})
-      // Reset forms
-      // this.$v.$reset()
       // Reset local datas
       this.authUser = null
       this.setUser('null')

@@ -133,9 +133,6 @@ export default {
   data () {
     return {
       editing: false,
-      authUser: null,
-      // legacyPassword: null,
-      updateAccountCatchError: '',
       formComponents: {
         passwordType: 'password',
         iconShowPassword: 'icon-eye',
@@ -310,10 +307,6 @@ export default {
   }
   .theme--light.v-input--is-disabled .v-label {
     opacity: 0.7;
-  }
-  .updateAccountCatchError {
-    color: red;
-    font-size: 12px;
   }
 }
 </style>
