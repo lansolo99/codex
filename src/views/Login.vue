@@ -150,7 +150,6 @@ export default {
   data () {
     return {
       authUser: null,
-      displayName: null,
       pseudo: null,
       email: '',
       password: '',
@@ -216,11 +215,24 @@ export default {
         console.log('valid form')
         firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
           .then(user => {
+            console.log('createdUserWithEmailAndPassword')
+
+            // User object to vuex (the one we want to keep)
+            this.setAuthUser(JSON.parse(JSON.stringify(user)))
+
+            // User object to login.vue local data (eventually keep for local forms)
             this.authUser = user
+
+            // User object to app.vue local data (Maybe delete this once vuex is resolved)
             EventBus.$emit('storeAuthUser', user.user)
+
+            // authUserID & authUserEmail to vuex (Maybe delete this once vuex is resolved)
             this.setUser(this.authUser.user)
+
             this.userData.email = this.authUser.user.email
             this.userData.pseudo = this.pseudo
+            this.userData.password = this.password
+
             this.updateProfile(this.userData).then(() => {
             // InitFirebase & route to tasks
               EventBus.$emit('initFirebase')
@@ -236,14 +248,18 @@ export default {
       console.log('firebase email signin')
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
         .then(user => {
-          // User object to local data
-          this.authUser = user
-          // User object to vuex
+          // User object to vuex (the one we want to keep)
           this.setAuthUser(JSON.parse(JSON.stringify(user)))
 
-          // Maybe delete this line on vuex is resolved
+          // User object to login.vue local data (eventually keep for local forms)
+          this.authUser = user
+
+          // User object to app.vue local data (Maybe delete this once vuex is resolved)
           EventBus.$emit('storeAuthUser', user.user)
+
+          // authUserID & authUserEmail to vuex (Maybe delete this once vuex is resolved)
           this.setUser(this.authUser.user)
+
           // InitFirebase & route to tasks
           EventBus.$emit('initFirebase')
           this.successRedirect()
@@ -298,7 +314,6 @@ export default {
       // Reset local datas
       this.authUser = null
       this.setUser('null')
-      this.displayName = null
       this.pseudo = null
       this.email = ''
       this.password = ''
@@ -311,13 +326,14 @@ export default {
     }
   },
   created () {
+    // Auth state observer
     firebase.auth().onAuthStateChanged(user => {
       console.log('onAuthStateChanged')
-      this.authUser = user
-      // Only update data if user object exists (to prevent that sign-out empty the datas)
+
       if (user) {
-        this.email = user.email
-        this.displayName = user.displayName
+        console.log('user is signed in')
+      } else {
+        console.log('user is signed out')
       }
     })
 

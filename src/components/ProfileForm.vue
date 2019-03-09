@@ -136,6 +136,7 @@ export default {
     return {
       editing: false,
       authUser: null,
+      // legacyPassword: null,
       updateAccountCatchError: '',
       formComponents: {
         passwordType: 'password',
@@ -179,6 +180,7 @@ export default {
   },
   computed: {
     ...mapState({
+      profile: state => state.profile,
       utility: state => state.utility
     }),
     ...mapGetters({
@@ -242,28 +244,51 @@ export default {
       } else {
         // Validation passed
         console.log('valid form')
-        // Account update before record
 
-        firebase.auth().currentUser.updateEmail(this.userData.email)
-        firebase.auth().currentUser.updatePassword(this.userData.password)
-          .then(() => { this.userData.password = '' })
+        // Firebase vars
+        const user = firebase.auth().currentUser
+        const credential = firebase.auth.EmailAuthProvider.credential(
+          user.email,
+          this.profile.password
+        )
+
+        // EMAIL UPDATE
+
+        // ReAuthenticate user
+        user.reauthenticateAndRetrieveDataWithCredential(credential)
+          .then(() => {
+            console.log('User re-authenticated.')
+            // Update email
+            user.updateEmail(this.userData.email)
+              .then(() => {
+                console.log('email updated')
+
+                // Update profile (vuex + firebase)
+                const userData = JSON.parse(JSON.stringify(this.userData))
+                this.updateProfile(userData).then(() => {
+                  console.log('vuex profile updated')
+
+                  // Update firebase + close edit view
+                  EventBus.$emit('updateFirebase')
+                  EventBus.$emit('editProfile', false)
+                  this.toggleProfileDialog(false)
+                })
+              })
+              .catch((error) => {
+                console.log('update email message = ' + error.message)
+                this.updateAccountCatchError = error.message
+              })
+          })
           .catch((error) => {
-            console.log('catch message = ' + error.message)
+            console.log('reauthenticate user message = ' + error.message)
             this.updateAccountCatchError = error.message
           })
-        // Profile datas update (vuex + firebase)
-        // const userData = JSON.parse(JSON.stringify(this.userData))
-        // this.updateProfile(userData).then(() => {
-        //   EventBus.$emit('updateFirebase')
-        //   EventBus.$emit('editProfile', false)
-        //   this.toggleProfileDialog(false)
-        // })
+
+        // PASSWORD UPDATE
       }
     }
   },
   created () {
-    console.log('password.length = ' + this.userData.password.length)
-
     this.formComponents.countries = this.getCountries
 
     EventBus.$on('editProfile', (status) => {
