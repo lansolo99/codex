@@ -1,8 +1,6 @@
 <template>
   <v-app class="primary">
     <v-content :class="toolbarConf">
-      <!-- <TheStatusBar v-if="view !== 'login' && view !== 'profile' "/> -->
-      <!-- <TheStatusBar/> -->
       <router-view/>
       <v-btn
         v-if="this.view !== 'login'"
@@ -64,9 +62,11 @@ export default {
     '$route': {
       immediate: true,
       handler (newVal, oldVal) {
+        // Set proper UI padding-top depending on views
         if (this.$route.path === '/tasks') {
-        // Set proper UI padding if on tasks screen
           this.toolbarConf = 'toolbarTasks'
+        } else if (this.$route.path === '/stats') {
+          this.toolbarConf = 'toolbarStats'
         } else {
           this.toolbarConf = 'toolbarNone'
         }
@@ -391,7 +391,11 @@ export default {
   padding-top: 0px !important;
 }
 .toolbarTasks {
-  padding-top: 135px !important;
+  // toolbar(135px) + statusbar (40px)
+  padding-top: calc(135px + 50px) !important;
+}
+.toolbarStats {
+  padding-top: 40px !important;
 }
 .simulation {
   z-index: 200;

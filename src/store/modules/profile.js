@@ -72,6 +72,8 @@ export default {
       Object.assign(state, getDefaultState)
     },
     updateProfile (state, payload) {
+      console.log(payload)
+
       return new Promise((resolve, reject) => {
         Object.assign(state, payload)
         resolve()

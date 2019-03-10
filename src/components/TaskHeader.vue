@@ -33,6 +33,7 @@ export default {
 <style lang="scss">
 .taskHeader {
   padding-top: 10px;
+  padding-top: 50px;
 
   &.v-toolbar {
     max-width: 400px;
@@ -41,6 +42,7 @@ export default {
 
     .v-toolbar__title {
       font-size: 30px !important;
+      margin: 5px !important;
     }
   }
 

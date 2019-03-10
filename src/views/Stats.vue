@@ -1,5 +1,6 @@
 <template>
   <div class="stats mb-4">
+    <TheStatusBar/>
     <v-container class="stats">
       <h1 class="black--text">Stats</h1>
       <h6 class="subheader subheader--first my-3 black--text">Achievements</h6>
@@ -160,6 +161,7 @@
 import { mapState, mapGetters } from 'vuex'
 import VueApexCharts from 'vue-apexcharts'
 import StatsReboot from '@/components/StatsReboot'
+import TheStatusBar from '@/components/TheStatusBar'
 import Vue from 'vue'
 import store from '@/store/store'
 Vue.use(VueApexCharts)
@@ -168,6 +170,7 @@ export default {
   name: 'Stats',
   components: {
     StatsReboot,
+    TheStatusBar,
     apexcharts: VueApexCharts
   },
   data () {

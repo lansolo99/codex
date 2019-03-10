@@ -11,9 +11,7 @@
               <v-layout row wrap>
                 <v-flex xs-12 text-xs-center>
                   <v-avatar size="80px" color="rgba(0, 0, 0, 0.4)">
-                    <img v-if="userData.avatarImage" src alt="Avatar">
                     <img
-                      v-else
                       :src="require(`@/assets/images/avatar/${this.userData.avatarDefault}.svg`)"
                     >
                   </v-avatar>
@@ -69,6 +67,7 @@
                 :items="formComponents.gender"
                 label="Gender"
                 v-model="userData.gender"
+                @change="genderChange()"
               ></v-select>
               <v-select
                 class="pt-1"
@@ -189,22 +188,6 @@ export default {
       !this.$v.userData.password.required && errors.push('Password is required')
       !this.$v.userData.password.minLength && errors.push(`Password must have at least ${this.$v.userData.password.$params.minLength.min} letters.`)
       return errors
-    },
-    genderUpdate () {
-      return this.userData.gender
-    }
-  },
-  watch: {
-    genderUpdate: {
-      handler (val, oldVal) {
-        if (val === 'Undefined' || val === '' || val === 'Male') {
-          this.userData.avatarDefault = 'man'
-        } else {
-          this.userData.avatarDefault = 'woman'
-        }
-      },
-      deep: true,
-      immediate: true
     }
   },
   methods: {
@@ -215,6 +198,16 @@ export default {
     togglePasswordVisibility (field) {
       this.formComponents.passwordType === 'password' ? this.formComponents.passwordType = 'clear' : this.formComponents.passwordType = 'password'
       this.formComponents.iconShowPassword === 'icon-eye' ? this.formComponents.iconShowPassword = 'icon-eye_hidden' : this.formComponents.iconShowPassword = 'icon-eye'
+    },
+    genderChange () {
+      this.userData.avatarDefault = 'woman'
+      setTimeout(() => {
+        if (this.userData.gender === 'Undefined' || this.userData.gender === '' || this.userData.gender === 'Male') {
+          this.userData.avatarDefault = 'man'
+        } else {
+          this.userData.avatarDefault = 'woman'
+        }
+      }, 100)
     },
     handleEditProfile () {
       this.toggleProfileDialog(true)
@@ -227,6 +220,8 @@ export default {
       } else {
         // Validation passed
         console.log('valid form')
+        console.log('avatarDefault = ' + this.userData.avatarDefault)
+
         const userData = JSON.parse(JSON.stringify(this.userData))
         this.updateProfile(userData).then(() => {
           EventBus.$emit('updateFirebase')

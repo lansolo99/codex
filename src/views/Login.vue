@@ -33,16 +33,22 @@
                   @input="$v.email.$touch()"
                   @blur="$v.email.$touch()"
                 ></v-text-field>
-                <v-text-field
-                  type="password"
-                  class="pt-1 mt-3"
-                  color="secondary"
-                  label="Password"
-                  v-model.trim="password"
-                  :error-messages="passwordErrors"
-                  @input="$v.password.$touch()"
-                  @blur="$v.password.$touch()"
-                ></v-text-field>
+                <div class="fieldset fieldset--password">
+                  <v-text-field
+                    :type="formComponents.passwordType"
+                    class="pt-1 mt-3"
+                    color="secondary"
+                    label="Password"
+                    v-model.trim="password"
+                    :error-messages="passwordErrors"
+                    @input="$v.password.$touch()"
+                    @blur="$v.password.$touch()"
+                  ></v-text-field>
+                  <v-icon
+                    @click="togglePasswordVisibility('password')"
+                    :class="['icon', formComponents.iconShowPassword, 'customIcon']"
+                  ></v-icon>
+                </div>
                 <div class="signInCatchError">{{signInCatchError}}</div>
                 <v-btn large block depressed flat outline class="mt-3" @click="emailSignUp">Sign Up</v-btn>
               </v-card>
@@ -57,13 +63,19 @@
             <v-form>
               <v-card class="pa-3">
                 <v-text-field class="pt-1 mt-3" color="secondary" label="Email" v-model="email"></v-text-field>
-                <v-text-field
-                  type="password"
-                  class="pt-1 mt-3"
-                  color="secondary"
-                  label="Password"
-                  v-model.trim="password"
-                ></v-text-field>
+                <div class="fieldset fieldset--password">
+                  <v-text-field
+                    :type="formComponents.passwordType"
+                    class="pt-1 mt-3"
+                    color="secondary"
+                    label="Password"
+                    v-model.trim="password"
+                  ></v-text-field>
+                  <v-icon
+                    @click="togglePasswordVisibility('password')"
+                    :class="['icon', formComponents.iconShowPassword, 'customIcon']"
+                  ></v-icon>
+                </div>
                 <div class="signInCatchError">{{signInCatchError}}</div>
                 <v-btn
                   large
@@ -181,7 +193,11 @@ export default {
       loginDisplay: 'allButtons',
       signInCatchError: '',
       resetPasswordCatchError: '',
-      resetPasswordResolved: ''
+      resetPasswordResolved: '',
+      formComponents: {
+        passwordType: 'password',
+        iconShowPassword: 'icon-eye'
+      }
     }
   },
   mixins: [validationMixin],
@@ -311,6 +327,7 @@ export default {
       this.setUser('guest')
       // Init connextionDateLast to current time
       this.userData.connexionDateLast = Date.now()
+      this.userData.pseudo = 'Guest'
       this.updateProfile(this.userData).then(() => {
         // Set data & route to tasks
         this.appReady()
@@ -345,7 +362,13 @@ export default {
     loginElementsDisplay (configuration) {
       // Elements to display
       this.loginDisplay = configuration
+      // Resets
       this.resetDatas()
+      this.$v.$reset()
+      this.formComponents = {
+        passwordType: 'password',
+        iconShowPassword: 'icon-eye'
+      }
     },
     resetPassword () {
       const auth = firebase.auth()
@@ -358,6 +381,10 @@ export default {
       }).catch((error) => {
         this.resetPasswordCatchError = error.message
       })
+    },
+    togglePasswordVisibility (field) {
+      this.formComponents.iconShowPassword === 'icon-eye' ? this.formComponents.iconShowPassword = 'icon-eye_hidden' : this.formComponents.iconShowPassword = 'icon-eye'
+      this.formComponents.passwordType === 'password' ? this.formComponents.passwordType = 'clear' : this.formComponents.passwordType = 'password'
     }
   },
   created () {
@@ -387,6 +414,7 @@ export default {
 <style lang="scss">
 .login {
   height: 100%;
+
   .logo {
     max-width: 120px;
     display: block;
@@ -415,6 +443,19 @@ export default {
   .resetPasswordResolved {
     color: $color-green;
     font-size: 12px;
+  }
+
+  .fieldset {
+    &--password {
+      position: relative;
+      .customIcon {
+        width: 25px;
+        height: 25px;
+        position: absolute;
+        right: 5px;
+        top: 7px;
+      }
+    }
   }
 }
 </style>

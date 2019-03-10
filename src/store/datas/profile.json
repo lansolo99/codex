@@ -1,8 +1,7 @@
 {
   "firstTime": true,
   "connexionDateLast": 0,
-  "avatarImage": null,
-  "avatarDefault": "",
+  "avatarDefault": "man",
   "pseudo": "",
   "email": "",
   "password": "",
