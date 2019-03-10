@@ -488,7 +488,7 @@ export default {
   .allButtonsWrapper {
     opacity: 0;
     transform: translateY(20px);
-    transition: all 0.2s ease-out;
+    transition: all 0.3s ease-out;
     &.displayAllButtons {
       opacity: 1;
       transform: translateY(0px);

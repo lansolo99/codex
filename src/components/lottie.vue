@@ -37,13 +37,8 @@ export default {
     }
     )
     this.$emit('animCreated', this.anim)
-
-    // Animation complete callback
-    const logoAnimationComplete = () => {
-      console.log('logoAnimationComplete')
-      this.$emit('displayAllButtons')
-    }
-    this.anim.addEventListener('complete', logoAnimationComplete)
+    // Show all buttons
+    setTimeout(() => { this.$emit('displayAllButtons') }, 1800)
   }
 }
 </script>
