@@ -5,7 +5,11 @@
         <v-flex xs12>
           <v-layout>
             <v-flex xs12>
-              <img class="logo my-3 mb-5" src="@/assets/images/logo.svg">
+              <lottie
+                :options="defaultOptions"
+                v-on:animCreated="handleAnimation"
+                v-on:displayAllButtons="displayAllButtons = true"
+              />
             </v-flex>
           </v-layout>
 
@@ -122,48 +126,50 @@
 
           <!-- All Buttons -->
           <div v-if="loginDisplay === 'allButtons'">
-            <v-layout>
-              <v-flex xs12>
-                <v-btn
-                  block
-                  large
-                  class="colorGreen white--text"
-                  @click="loginElementsDisplay('signIn')"
-                >Email Sign In</v-btn>
-              </v-flex>
-            </v-layout>
-            <v-layout>
-              <v-flex xs12>
-                <v-btn
-                  large
-                  class="colorGoogle white--text"
-                  block
-                  @click="signInWithGoogle"
-                >Google Sign in</v-btn>
-              </v-flex>
-            </v-layout>
-            <v-layout>
-              <v-flex xs12>
-                <v-btn
-                  to="/tasks"
-                  block
-                  large
-                  class="secondary white--text"
-                  @click="signInAsGuest"
-                >Test as a guest</v-btn>
-              </v-flex>
-            </v-layout>
+            <div class="allButtonsWrapper" :class="{ displayAllButtons: displayAllButtons }">
+              <v-layout>
+                <v-flex xs12>
+                  <v-btn
+                    block
+                    large
+                    class="colorGreen white--text"
+                    @click="loginElementsDisplay('signIn')"
+                  >Email Sign In</v-btn>
+                </v-flex>
+              </v-layout>
+              <v-layout>
+                <v-flex xs12>
+                  <v-btn
+                    large
+                    class="colorGoogle white--text"
+                    block
+                    @click="signInWithGoogle"
+                  >Google Sign in</v-btn>
+                </v-flex>
+              </v-layout>
+              <v-layout>
+                <v-flex xs12>
+                  <v-btn
+                    to="/tasks"
+                    block
+                    large
+                    class="secondary white--text"
+                    @click="signInAsGuest"
+                  >Test as a guest</v-btn>
+                </v-flex>
+              </v-layout>
 
-            <v-layout class="mt-3">
-              <v-flex xs12>
-                <v-btn block large @click="loginElementsDisplay('signUp')">Email Sign Up</v-btn>
-              </v-flex>
-            </v-layout>
-            <v-layout v-if="authUser" class="mt-3">
-              <v-flex xs12>
-                <v-btn block large @click="signOut" class="red white--text">Sign out helper</v-btn>
-              </v-flex>
-            </v-layout>
+              <v-layout class="mt-3">
+                <v-flex xs12>
+                  <v-btn block large @click="loginElementsDisplay('signUp')">Email Sign Up</v-btn>
+                </v-flex>
+              </v-layout>
+              <v-layout v-if="authUser" class="mt-3">
+                <v-flex xs12>
+                  <v-btn block large @click="signOut" class="red white--text">Sign out helper</v-btn>
+                </v-flex>
+              </v-layout>
+            </div>
           </div>
         </v-flex>
       </v-layout>
@@ -181,16 +187,26 @@ import firebase from 'firebase'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required, email, minLength } from 'vuelidate/lib/validators'
+import Lottie from '@/components/lottie.vue'
+import * as animationData from '@/assets/animations/data.json'
 
 export default {
   name: 'Login',
+  components: {
+    'lottie': Lottie
+  },
   data () {
     return {
+      defaultOptions: {
+        animationData: animationData.default
+      },
+      animationSpeed: 1,
       authUser: null,
       pseudo: null,
       email: '',
       password: '',
       loginDisplay: 'allButtons',
+      displayAllButtons: false,
       signInCatchError: '',
       resetPasswordCatchError: '',
       resetPasswordResolved: '',
@@ -385,7 +401,18 @@ export default {
     togglePasswordVisibility (field) {
       this.formComponents.iconShowPassword === 'icon-eye' ? this.formComponents.iconShowPassword = 'icon-eye_hidden' : this.formComponents.iconShowPassword = 'icon-eye'
       this.formComponents.passwordType === 'password' ? this.formComponents.passwordType = 'clear' : this.formComponents.passwordType = 'password'
+    },
+    handleAnimation: function (anim) {
+      this.anim = anim
+    },
+
+    play: function () {
+      this.anim.play()
     }
+  },
+  mounted () {
+    // Trigger logo animation
+    setTimeout(() => { this.play() }, 500)
   },
   created () {
     // Auth state observer
@@ -455,6 +482,16 @@ export default {
         right: 5px;
         top: 7px;
       }
+    }
+  }
+  // Transitions
+  .allButtonsWrapper {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.2s ease-out;
+    &.displayAllButtons {
+      opacity: 1;
+      transform: translateY(0px);
     }
   }
 }

@@ -21,10 +21,7 @@
 import { format, getISODay, isToday, isSameDay, isThisWeek, isSameWeek, getISOWeek, getTime, addDays, differenceInCalendarWeeks } from 'date-fns'
 import { getStringFromIsoDay } from '@/utils'
 import { EventBus } from '@/bus'
-
 import TheNavbar from '@/components/TheNavbar'
-// eslint-disable-next-line
-import TheStatusBar from '@/components/TheStatusBar'
 import { mapState, mapGetters, mapActions } from 'vuex'
 // eslint-disable-next-line
 import Vue from 'vue'
@@ -44,7 +41,6 @@ export default {
     }
   },
   components: {
-    // TheStatusBar,
     TheNavbar
   },
   computed: {
