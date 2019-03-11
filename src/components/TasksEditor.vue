@@ -204,7 +204,7 @@
                   color="colorGreen white--text px-5"
                   @click="handleSave"
                 >Add task</v-btn>
-                <!-- sfjs -->
+                <!-- Delete task -->
                 <v-dialog v-else max-width="350" content-class="standard-dialog">
                   <v-btn
                     v-model="dialogDeleteTask"

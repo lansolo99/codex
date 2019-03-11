@@ -280,7 +280,7 @@ export default {
 
       this.recordWeekScore({ progressWeek, currentUserWeek })
 
-      // Display spinner
+      // Hide spinner
       EventBus.$emit('appSpinner', false)
     },
     simulateNextDay () {

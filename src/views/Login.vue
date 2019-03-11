@@ -177,7 +177,7 @@
               </v-layout>
               <v-layout v-if="authUser" class="mt-3">
                 <v-flex xs12>
-                  <v-btn block large @click="signOut" class="red white--text">Sign out helper</v-btn>
+                  <v-btn block large @click="signOut" class="red white--text">Sign out</v-btn>
                 </v-flex>
               </v-layout>
             </div>
@@ -269,6 +269,7 @@ export default {
   methods: {
     ...mapActions({
       setUser: 'utility/setUser',
+      setAuthUser: 'utility/setAuthUser',
       appReady: 'utility/appReady',
       tasksReady: 'utility/tasksReady',
       updateProfile: 'profile/updateProfile',
@@ -301,7 +302,7 @@ export default {
               console.log('Email sent')
             }).catch(function (error) {
               this.signInCatchError = error.message
-              // Display spinner
+              // Hide spinner
               EventBus.$emit('appSpinner', false)
             })
 
@@ -324,7 +325,7 @@ export default {
           })
           .catch(error => {
             this.signInCatchError = error.message
-            // Display spinner
+            // Hide spinner
             EventBus.$emit('appSpinner', false)
           })
       }
@@ -344,18 +345,21 @@ export default {
             // authUserID & authUserEmail to vuex
             this.setUser(this.authUser.user)
 
+            // User object to vuex
+            this.setAuthUser(JSON.parse(JSON.stringify(user)))
+
             // InitFirebase & route to tasks
             EventBus.$emit('initFirebase')
             this.successRedirect()
           } else {
-            // Display spinner
+            // Hide spinner
             EventBus.$emit('appSpinner', false)
             this.signInCatchError = 'Please verify your email adress via the received email from your inbox before sign-in.'
           }
         })
         .catch(error => {
           this.signInCatchError = error.message
-          // Display spinner
+          // Hide spinner
           EventBus.$emit('appSpinner', false)
         })
     },
@@ -372,6 +376,8 @@ export default {
           this.authUser = user
           // authUserID & authUserEmail to vuex
           this.setUser(this.authUser.user)
+          // User object to vuex
+          this.setAuthUser(JSON.parse(JSON.stringify(user)))
 
           this.userData.email = this.authUser.user.email
           this.userData.pseudo = this.authUser.user.displayName
@@ -384,7 +390,7 @@ export default {
         })
         .catch((error) => {
           console.log('catch message = ' + error.message)
-          // Display spinner
+          // Hide spinner
           EventBus.$emit('appSpinner', false)
         })
     },
@@ -465,7 +471,7 @@ export default {
     }
   },
   mounted () {
-    // Initial appSpinner animation toggle -> fadeOut
+    // Hide spinner
     setTimeout(() => { EventBus.$emit('appSpinner', false) }, 200)
     // Trigger logo animation
     setTimeout(() => { this.play() }, 500)

@@ -27,12 +27,12 @@ export default {
 </script>
 <style lang="scss" scoped>
 .appSpinner {
-  position: absolute;
+  position: fixed;
   top: 0px;
+  bottom: 0px;
   left: 0px;
+  right: 0px;
   background: $color-golden;
-  width: 100%;
-  height: 100%;
   z-index: 100;
 
   .sk-folding-cube {
