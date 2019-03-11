@@ -60,6 +60,17 @@
             <v-layout class="mx-4 mt-3" justify-center>
               <v-btn large @click="loginElementsDisplay('allButtons')" class="red white--text">Back</v-btn>
             </v-layout>
+            <!-- Feedback dialog -->
+            <v-dialog v-model="signUpDialog" max-width="350" content-class="standard-dialog signup">
+              <v-card>
+                <v-card-title class="title primary white--text pt-3 pb-3" primary-title>Welcome!</v-card-title>
+                <v-card-text>We have sent an email with a confirmation link to your email address. Open it up to activate your account.</v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="primary darken-1" flat="flat" @click="signUpDialog = false">Ok</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </div>
 
           <!-- Sign-in form -->
@@ -187,13 +198,13 @@ import firebase from 'firebase'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required, email, minLength } from 'vuelidate/lib/validators'
-import Lottie from '@/components/lottie.vue'
+import Lottie from '@/components/Lottie.vue'
 import * as animationData from '@/assets/animations/data.json'
 
 export default {
   name: 'Login',
   components: {
-    'lottie': Lottie
+    'Lottie': Lottie
   },
   data () {
     return {
@@ -207,6 +218,7 @@ export default {
       password: '',
       loginDisplay: 'allButtons',
       displayAllButtons: false,
+      signUpDialog: false,
       signInCatchError: '',
       resetPasswordCatchError: '',
       resetPasswordResolved: '',
@@ -275,9 +287,23 @@ export default {
       } else {
         // Validation passed
         console.log('valid form')
+
+        // Display spinner
+        EventBus.$emit('appSpinner', true)
+
         firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
           .then(user => {
             console.log('new user created')
+
+            // Email verification
+            firebase.auth().currentUser.sendEmailVerification().then(function () {
+              // Email sent.
+              console.log('Email sent')
+            }).catch(function (error) {
+              this.signInCatchError = error.message
+              // Display spinner
+              EventBus.$emit('appSpinner', false)
+            })
 
             // User object to local data
             this.authUser = user
@@ -291,32 +317,52 @@ export default {
             this.updateProfile(this.userData).then(() => {
             // InitFirebase & route to tasks
               EventBus.$emit('initFirebase')
-              this.successRedirect()
+              // Display feedback modal and ask for email check
+              this.signUpDialog = true
+              // this.successRedirect()
             })
           })
           .catch(error => {
             this.signInCatchError = error.message
+            // Display spinner
+            EventBus.$emit('appSpinner', false)
           })
       }
     },
     emailSignIn () {
+      // Display spinner
+      EventBus.$emit('appSpinner', true)
+
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
         .then(user => {
           console.log('EMAIL SIGN IN')
           // User object to local data
           this.authUser = user
-          // authUserID & authUserEmail to vuex
-          this.setUser(this.authUser.user)
 
-          // InitFirebase & route to tasks
-          EventBus.$emit('initFirebase')
-          this.successRedirect()
+          // Prevent user sign-in if email is not verified
+          if (this.authUser.user.emailVerified) {
+            // authUserID & authUserEmail to vuex
+            this.setUser(this.authUser.user)
+
+            // InitFirebase & route to tasks
+            EventBus.$emit('initFirebase')
+            this.successRedirect()
+          } else {
+            // Display spinner
+            EventBus.$emit('appSpinner', false)
+            this.signInCatchError = 'Please verify your email adress via the received email from your inbox before sign-in.'
+          }
         })
         .catch(error => {
           this.signInCatchError = error.message
+          // Display spinner
+          EventBus.$emit('appSpinner', false)
         })
     },
     signInWithGoogle () {
+      // Display spinner
+      EventBus.$emit('appSpinner', true)
+
       const provider = new firebase.auth.GoogleAuthProvider()
       firebase.auth().signInWithPopup(provider)
         .then(user => {
@@ -336,10 +382,18 @@ export default {
             this.successRedirect()
           })
         })
-        .catch((error) => console.log('catch message = ' + error.message))
+        .catch((error) => {
+          console.log('catch message = ' + error.message)
+          // Display spinner
+          EventBus.$emit('appSpinner', false)
+        })
     },
     signInAsGuest () {
       console.log('TEST AS GUEST')
+
+      // Display spinner
+      EventBus.$emit('appSpinner', true)
+
       this.setUser('guest')
       // Init connextionDateLast to current time
       this.userData.connexionDateLast = Date.now()
@@ -411,6 +465,8 @@ export default {
     }
   },
   mounted () {
+    // Initial appSpinner animation toggle -> fadeOut
+    setTimeout(() => { EventBus.$emit('appSpinner', false) }, 200)
     // Trigger logo animation
     setTimeout(() => { this.play() }, 500)
   },
@@ -441,14 +497,6 @@ export default {
 <style lang="scss">
 .login {
   height: 100%;
-
-  .logo {
-    max-width: 120px;
-    display: block;
-    margin: auto;
-    text-align: center;
-  }
-
   background: url("../assets/images/app_theme.jpg");
   background-image: -webkit-image-set(
     url("../assets/images/app_theme.jpg") 1x,
@@ -456,6 +504,13 @@ export default {
   );
   background-size: cover;
   background-repeat: no-repeat;
+
+  .logo {
+    max-width: 120px;
+    display: block;
+    margin: auto;
+    text-align: center;
+  }
 
   .passwordForgotten {
     color: gray;

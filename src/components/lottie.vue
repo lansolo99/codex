@@ -4,6 +4,7 @@
 
 <script>
 import lottie from 'lottie-web'
+import { EventBus } from '@/bus'
 
 export default {
   props: {
@@ -37,8 +38,13 @@ export default {
     }
     )
     this.$emit('animCreated', this.anim)
-    // Show all buttons
-    setTimeout(() => { this.$emit('displayAllButtons') }, 1800)
+
+    setTimeout(() => {
+      // Show all buttons + set class "show" to spinner inside AppSpinner
+      EventBus.$emit('setShowToInsideSpinner')
+      // Display all sign-in methods buttons
+      this.$emit('displayAllButtons')
+    }, 1800)
   }
 }
 </script>

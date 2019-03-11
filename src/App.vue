@@ -13,6 +13,9 @@
     </v-content>
 
     <TheNavbar v-if="this.view !== 'login'"/>
+    <transition name="spinner">
+      <AppSpinner v-show="showAppSpinner"/>
+    </transition>
   </v-app>
 </template>
 
@@ -27,11 +30,13 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import Vue from 'vue'
 // eslint-disable-next-line
 import firebase from 'firebase'
+import AppSpinner from '@/components/AppSpinner.vue'
 
 export default {
   name: 'App',
   data () {
     return {
+      showAppSpinner: true,
       authUser: null,
       toolbarConf: 'toolbarNone',
       view: 'login',
@@ -41,7 +46,8 @@ export default {
     }
   },
   components: {
-    TheNavbar
+    TheNavbar,
+    AppSpinner
   },
   computed: {
     ...mapState({
@@ -273,6 +279,9 @@ export default {
       console.log('currentUserWeek from calcDailyCompletion = ' + currentUserWeek)
 
       this.recordWeekScore({ progressWeek, currentUserWeek })
+
+      // Display spinner
+      EventBus.$emit('appSpinner', false)
     },
     simulateNextDay () {
       console.log('NEXT DAY')
@@ -286,6 +295,11 @@ export default {
     // console.log(getTime(new Date(2019, 0, 18, 11, 45, 5, 123)))
 
     // EVENTS
+
+    // Spinner
+    EventBus.$on('appSpinner', (status) => {
+      this.showAppSpinner = status
+    })
 
     // globalUpdate
     EventBus.$on('globalUpdate', () => {
@@ -395,5 +409,14 @@ export default {
 }
 .simulation {
   z-index: 200;
+}
+
+.spinner-enter-active,
+.spinner-leave-active {
+  transition: opacity 0.3s ease-in-out;
+}
+.spinner-enter,
+.spinner-leave-to {
+  opacity: 0;
 }
 </style>
