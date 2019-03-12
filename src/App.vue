@@ -21,7 +21,7 @@
 
 <script>
 // eslint-disable-next-line
-import { format, getISODay, isToday, isSameDay, isThisWeek, isSameWeek, getISOWeek, getTime, addDays, differenceInCalendarWeeks } from 'date-fns'
+import { format, getISODay, isToday, isSameDay, isThisWeek, isSameWeek, getISOWeek, getTime, addDays, differenceInCalendarWeeks, differenceInSeconds, endOfToday, endOfMinute } from 'date-fns'
 import { getStringFromIsoDay } from '@/utils'
 import { EventBus } from '@/bus'
 import TheNavbar from '@/components/TheNavbar'
@@ -295,6 +295,33 @@ export default {
     // console.log(getTime(new Date(2019, 0, 18, 11, 45, 5, 123)))
 
     // EVENTS
+
+    const dailyCountdown = () => {
+      const myEndOfDay = endOfToday()
+      console.log('endOfDay = ' + myEndOfDay)
+
+      // const myEndOfDay = endOfMinute(new Date(Date.now()))
+      // console.log('endOfDay = ' + myEndOfDay)
+
+      const resultDiffSeconds = differenceInSeconds(
+        new Date(Date.now()),
+        myEndOfDay
+      )
+      console.log('resultDiff = ' + resultDiffSeconds)
+
+      // Countdown
+      let timeLeft = Math.abs(resultDiffSeconds)
+      var countdown = setInterval(() => {
+        timeLeft--
+        console.log(timeLeft)
+        if (timeLeft <= 0) {
+          clearInterval(countdown)
+          dailyCountdown()
+        }
+      }, 1000)
+    }
+
+    dailyCountdown()
 
     // Spinner
     EventBus.$on('appSpinner', (status) => {

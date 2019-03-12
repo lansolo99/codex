@@ -7,8 +7,14 @@
         alt
       >
       <h2 class="mt-3 font-weight">Nothing to show!</h2>
-      <p class="font-weight-light">Add a task to start tracking your progress</p>
-      <v-btn block large class="mt-3 colorGreen white--text" @click="handleCreate" to="/">Add a task</v-btn>
+      <p class="font-weight-light">Add tasks to track your completions.</p>
+      <v-btn
+        block
+        large
+        class="mt-3 colorGreen white--text"
+        @click="handleCreate"
+        to="/tasks"
+      >Add a task</v-btn>
     </v-card>
   </div>
 </template>

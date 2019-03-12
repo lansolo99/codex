@@ -19,7 +19,6 @@ export default {
   },
   created () {
     EventBus.$on('setShowToInsideSpinner', () => {
-      console.log('setShowToInsideSpinner')
       this.showSpinner = true
     })
   }

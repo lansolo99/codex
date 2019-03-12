@@ -1,5 +1,5 @@
 <template>
-  <v-bottom-nav :active.sync="bottomNav" :value="true" color="primary" app fixed>
+  <v-bottom-nav class="theNavbar" :active.sync="bottomNav" :value="true" color="primary" app fixed>
     <v-btn to="/tasks" flat color="white" value="tasks">
       <v-icon class="icon icon-check"></v-icon>
     </v-btn>
@@ -9,19 +9,26 @@
     </v-btn>
 
     <v-btn
-      to="/profile"
+      v-if="utility.authUserID === 'guest'"
       color="white"
       flat
       value="profile"
-      :disabled="utility.authUserID === 'guest'"
+      class="simulateDisabled"
+      @click.native="profileLink()"
     >
       <v-icon class="icon icon-profile"></v-icon>
     </v-btn>
+
+    <v-btn v-else :to="'/profile'" color="white" flat value="profile">
+      <v-icon class="icon icon-profile"></v-icon>
+    </v-btn>
+    <div class></div>
   </v-bottom-nav>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import { EventBus } from '@/bus'
 export default {
   data () {
     return {
@@ -32,6 +39,12 @@ export default {
     ...mapState({
       utility: state => state.utility
     })
+  },
+  methods: {
+    profileLink () {
+      console.log('profileLink')
+      EventBus.$emit('showGuestDialog')
+    }
   }
 
 }
@@ -88,5 +101,21 @@ export default {
       #ffba4c 100%
     );
   }
+}
+.theNavbar {
+  .v-btn {
+    &.simulateDisabled {
+      opacity: 0.5 !important;
+      background: none !important;
+      color: rgba(0, 0, 0, 0.54) !important;
+      &.v-btn--active {
+        color: rgba(0, 0, 0, 0.54) !important;
+      }
+    }
+  }
+  // .v-btn.v-btn--disabled {
+  //   pointer-events: auto;
+  //   opacity: 0.12;
+  // }
 }
 </style>

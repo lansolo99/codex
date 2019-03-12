@@ -52,8 +52,10 @@ export default {
     statusBarRedirection () {
       console.log('StatusBarRedirection')
       if (this.utility.authUserID !== 'guest') {
+        // User
         this.$router.push({ name: 'profile' })
       } else {
+        // Guest
         this.guestDialog = true
       }
     },
@@ -72,6 +74,11 @@ export default {
     } else {
       this.statusBarDisplayConf = 'absoluteConf'
     }
+
+    // globalUpdate
+    EventBus.$on('showGuestDialog', () => {
+      this.guestDialog = true
+    })
   }
 }
 </script>

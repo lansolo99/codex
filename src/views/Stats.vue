@@ -84,7 +84,7 @@
         </v-container>
       </v-card>
 
-      <!-- Stats reboot panel -->
+      <!-- if empty task message -->
       <StatsReboot v-if="showReboot"/>
 
       <!-- Tasks distribution charts -->
@@ -317,7 +317,8 @@ export default {
   watch: {
     tasks: {
       handler (val, oldVal) {
-        if (!Object.keys(this.tasks).length && !this.userData.firstTime) {
+        // If empty tasks
+        if (!Object.keys(this.tasks).length) {
           this.showReboot = true
         } else {
           this.showReboot = false
