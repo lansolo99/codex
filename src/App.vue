@@ -297,30 +297,26 @@ export default {
     // EVENTS
 
     const dailyCountdown = () => {
-      const myEndOfDay = endOfToday()
-      console.log('endOfDay = ' + myEndOfDay)
-
+      // Minute helper -> testOnly
       // const myEndOfDay = endOfMinute(new Date(Date.now()))
-      // console.log('endOfDay = ' + myEndOfDay)
 
+      // Vars
+      const myEndOfDay = endOfToday()
       const resultDiffSeconds = differenceInSeconds(
         new Date(Date.now()),
         myEndOfDay
       )
-      console.log('resultDiff = ' + resultDiffSeconds)
-
       // Countdown
       let timeLeft = Math.abs(resultDiffSeconds)
       var countdown = setInterval(() => {
         timeLeft--
-        console.log(timeLeft)
         if (timeLeft <= 0) {
           clearInterval(countdown)
+          this.globalUpdate()
           dailyCountdown()
         }
       }, 1000)
     }
-
     dailyCountdown()
 
     // Spinner

@@ -16,7 +16,7 @@
       <ProfileForm/>
 
       <v-layout v-if="utility.authUserID" class="mx-3 mt-4 mb-2" justify-center>
-        <v-btn large center @click="signOut" class="colorGreen white--text">Sign out</v-btn>
+        <v-btn block large center @click="signOut" class="colorGreen white--text">Sign out</v-btn>
       </v-layout>
     </v-container>
     <!-- Delete account -->
@@ -28,7 +28,7 @@
           max-width="350"
           content-class="standard-dialog"
         >
-          <v-btn slot="activator" block large center color="red white--text px-5">Delete account</v-btn>
+          <v-btn slot="activator" large center color="red white--text px-5">Delete account</v-btn>
           <v-card>
             <v-card-title class="title red white--text pt-3 pb-3" primary-title>Delete my account?</v-card-title>
 

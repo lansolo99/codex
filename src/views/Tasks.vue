@@ -47,14 +47,16 @@ export default {
       tasks: state => state.tasks,
       utility: state => state.utility,
       profile: state => state.profile
-    })
+    }),
+    tasksProfilecombined () {
+      return this.tasks && this.profile
+    }
   },
   watch: {
-    tasks: {
+    tasksProfilecombined: {
       handler (val, oldVal) {
+        // Show reboot panel
         if ((!Object.keys(this.tasks).length || Object.keys(this.tasks).length === 0) && !this.profile.firstTime) {
-          // console.log('this.tasks).length = ' + Object.keys(this.tasks).length)
-
           this.showReboot = true
         } else {
           this.showReboot = false
