@@ -8,6 +8,7 @@ import store from './store/store'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import Vuelidate from 'vuelidate'
+import './registerServiceWorker'
 require('dotenv').config()
 Vue.use(Vuelidate)
 

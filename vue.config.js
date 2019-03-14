@@ -10,5 +10,11 @@ module.exports = {
         path.resolve(__dirname, 'src/styles/mixins.scss')
       ]
     }
+  },
+
+  pwa: {
+    name: 'Weekx',
+    themeColor: '#FFBA4C',
+    msTileColor: '#FFBA4C'
   }
 }
