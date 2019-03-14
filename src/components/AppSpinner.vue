@@ -1,6 +1,6 @@
 <template>
   <div class="appSpinner">
-    <div class="sk-folding-cube" :class="{show: showSpinner }">
+    <div class="sk-folding-cube">
       <div class="sk-cube1 sk-cube"></div>
       <div class="sk-cube2 sk-cube"></div>
       <div class="sk-cube4 sk-cube"></div>
@@ -10,18 +10,7 @@
 </template>
 
 <script>
-import { EventBus } from '@/bus'
 export default {
-  data () {
-    return {
-      showSpinner: false
-    }
-  },
-  created () {
-    EventBus.$on('setShowToInsideSpinner', () => {
-      this.showSpinner = true
-    })
-  }
 }
 </script>
 <style lang="scss" scoped>
@@ -35,10 +24,6 @@ export default {
   z-index: 100;
 
   .sk-folding-cube {
-    &.show {
-      display: inherit;
-    }
-    display: none;
     width: 40px;
     height: 40px;
     position: relative;

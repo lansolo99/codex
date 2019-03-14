@@ -2,14 +2,6 @@
   <v-app class="primary">
     <v-content :class="toolbarConf">
       <router-view/>
-      <v-btn
-        v-if="this.view !== 'login'"
-        class="red simulation white--text"
-        absolute
-        bottom
-        right
-        @click="simulateNextDay()"
-      >Next day</v-btn>
     </v-content>
 
     <TheNavbar v-if="this.view !== 'login'"/>

@@ -5,6 +5,7 @@
         <v-flex xs12>
           <v-layout>
             <v-flex xs12>
+              <!-- Logo -->
               <Lottie
                 :options="defaultOptions"
                 v-on:animCreated="handleAnimation"
@@ -77,11 +78,18 @@
           <div v-if="loginDisplay === 'signIn'">
             <v-form>
               <v-card class="pa-3">
-                <v-text-field class="pt-1 mt-3" color="secondary" label="Email" v-model="email"></v-text-field>
+                <v-text-field
+                  class="pt-1 mt-3"
+                  autocomplete="username"
+                  color="secondary"
+                  label="Email"
+                  v-model="email"
+                ></v-text-field>
                 <div class="fieldset fieldset--password">
                   <v-text-field
                     :type="formComponents.passwordType"
                     class="pt-1 mt-3"
+                    autocomplete="current-password"
                     color="secondary"
                     label="Password"
                     v-model.trim="password"
@@ -337,25 +345,7 @@ export default {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
         .then(user => {
           console.log('EMAIL SIGN IN')
-          // User object to local data
-          this.authUser = user
-
-          // Prevent user sign-in if email is not verified
-          if (this.authUser.user.emailVerified) {
-            // authUserID & authUserEmail to vuex
-            this.setUser(this.authUser.user)
-
-            // User object to vuex
-            this.setAuthUser(JSON.parse(JSON.stringify(user)))
-
-            // InitFirebase & route to tasks
-            EventBus.$emit('initFirebase')
-            this.successRedirect()
-          } else {
-            // Hide spinner
-            EventBus.$emit('appSpinner', false)
-            this.signInCatchError = 'Please verify your email adress via the received email from your inbox before sign-in.'
-          }
+          // onAuthStateChanged take hands
         })
         .catch(error => {
           this.signInCatchError = error.message
@@ -371,22 +361,7 @@ export default {
       firebase.auth().signInWithPopup(provider)
         .then(user => {
           console.log('SIGN IN WITH GOOGLE')
-
-          // User object to local data
-          this.authUser = user
-          // authUserID & authUserEmail to vuex
-          this.setUser(this.authUser.user)
-          // User object to vuex
-          this.setAuthUser(JSON.parse(JSON.stringify(user)))
-
-          this.userData.email = this.authUser.user.email
-          this.userData.pseudo = this.authUser.user.displayName
-
-          this.updateProfile(this.userData).then(() => {
-            // InitFirebase & route to tasks
-            EventBus.$emit('initFirebase')
-            this.successRedirect()
-          })
+          // onAuthStateChanged take hands
         })
         .catch((error) => {
           console.log('catch message = ' + error.message)
@@ -472,20 +447,55 @@ export default {
   },
   mounted () {
     // Hide spinner
-    setTimeout(() => { EventBus.$emit('appSpinner', false) }, 200)
+    // setTimeout(() => { EventBus.$emit('appSpinner', false) }, 200)
     // Trigger logo animation
     setTimeout(() => { this.play() }, 500)
   },
   created () {
     // Auth state observer
     firebase.auth().onAuthStateChanged(user => {
-      console.log('onAuthStateChanged')
-
       if (user) {
-        this.authUser = user
         console.log('user is signed in')
+
+        // // User object to local data
+        this.authUser = user
+
+        // Email + password sign-in
+        if (this.authUser.providerData[0].providerId === 'password') {
+          if (this.authUser.emailVerified) {
+            // authUserID & authUserEmail to vuex
+            this.setUser(this.authUser)
+            // User object to vuex
+            this.setAuthUser(JSON.parse(JSON.stringify(user)))
+            // InitFirebase & route to tasks
+            EventBus.$emit('initFirebase')
+            this.successRedirect()
+          } else {
+            // Hide spinner
+            EventBus.$emit('appSpinner', false)
+            this.signInCatchError = 'Please verify your email adress via the received email from your inbox before sign-in.'
+          }
+        }
+
+        // Google sign-in
+        if (this.authUser.providerData[0].providerId === 'google.com') {
+          // authUserID & authUserEmail to vuex
+          this.setUser(this.authUser)
+          // User object to vuex
+          this.setAuthUser(JSON.parse(JSON.stringify(user)))
+          // Update userData
+          this.userData.email = this.authUser.email
+          this.userData.pseudo = this.authUser.displayName
+          this.updateProfile(this.userData).then(() => {
+            // InitFirebase & route to tasks
+            EventBus.$emit('initFirebase')
+            this.successRedirect()
+          })
+        }
       } else {
         console.log('user is signed out')
+        // Hide spinner
+        setTimeout(() => { EventBus.$emit('appSpinner', false) }, 200)
       }
     })
 

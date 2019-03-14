@@ -67,6 +67,8 @@ export default {
       Object.assign(state, getDefaultState)
     },
     setUser (state, payload) {
+      console.log(payload)
+
       if (payload === 'null') {
         state.authUserID = null
         state.authUserEmail = null
@@ -79,10 +81,6 @@ export default {
       }
     },
     setAuthUser (state, payload) {
-      console.log('setAuthUser')
-
-      console.log(payload)
-
       if (payload === 'null') {
         state.authUser = null
       } else {
