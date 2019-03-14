@@ -36,7 +36,6 @@ export default {
   padding-top: 50px;
 
   &.v-toolbar {
-    max-width: 400px;
     margin: auto;
     left: auto;
 

@@ -648,7 +648,7 @@ export default {
 
 <style lang="scss">
 .taskEditor {
-  max-width: 400px;
+  //max-width: 400px;
   margin: auto;
   left: auto;
 

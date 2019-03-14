@@ -52,6 +52,7 @@ export default {
   display: block;
   margin: auto;
   width: 75%;
+  max-width: 320px;
   transition: all 0.5s;
 }
 </style>

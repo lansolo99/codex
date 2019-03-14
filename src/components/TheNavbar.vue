@@ -52,16 +52,17 @@ export default {
 
 <style lang="scss">
 // Overwrite Vuetify navbar position
+
 .v-item-group.v-bottom-nav {
   border-top: 1px solid rgba(0, 0, 0, 0.2) !important;
-  left: auto;
-  max-width: 400px;
   margin: auto;
   left: auto;
   box-shadow: none;
 
   .v-btn {
     padding: 8px 12px 4px;
+    max-width: none;
+
     &:not(:first-child) {
       &:before {
         content: "";
@@ -113,9 +114,5 @@ export default {
       }
     }
   }
-  // .v-btn.v-btn--disabled {
-  //   pointer-events: auto;
-  //   opacity: 0.12;
-  // }
 }
 </style>

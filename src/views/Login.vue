@@ -65,7 +65,7 @@
             <v-dialog v-model="signUpDialog" max-width="350" content-class="standard-dialog signup">
               <v-card>
                 <v-card-title class="title primary white--text pt-3 pb-3" primary-title>Welcome!</v-card-title>
-                <v-card-text>We have sent an email with a confirmation link to your email address. Open it up to activate your account.</v-card-text>
+                <v-card-text>We have sent an email with a confirmation link to your email address. Open it up to activate your account. Check your spam folder in case of missing email.</v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="primary darken-1" flat="flat" @click="signUpDialog = false">Ok</v-btn>
@@ -145,50 +145,56 @@
 
           <!-- All Buttons -->
           <div v-if="loginDisplay === 'allButtons'">
-            <div class="allButtonsWrapper" :class="{ displayAllButtons: displayAllButtons }">
-              <v-layout>
-                <v-flex xs12>
-                  <v-btn
-                    block
-                    large
-                    class="colorGreen white--text"
-                    @click="loginElementsDisplay('signIn')"
-                  >Email Sign In</v-btn>
-                </v-flex>
-              </v-layout>
-              <v-layout>
-                <v-flex xs12>
-                  <v-btn
-                    large
-                    class="colorGoogle white--text"
-                    block
-                    @click="signInWithGoogle"
-                  >Google Sign in</v-btn>
-                </v-flex>
-              </v-layout>
-              <v-layout>
-                <v-flex xs12>
-                  <v-btn
-                    to="/tasks"
-                    block
-                    large
-                    class="secondary white--text"
-                    @click="signInAsGuest"
-                  >Test as a guest</v-btn>
-                </v-flex>
-              </v-layout>
+            <v-layout
+              justify-center
+              class="allButtonsWrapper"
+              :class="{ displayAllButtons: displayAllButtons }"
+            >
+              <v-flex xs12 sm7>
+                <v-layout>
+                  <v-flex xs12>
+                    <v-btn
+                      block
+                      large
+                      class="colorGreen white--text"
+                      @click="loginElementsDisplay('signIn')"
+                    >Email Sign In</v-btn>
+                  </v-flex>
+                </v-layout>
+                <v-layout>
+                  <v-flex xs12>
+                    <v-btn
+                      large
+                      class="colorGoogle white--text"
+                      block
+                      @click="signInWithGoogle"
+                    >Google Sign in</v-btn>
+                  </v-flex>
+                </v-layout>
+                <v-layout>
+                  <v-flex xs12>
+                    <v-btn
+                      to="/tasks"
+                      block
+                      large
+                      class="secondary white--text"
+                      @click="signInAsGuest"
+                    >Test as a guest</v-btn>
+                  </v-flex>
+                </v-layout>
 
-              <v-layout class="mt-3">
-                <v-flex xs12>
-                  <v-btn block large @click="loginElementsDisplay('signUp')">Email Sign Up</v-btn>
-                </v-flex>
-              </v-layout>
-              <v-layout v-if="authUser" class="mt-3">
-                <v-flex xs12>
-                  <v-btn block large @click="signOut" class="red white--text">Sign out</v-btn>
-                </v-flex>
-              </v-layout>
-            </div>
+                <v-layout class="mt-3">
+                  <v-flex xs12>
+                    <v-btn block large @click="loginElementsDisplay('signUp')">Email Sign Up</v-btn>
+                  </v-flex>
+                </v-layout>
+                <v-layout v-if="authUser" class="mt-3">
+                  <v-flex xs12>
+                    <v-btn block large @click="signOut" class="red white--text">Sign out</v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+            </v-layout>
           </div>
         </v-flex>
       </v-layout>
@@ -358,7 +364,8 @@ export default {
       EventBus.$emit('appSpinner', true)
 
       const provider = new firebase.auth.GoogleAuthProvider()
-      firebase.auth().signInWithPopup(provider)
+
+      firebase.auth().signInWithRedirect(provider)
         .then(user => {
           console.log('SIGN IN WITH GOOGLE')
           // onAuthStateChanged take hands
@@ -520,13 +527,6 @@ export default {
   );
   background-size: cover;
   background-repeat: no-repeat;
-
-  .logo {
-    max-width: 120px;
-    display: block;
-    margin: auto;
-    text-align: center;
-  }
 
   .passwordForgotten {
     color: gray;
