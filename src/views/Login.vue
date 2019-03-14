@@ -5,7 +5,7 @@
         <v-flex xs12>
           <v-layout>
             <v-flex xs12>
-              <lottie
+              <Lottie
                 :options="defaultOptions"
                 v-on:animCreated="handleAnimation"
                 v-on:displayAllButtons="displayAllButtons = true"
@@ -204,7 +204,7 @@ import * as animationData from '@/assets/animations/data.json'
 export default {
   name: 'Login',
   components: {
-    'Lottie': Lottie
+    Lottie
   },
   data () {
     return {
