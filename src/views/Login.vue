@@ -520,10 +520,17 @@ export default {
 <style lang="scss">
 .login {
   height: 100%;
-  background: url("../assets/images/app_theme.jpg");
+  @include responsive(mobile) {
+    background-image: url(../assets/images/theme/mobile.jpg);
+    background-image: -webkit-image-set(
+      url(../assets/images/theme/mobile.jpg) 1x,
+      url(../assets/images/theme/mobile@2x.jpg) 2x
+    );
+  }
+  background-image: url(../assets/images/theme/tablet.jpg);
   background-image: -webkit-image-set(
-    url("../assets/images/app_theme.jpg") 1x,
-    url("../assets/images/app_theme@2x.jpg") 2x
+    url(../assets/images/theme/tablet.jpg) 1x,
+    url(../assets/images/theme/tablet@2x.jpg) 2x
   );
   background-size: cover;
   background-repeat: no-repeat;

@@ -409,7 +409,8 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  // max-width: 400px;
+  // Max to tablet view
+  max-width: 992px;
   margin: auto;
 }
 .toolbarNone {
