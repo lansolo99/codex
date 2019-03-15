@@ -150,7 +150,7 @@
               class="allButtonsWrapper"
               :class="{ displayAllButtons: displayAllButtons }"
             >
-              <v-flex xs12 sm7>
+              <v-flex xs12 sm7 md4>
                 <v-layout>
                   <v-flex xs12>
                     <v-btn
@@ -520,6 +520,20 @@ export default {
 <style lang="scss">
 .login {
   height: 100%;
+
+  background-image: url(../assets/images/theme/desktop.jpg);
+  background-image: -webkit-image-set(
+    url(../assets/images/theme/desktop.jpg) 1x,
+    url(../assets/images/theme/desktop@2x.jpg) 2x
+  );
+
+  @include responsive(tablet) {
+    background-image: url(../assets/images/theme/tablet.jpg);
+    background-image: -webkit-image-set(
+      url(../assets/images/theme/tablet.jpg) 1x,
+      url(../assets/images/theme/tablet@2x.jpg) 2x
+    );
+  }
   @include responsive(mobile) {
     background-image: url(../assets/images/theme/mobile.jpg);
     background-image: -webkit-image-set(
@@ -527,12 +541,9 @@ export default {
       url(../assets/images/theme/mobile@2x.jpg) 2x
     );
   }
-  background-image: url(../assets/images/theme/tablet.jpg);
-  background-image: -webkit-image-set(
-    url(../assets/images/theme/tablet.jpg) 1x,
-    url(../assets/images/theme/tablet@2x.jpg) 2x
-  );
+
   background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
 
   .passwordForgotten {

@@ -410,7 +410,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   // Max to tablet view
-  max-width: 992px;
+  //max-width: 992px;
   margin: auto;
 }
 .toolbarNone {
