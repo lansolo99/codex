@@ -362,7 +362,7 @@ export default {
                   })
               })
           } else {
-            // User doesn't exist yet
+            // Create new user
             console.log('User doesnt exist yet')
 
             // Init connexionDateLast to current time
@@ -393,6 +393,10 @@ export default {
         .set({ profile: this.profile, tasks: this.tasks })
         .then(() => {
           console.log('CYCLE DONE ! : firebase profile + tasks updated')
+          if (this.utility.signUpProcess) {
+            console.log('signup process = true, signout')
+            EventBus.$emit('signOut')
+          }
         })
     })
   }

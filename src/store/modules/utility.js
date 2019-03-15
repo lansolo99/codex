@@ -63,6 +63,10 @@ export default {
     }
   },
   mutations: {
+    setSignUpProcess (state) {
+      console.log('setSignUpProcess')
+      state.signUpProcess = true
+    },
     resetUtilityDatas (state) {
       Object.assign(state, getDefaultState)
     },

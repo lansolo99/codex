@@ -209,7 +209,7 @@
 <script>
 import { EventBus } from '@/bus'
 import firebase from 'firebase'
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required, email, minLength } from 'vuelidate/lib/validators'
 import Lottie from '@/components/Lottie.vue'
@@ -292,6 +292,9 @@ export default {
       resetCurrentUserWeek: 'time/resetCurrentUserWeek',
       resetTasksDatas: 'tasks/resetTasksDatas'
     }),
+    ...mapMutations({
+      setSignUpProcess: 'utility/setSignUpProcess'
+    }),
     emailSignUp () {
       console.log('EMAIL SIGN UP')
       // Form validation
@@ -330,7 +333,9 @@ export default {
             this.userData.password = this.password
 
             this.updateProfile(this.userData).then(() => {
-            // InitFirebase & route to tasks
+            // Set signUpProcess to true
+              this.setSignUpProcess()
+              // InitFirebase & route to tasks
               EventBus.$emit('initFirebase')
               // Display feedback modal and ask for email check
               this.signUpDialog = true
@@ -351,6 +356,7 @@ export default {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
         .then(user => {
           console.log('EMAIL SIGN IN')
+          this.authUser = user
           // onAuthStateChanged take hands
         })
         .catch(error => {
@@ -368,6 +374,7 @@ export default {
       firebase.auth().signInWithRedirect(provider)
         .then(user => {
           console.log('SIGN IN WITH GOOGLE')
+          this.authUser = user
           // onAuthStateChanged take hands
         })
         .catch((error) => {
@@ -461,15 +468,21 @@ export default {
   created () {
     // Auth state observer
     firebase.auth().onAuthStateChanged(user => {
+      console.log('onAuthStateChanged')
+
       if (user) {
         console.log('user is signed in')
 
         // // User object to local data
         this.authUser = user
+        console.log('authUser.providerData = ' + this.authUser.providerData[0].providerId)
 
         // Email + password sign-in
         if (this.authUser.providerData[0].providerId === 'password') {
+          console.log('password sign in method')
+
           if (this.authUser.emailVerified) {
+            console.log('email verified')
             // authUserID & authUserEmail to vuex
             this.setUser(this.authUser)
             // User object to vuex
