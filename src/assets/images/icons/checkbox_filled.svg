@@ -4,6 +4,12 @@
 	 x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
 <style type="text/css">
 	.st0{fill:#E56E25;}
+	.st1{display:none;fill:#326CBF;}
 </style>
-<polygon class="st0" points="28.6,72.8 28.1,28.8 72.1,23.6 68.5,75.3 "/>
+<g>
+	<g>
+		<polygon class="st0" points="74.8,11.3 25.3,13.9 25.3,86.9 75.5,89 		"/>
+	</g>
+</g>
+<path class="st1" d="M67.9,18.7l0.6,63l-36.1-1.5V20.5L67.9,18.7 M74.8,11.3l-49.5,2.6v73L75.5,89L74.8,11.3L74.8,11.3z"/>
 </svg>

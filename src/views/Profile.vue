@@ -50,7 +50,7 @@
 <script>
 import ProfileForm from '@/components/ProfileForm'
 import ProfileEditor from '@/components/ProfileEditor'
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import { EventBus } from '@/bus'
 import store from '@/store/store'
 import firebase from 'firebase'
@@ -76,6 +76,9 @@ export default {
     ...mapActions({
       toggleProfileDialog: 'utility/toggleProfileDialog'
     }),
+    ...mapMutations({
+      setDeleteAccount: 'utility/setDeleteAccount'
+    }),
     handleEditProfile () {
       EventBus.$emit('editProfile', true)
       this.toggleProfileDialog(true)
@@ -89,7 +92,7 @@ export default {
 
       // Close delete account Modal
       this.dialogDeleteAccount = false
-
+      this.setDeleteAccount()
       // Display spinner
       EventBus.$emit('appSpinner', true)
 
@@ -97,12 +100,13 @@ export default {
       const user = firebase.auth().currentUser
 
       // Reauthenticate
-      if (this.utility.authUser.credential !== null) {
+      if (this.utility.authUser.providerData[0].providerId === 'google.com') {
         // Provider account
         console.log('google signin recognized')
         // Create provider as usual
         const provider = new firebase.auth.GoogleAuthProvider()
         user.reauthenticateWithPopup(provider)
+        // user.reauthenticateWithRedirect(provider)
           .then(function (result) {
             console.log('google user reauthenticated')
             deleteCurrentUser()

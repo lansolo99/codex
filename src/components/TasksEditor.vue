@@ -33,8 +33,7 @@
                 @input="$v.task.title.$touch()"
                 @blur="$v.task.title.$touch()"
               ></v-text-field>
-              <v-textarea dark label="Description" v-model="task.description"></v-textarea>
-              <div @click="resetSelectsScroll()">
+              <div @click="resetSelectsScroll()" class="mt-4">
                 <v-select
                   class="categorySelect"
                   dark
@@ -145,7 +144,7 @@
                       primary-title
                     >Change schedule?</v-card-title>
 
-                    <v-card-text>Current week completion will be lost</v-card-text>
+                    <v-card-text>The current week completion for this task will be lost</v-card-text>
 
                     <v-card-actions>
                       <v-spacer></v-spacer>
@@ -303,7 +302,6 @@ export default {
         id: '',
         startDate: '',
         title: '',
-        description: '',
         category: '',
         schedule: {
           periodicity: '',
@@ -535,11 +533,6 @@ export default {
         const currentTime = Date.now()
         this.task.startDate = currentTime
 
-        // Default
-        if (!this.task.description) {
-          this.task.description = 'None'
-        }
-
         if (this.storeCurrentTask !== 'new') {
           /// Edit
           const taskId = JSON.parse(JSON.stringify(this.task.id))
@@ -585,7 +578,6 @@ export default {
       this.$v.task.$reset()
       this.changeSchedule = false
       this.task.title = null
-      this.task.description = null
       this.task.category = null
       this.schedule.active = 0
       this.task.schedule.weekly = null

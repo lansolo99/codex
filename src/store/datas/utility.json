@@ -2,7 +2,7 @@
   "authUser": null,
   "authUserID": null,
   "authUserEmail": null,
-  "signUpProcess": false,
+  "deleteAccount": false,
   "appReady": false,
   "countries": [{
       "name": "Afghanistan",

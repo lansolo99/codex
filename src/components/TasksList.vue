@@ -1,10 +1,14 @@
 <template>
   <div class="taskList">
     <v-expansion-panel v-model="panel" class="mt-2" v-if="utility.tasksReady">
-      <!-- <v-expansion-panel-content v-for="(task,key) in Object.values(tasks)" :key="key"> -->
       <v-expansion-panel-content v-for="(task,key) in filterTasks(periodicity.name)" :key="key">
-        <!-- Bar part -->
-        <v-layout slot="header" row wrap :class="`task ${task.status} mr-2 px-0`">
+        <v-layout
+          slot="header"
+          row
+          wrap
+          class="task mr-2 px-0"
+          :class="[{disabled: task.disabled}, task.status]"
+        >
           <v-flex shrink class="checkboxFlexContainer">
             <v-checkbox
               @click.native.stop
@@ -23,6 +27,7 @@
               v-if="hasTaskSubtasks(task) || task.disabled"
             ></v-checkbox>
             <v-icon class="icon icon-checkbox_off"></v-icon>
+            <v-icon :class="{active: task.checked}" class="icon icon-checkbox_filled"></v-icon>
           </v-flex>
           <v-flex shrink class="ml-2">
             <div :class="`category ${task.category}`">
@@ -65,6 +70,7 @@
                   v-if="task.disabled === true"
                 ></v-checkbox>
                 <v-icon class="icon icon-checkbox_off"></v-icon>
+                <v-icon :class="{active: task.checked}" class="icon icon-checkbox_filled"></v-icon>
               </v-flex>
               <v-flex grow class="pa-1 pt-2 pl-2 pr-3 body-1">
                 <span :class="['name', { completed: subtask.checked } ]">{{subtask.name}}</span>
@@ -75,8 +81,6 @@
         <!-- Expanded part -->
         <v-card class="details blue-grey lighten-5 pa-2">
           <v-card-text>
-            <h6>Description</h6>
-            <p>{{task.description}}</p>
             <h6>Schedule</h6>
             <p>
               <span v-if="task.schedule.periodicity === 'Weekly'">
@@ -318,6 +322,11 @@ export default {
   .v-expansion-panel__header {
     padding: 12px 12px;
     align-items: flex-start !important;
+    .task {
+      &.disabled {
+        opacity: 0.4;
+      }
+    }
     &__icon {
       position: relative;
       top: 5px;
@@ -326,28 +335,35 @@ export default {
     .v-input--selection-controls {
       position: relative;
       top: 1px;
+      left: -5px;
       z-index: 2;
       .v-input--selection-controls__ripple {
-        left: -9px !important;
+        left: -5px !important;
       }
       .v-icon {
-        font-size: 32px;
+        font-size: 35px;
       }
     }
     // Invisible checkboxes (prevent openning panel at click when disabled state)
     .checkboxFlexContainer {
       position: relative;
       .icon-checkbox_off,
-      .icon-checkbox_off_inside {
+      .icon-checkbox_filled {
         position: absolute;
-        font-size: 31px;
-        top: 2px;
-        left: 0;
+        font-size: 35px;
+        top: 0px;
+        left: -5px;
         z-index: 0;
         color: $color-golden;
       }
-      .icon-checkbox_off_inside {
-        opacity: 0.4;
+      .icon-checkbox_off {
+        color: $color-golden;
+      }
+      .icon-checkbox_filled {
+        display: none;
+        &.active {
+          display: inherit;
+        }
       }
     }
     .preventExpansion {

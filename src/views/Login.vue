@@ -16,68 +16,83 @@
 
           <!-- Signup form -->
           <div v-if="loginDisplay === 'signUp'">
-            <v-form lazy-validation>
-              <v-card class="pa-3">
-                <v-text-field
-                  color="secondary"
-                  class="red--text mt-1"
-                  label="Pseudo"
-                  v-model="pseudo"
-                  required
-                  :error-messages="pseudoErrors"
-                  @input="$v.pseudo.$touch()"
-                  @blur="$v.pseudo.$touch()"
-                ></v-text-field>
-                <v-text-field
-                  class="pt-1 mt-3"
-                  color="secondary"
-                  label="Email"
-                  v-model="email"
-                  required
-                  :error-messages="emailErrors"
-                  @input="$v.email.$touch()"
-                  @blur="$v.email.$touch()"
-                ></v-text-field>
-                <div class="fieldset fieldset--password">
+            <v-card class="signInsignUpForm">
+              <v-card-title class="title primary white--text">Sign up
+                <v-icon
+                  right
+                  class="white--text icon icon-delete close"
+                  @click="loginElementsDisplay('allButtons')"
+                ></v-icon>
+              </v-card-title>
+              <v-card-text class="pa-3">
+                <v-form lazy-validation ref="signUpForm">
                   <v-text-field
-                    :type="formComponents.passwordType"
+                    color="secondary"
+                    class="red--text mt-1"
+                    label="Pseudo"
+                    v-model="pseudo"
+                    required
+                    :error-messages="pseudoErrors"
+                    @input="$v.pseudo.$touch()"
+                    @blur="$v.pseudo.$touch()"
+                  ></v-text-field>
+                  <v-text-field
                     class="pt-1 mt-3"
                     color="secondary"
-                    label="Password"
-                    v-model.trim="password"
-                    :error-messages="passwordErrors"
-                    @input="$v.password.$touch()"
-                    @blur="$v.password.$touch()"
+                    label="Email"
+                    type="email"
+                    v-model="email"
+                    required
+                    :error-messages="emailErrors"
+                    @input="$v.email.$touch()"
+                    @blur="$v.email.$touch()"
                   ></v-text-field>
-                  <v-icon
-                    @click="togglePasswordVisibility('password')"
-                    :class="['icon', formComponents.iconShowPassword, 'customIcon']"
-                  ></v-icon>
-                </div>
-                <div class="signInCatchError">{{signInCatchError}}</div>
-                <v-btn large block depressed flat outline class="mt-3" @click="emailSignUp">Sign Up</v-btn>
-              </v-card>
-            </v-form>
-            <v-layout class="mx-4 mt-3" justify-center>
-              <v-btn large @click="loginElementsDisplay('allButtons')" class="red white--text">Back</v-btn>
-            </v-layout>
-            <!-- Feedback dialog -->
-            <v-dialog v-model="signUpDialog" max-width="350" content-class="standard-dialog signup">
-              <v-card>
-                <v-card-title class="title primary white--text pt-3 pb-3" primary-title>Welcome!</v-card-title>
-                <v-card-text>We have sent an email with a confirmation link to your email address. Open it up to activate your account. Check your spam folder in case of missing email.</v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="primary darken-1" flat="flat" @click="signUpDialog = false">Ok</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+                  <div class="fieldset fieldset--password">
+                    <v-text-field
+                      :type="formComponents.passwordType"
+                      class="pt-1 mt-3"
+                      color="secondary"
+                      label="Password"
+                      autocorrect="off"
+                      autocapitalize="none"
+                      v-model.trim="password"
+                      :error-messages="passwordErrors"
+                      @input="$v.password.$touch()"
+                      @blur="$v.password.$touch()"
+                    ></v-text-field>
+                    <div class="customIcon">
+                      <v-icon
+                        @click="togglePasswordVisibility('password')"
+                        :class="['icon', formComponents.iconShowPassword]"
+                      ></v-icon>
+                    </div>
+                  </div>
+                  <div class="signInCatchError">{{signInCatchError}}</div>
+                  <v-btn
+                    large
+                    block
+                    depressed
+                    flat
+                    outline
+                    class="mt-3"
+                    @click="emailSignUp"
+                  >Sign Up</v-btn>
+                </v-form>
+                <v-layout justify-center class="mt-4">
+                  Already have an account ?&nbsp;
+                  <a
+                    class="simpleLink primary--text text--darken-2"
+                    @click="loginElementsDisplay('signIn')"
+                  >Sign in!</a>
+                </v-layout>
+              </v-card-text>
+            </v-card>
           </div>
 
           <!-- Sign-in form -->
           <div v-if="loginDisplay === 'signIn'">
             <v-card class="signInsignUpForm">
-              <v-card-title class="title primary white--text">Log in
+              <v-card-title class="title primary white--text">Sign in
                 <v-icon
                   right
                   class="white--text icon icon-delete close"
@@ -91,6 +106,7 @@
                     autocomplete="username"
                     color="secondary"
                     label="Email"
+                    type="email"
                     v-model="email"
                   ></v-text-field>
                   <div class="fieldset fieldset--password">
@@ -100,6 +116,8 @@
                       autocomplete="current-password"
                       color="secondary"
                       label="Password"
+                      autocorrect="off"
+                      autocapitalize="none"
                       v-model.trim="password"
                     ></v-text-field>
                     <v-icon
@@ -123,24 +141,21 @@
                   <v-layout justify-center class="mt-2">
                     <v-btn
                       large
-                      class="colorGoogle white--text"
+                      outline
+                      class="colorGoogle colorGoogle--text"
                       @click="signInWithGoogle"
                     >Sign in with Google</v-btn>
                   </v-layout>
-                  <v-layout justify-center class="mt-2">
-                    No account ?&nbsp;
-                    <a
-                      class="simpleLink primary--text text--darken-2"
-                      @click="loginElementsDisplay('signUp')"
-                    >Sign Up!</a>
-                  </v-layout>
                 </v-form>
+                <v-layout justify-center class="mt-2">
+                  No account ?&nbsp;
+                  <a
+                    class="simpleLink primary--text text--darken-2"
+                    @click="loginElementsDisplay('signUp')"
+                  >Sign up!</a>
+                </v-layout>
               </v-card-text>
             </v-card>
-
-            <v-layout class="mx-4 mt-3" justify-center>
-              <v-btn large @click="loginElementsDisplay('allButtons')" class="red white--text">Back</v-btn>
-            </v-layout>
           </div>
 
           <!-- Reset password form -->
@@ -185,7 +200,7 @@
                 </v-layout>
                 <v-layout class="mt-2">
                   <v-flex xs12>
-                    <v-btn to="/tasks" block large @click="signInAsGuest">Test as a guest</v-btn>
+                    <v-btn to="/tasks" block large @click="signInAsGuest">Test without account</v-btn>
                   </v-flex>
                 </v-layout>
 
@@ -210,11 +225,15 @@
 <script>
 import { EventBus } from '@/bus'
 import firebase from 'firebase'
-import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required, email, minLength } from 'vuelidate/lib/validators'
 import Lottie from '@/components/Lottie.vue'
 import * as animationData from '@/assets/animations/data.json'
+
+function notAnExistingPseudo (value) {
+  return this.allUsersPseudos.includes(value) !== true
+}
 
 export default {
   name: 'Login',
@@ -229,11 +248,12 @@ export default {
       animationSpeed: 1,
       authUser: null,
       pseudo: null,
+      allUsersPseudos: null,
       email: '',
       password: '',
       loginDisplay: 'allButtons',
       displayAllButtons: false,
-      signUpDialog: false,
+      signUpProcess: false,
       signInCatchError: '',
       resetPasswordCatchError: '',
       resetPasswordResolved: '',
@@ -245,7 +265,10 @@ export default {
   },
   mixins: [validationMixin],
   validations: {
-    pseudo: { required },
+    pseudo: {
+      required,
+      notAnExistingPseudo
+    },
     email: { required, email },
     password: {
       required,
@@ -264,6 +287,8 @@ export default {
       const errors = []
       if (!this.$v.pseudo.$dirty) return errors
       !this.$v.pseudo.required && errors.push('Pseudo is required')
+      !this.$v.pseudo.notAnExistingPseudo && errors.push('Pseudo is already taken')
+
       return errors
     },
     emailErrors () {
@@ -293,9 +318,6 @@ export default {
       resetCurrentUserWeek: 'time/resetCurrentUserWeek',
       resetTasksDatas: 'tasks/resetTasksDatas'
     }),
-    ...mapMutations({
-      setSignUpProcess: 'utility/setSignUpProcess'
-    }),
     emailSignUp () {
       console.log('EMAIL SIGN UP')
       // Form validation
@@ -309,44 +331,21 @@ export default {
 
         // Display spinner
         EventBus.$emit('appSpinner', true)
+        this.signUpProcess = true
 
         firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
           .then(user => {
             console.log('new user created')
 
-            // Email verification
-            firebase.auth().currentUser.sendEmailVerification().then(function () {
-              // Email sent.
-              console.log('Email sent')
-            }).catch(function (error) {
-              this.signInCatchError = error.message
-              // Hide spinner
-              EventBus.$emit('appSpinner', false)
-            })
-
             // User object to local data
             this.authUser = user
-            // authUserID & authUserEmail to vuex
-            this.setUser(this.authUser.user)
-
-            this.userData.email = this.authUser.user.email
-            this.userData.pseudo = this.pseudo
-            this.userData.password = this.password
-
-            this.updateProfile(this.userData).then(() => {
-            // Set signUpProcess to true
-              this.setSignUpProcess()
-              // InitFirebase & route to tasks
-              EventBus.$emit('initFirebase')
-              // Display feedback modal and ask for email check
-              this.signUpDialog = true
-              // this.successRedirect()
-            })
+            // onAuthStateChanged take hands
           })
           .catch(error => {
             this.signInCatchError = error.message
             // Hide spinner
             EventBus.$emit('appSpinner', false)
+            this.signUpProcess = false
           })
       }
     },
@@ -357,6 +356,8 @@ export default {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
         .then(user => {
           console.log('EMAIL SIGN IN')
+
+          // User object to local data
           this.authUser = user
           // onAuthStateChanged take hands
         })
@@ -461,12 +462,24 @@ export default {
     }
   },
   mounted () {
-    // Hide spinner
-    // setTimeout(() => { EventBus.$emit('appSpinner', false) }, 200)
     // Trigger logo animation
     setTimeout(() => { this.play() }, 500)
   },
   created () {
+    // Collect all users pseudo
+    firebase.database()
+      .ref('users')
+      .once('value', snapshot => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val())
+          this.allUsersList = snapshot.val()
+        }
+      }).then(user => {
+        this.allUsersPseudos = Object.values(user.val()).map(v => {
+          return v.profile.pseudo
+        })
+      })
+
     // Auth state observer
     firebase.auth().onAuthStateChanged(user => {
       console.log('onAuthStateChanged')
@@ -478,24 +491,27 @@ export default {
         this.authUser = user
         console.log('authUser.providerData = ' + this.authUser.providerData[0].providerId)
 
-        // Email + password sign-in
+        // Email + password sign-in / sign-up
         if (this.authUser.providerData[0].providerId === 'password') {
-          console.log('password sign in method')
+          console.log('password signin/signup in method')
 
-          if (this.authUser.emailVerified) {
-            console.log('email verified')
-            // authUserID & authUserEmail to vuex
-            this.setUser(this.authUser)
-            // User object to vuex
-            this.setAuthUser(JSON.parse(JSON.stringify(user)))
+          // authUserID & authUserEmail to vuex
+          this.setUser(this.authUser)
+          // User object to vuex
+          this.setAuthUser(JSON.parse(JSON.stringify(user)))
+
+          // If sign-up process
+          if (this.signUpProcess === true) {
+            this.userData.email = this.authUser.email
+            this.userData.pseudo = this.pseudo
+            this.userData.password = this.password
+          }
+
+          this.updateProfile(this.userData).then(() => {
             // InitFirebase & route to tasks
             EventBus.$emit('initFirebase')
             this.successRedirect()
-          } else {
-            // Hide spinner
-            EventBus.$emit('appSpinner', false)
-            this.signInCatchError = 'Please verify your email adress via the received email from your inbox before sign-in.'
-          }
+          })
         }
 
         // Google sign-in
@@ -578,11 +594,18 @@ export default {
     &--password {
       position: relative;
       .customIcon {
-        width: 25px;
-        height: 25px;
+        width: 40px;
+        height: 40px;
         position: absolute;
-        right: 5px;
-        top: 7px;
+        right: 0px;
+        top: -3px;
+        //background-color: red;
+
+        .v-icon {
+          position: relative;
+          top: 8px;
+          left: 8px;
+        }
       }
     }
   }

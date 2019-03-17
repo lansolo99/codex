@@ -44,11 +44,11 @@
 			$char: "\E004";
 		}
 
-		 @if $filename==checkbox_off {
+		 @if $filename==checkbox_filled {
 			$char: "\E005";
 		}
 
-		 @if $filename==checkbox_off_inside {
+		 @if $filename==checkbox_off {
 			$char: "\E006";
 		}
 
@@ -117,12 +117,12 @@
 		@include icon(check);
 	}
 
-	.icon-checkbox_off {
-		@include icon(checkbox_off);
+	.icon-checkbox_filled {
+		@include icon(checkbox_filled);
 	}
 
-	.icon-checkbox_off_inside {
-		@include icon(checkbox_off_inside);
+	.icon-checkbox_off {
+		@include icon(checkbox_off);
 	}
 
 	.icon-checkbox_on {
