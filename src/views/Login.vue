@@ -14,7 +14,7 @@
             </v-flex>
           </v-layout>
 
-          <!-- Sign-up form -->
+          <!-- Signup form -->
           <div v-if="loginDisplay === 'signUp'">
             <v-form lazy-validation>
               <v-card class="pa-3">
@@ -76,46 +76,68 @@
 
           <!-- Sign-in form -->
           <div v-if="loginDisplay === 'signIn'">
-            <v-form>
-              <v-card class="pa-3">
-                <v-text-field
-                  class="pt-1 mt-3"
-                  autocomplete="username"
-                  color="secondary"
-                  label="Email"
-                  v-model="email"
-                ></v-text-field>
-                <div class="fieldset fieldset--password">
+            <v-card class="signInsignUpForm">
+              <v-card-title class="title primary white--text">Log in
+                <v-icon
+                  right
+                  class="white--text icon icon-delete close"
+                  @click="loginElementsDisplay('allButtons')"
+                ></v-icon>
+              </v-card-title>
+              <v-card-text class="pa-3">
+                <v-form>
                   <v-text-field
-                    :type="formComponents.passwordType"
                     class="pt-1 mt-3"
-                    autocomplete="current-password"
+                    autocomplete="username"
                     color="secondary"
-                    label="Password"
-                    v-model.trim="password"
+                    label="Email"
+                    v-model="email"
                   ></v-text-field>
-                  <v-icon
-                    @click="togglePasswordVisibility('password')"
-                    :class="['icon', formComponents.iconShowPassword, 'customIcon']"
-                  ></v-icon>
-                </div>
-                <div class="signInCatchError">{{signInCatchError}}</div>
-                <v-btn
-                  large
-                  block
-                  depressed
-                  flat
-                  class="mt-3 colorGreen white--text"
-                  @click="emailSignIn"
-                >Sign In</v-btn>
-                <v-layout justify-center class="mt-2">
-                  <a
-                    class="passwordForgotten"
-                    @click="loginElementsDisplay('resetPassword')"
-                  >Forgot your password ?</a>
-                </v-layout>
-              </v-card>
-            </v-form>
+                  <div class="fieldset fieldset--password">
+                    <v-text-field
+                      :type="formComponents.passwordType"
+                      class="pt-1 mt-3"
+                      autocomplete="current-password"
+                      color="secondary"
+                      label="Password"
+                      v-model.trim="password"
+                    ></v-text-field>
+                    <v-icon
+                      @click="togglePasswordVisibility('password')"
+                      :class="['icon', formComponents.iconShowPassword, 'customIcon']"
+                    ></v-icon>
+                  </div>
+                  <div class="signInCatchError">{{signInCatchError}}</div>
+                  <v-btn
+                    large
+                    block
+                    class="mt-3 colorGreen white--text"
+                    @click="emailSignIn"
+                  >Sign In</v-btn>
+                  <v-layout justify-center class="mt-2">
+                    <a
+                      class="simpleLink primary--text text--darken-2"
+                      @click="loginElementsDisplay('resetPassword')"
+                    >Forgot your password ?</a>
+                  </v-layout>
+                  <v-layout justify-center class="mt-2">
+                    <v-btn
+                      large
+                      class="colorGoogle white--text"
+                      @click="signInWithGoogle"
+                    >Sign in with Google</v-btn>
+                  </v-layout>
+                  <v-layout justify-center class="mt-2">
+                    No account ?&nbsp;
+                    <a
+                      class="simpleLink primary--text text--darken-2"
+                      @click="loginElementsDisplay('signUp')"
+                    >Sign Up!</a>
+                  </v-layout>
+                </v-form>
+              </v-card-text>
+            </v-card>
+
             <v-layout class="mx-4 mt-3" justify-center>
               <v-btn large @click="loginElementsDisplay('allButtons')" class="red white--text">Back</v-btn>
             </v-layout>
@@ -158,36 +180,15 @@
                       large
                       class="colorGreen white--text"
                       @click="loginElementsDisplay('signIn')"
-                    >Email Sign In</v-btn>
+                    >Log in</v-btn>
                   </v-flex>
                 </v-layout>
-                <v-layout>
+                <v-layout class="mt-2">
                   <v-flex xs12>
-                    <v-btn
-                      large
-                      class="colorGoogle white--text"
-                      block
-                      @click="signInWithGoogle"
-                    >Google Sign in</v-btn>
-                  </v-flex>
-                </v-layout>
-                <v-layout>
-                  <v-flex xs12>
-                    <v-btn
-                      to="/tasks"
-                      block
-                      large
-                      class="secondary white--text"
-                      @click="signInAsGuest"
-                    >Test as a guest</v-btn>
+                    <v-btn to="/tasks" block large @click="signInAsGuest">Test as a guest</v-btn>
                   </v-flex>
                 </v-layout>
 
-                <v-layout class="mt-3">
-                  <v-flex xs12>
-                    <v-btn block large @click="loginElementsDisplay('signUp')">Email Sign Up</v-btn>
-                  </v-flex>
-                </v-layout>
                 <v-layout v-if="authUser" class="mt-3">
                   <v-flex xs12>
                     <v-btn block large @click="signOut" class="red white--text">Sign out</v-btn>
@@ -559,8 +560,7 @@ export default {
   background-position: center;
   background-repeat: no-repeat;
 
-  .passwordForgotten {
-    color: gray;
+  .simpleLink {
     text-decoration: none;
   }
 
@@ -594,6 +594,13 @@ export default {
     &.displayAllButtons {
       opacity: 1;
       transform: translateY(0px);
+    }
+  }
+  .signInsignUpForm {
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
     }
   }
 }
