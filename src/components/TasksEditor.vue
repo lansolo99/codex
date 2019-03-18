@@ -144,7 +144,10 @@
                       primary-title
                     >Change schedule?</v-card-title>
 
-                    <v-card-text>The current week completion for this task will be lost</v-card-text>
+                    <v-card-text>
+                      {{currentCompletionSum}}
+                      The current week completion for this task will be lost
+                    </v-card-text>
 
                     <v-card-actions>
                       <v-spacer></v-spacer>
@@ -219,7 +222,7 @@
                       primary-title
                     >Delete this task?</v-card-title>
 
-                    <v-card-text>All recorded data will be lost</v-card-text>
+                    <v-card-text>All recorded datas for this tasks will be lost</v-card-text>
 
                     <v-card-actions>
                       <v-spacer></v-spacer>
@@ -399,6 +402,9 @@ export default {
         offset: 0,
         easing: 'easeInOutCubic'
       }
+    },
+    currentCompletionSum () {
+      return this.task.completion.reduce((a, b) => { return a + b }, 0)
     }
   },
   watch: {

@@ -7,7 +7,7 @@
     fullscreen
     v-model="dialogProfile"
   >
-    <v-card flat tile>
+    <v-card flat tile class="primary">
       <!-- Toolbar -->
       <v-toolbar dark class="secondary dialogToolbar">
         <v-btn depressed flat @click="handleCancel">cancel</v-btn>

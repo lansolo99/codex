@@ -34,6 +34,11 @@ export default {
                 if (!pair[1]['schedule'].hasOwnProperty('specificDays')) {
                   tasks[pair[0]]['schedule']['specificDays'] = []
                 }
+
+                // Completion
+                if (!pair[1].hasOwnProperty('completion')) {
+                  tasks[pair[0]]['completion'] = []
+                }
               })
               commit('fetchTasksDatas', tasks)
             }
@@ -85,8 +90,8 @@ export default {
     },
     rebootWeeklyTasksCompletions ({
       commit
-    }, payload) {
-      commit('rebootWeeklyTasksCompletions', payload)
+    }) {
+      commit('rebootWeeklyTasksCompletions')
     },
     updateTasksCompletionsHistory ({
       commit
@@ -169,9 +174,11 @@ export default {
     deleteTask (state, payload) {
       Vue.delete(state, payload)
     },
-    rebootWeeklyTasksCompletions (state, payload) {
-      // Filter weekly tasks only (after)
+    rebootWeeklyTasksCompletions (state) {
+      // Filter weekly tasks only
       for (let value of Object.values(state)) {
+        console.log(value)
+
         const newCompletionArray = []
         value.completion.forEach((v, i) => {
           newCompletionArray.push(0)

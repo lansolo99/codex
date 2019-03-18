@@ -6,11 +6,6 @@
         <v-flex grow self-align center>
           <h1 class="black--text">Profile</h1>
         </v-flex>
-        <v-flex shrink>
-          <v-btn fab small dark class="colorGreen mr-0" @click="handleEditProfile">
-            <v-icon class="icon icon-edit"></v-icon>
-          </v-btn>
-        </v-flex>
       </v-layout>
       <!-- Form -->
       <ProfileForm/>
@@ -161,6 +156,7 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
+    // Prevent guest to access profile page
     if (store.state.utility.authUserID && store.state.utility.authUserID !== 'guest') {
       next()
     } else {

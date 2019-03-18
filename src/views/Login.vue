@@ -103,7 +103,7 @@
                 <v-form>
                   <v-text-field
                     class="pt-1 mt-3"
-                    autocomplete="username"
+                    autocomplete="email"
                     color="secondary"
                     label="Email"
                     type="email"
@@ -113,7 +113,7 @@
                     <v-text-field
                       :type="formComponents.passwordType"
                       class="pt-1 mt-3"
-                      autocomplete="current-password"
+                      autocomplete="password"
                       color="secondary"
                       label="Password"
                       autocorrect="off"
@@ -471,7 +471,6 @@ export default {
       .ref('users')
       .once('value', snapshot => {
         if (snapshot.exists()) {
-          console.log(snapshot.val())
           this.allUsersList = snapshot.val()
         }
       }).then(user => {

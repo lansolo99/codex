@@ -10,9 +10,31 @@
             <v-card class="secondary pa-3">
               <v-layout row wrap>
                 <v-flex xs-12 text-xs-center>
-                  <v-avatar size="80px" color="rgba(0, 0, 0, 0.4)">
+                  <v-avatar size="110px" color="rgba(0, 0, 0, 0.4)">
                     <img
-                      :src="require(`@/assets/images/avatar/${this.userData.avatarDefault}.svg`)"
+                      v-if="profileDatas.avatarImage === ''"
+                      :src="require(`@/assets/images/avatar/${this.profileDatas.avatarDefault}.svg`)"
+                    >
+                    <img v-else :src="profileDatas.avatarImage">
+                    <v-btn fab small dark right class="colorGreen mr-0" @click="handleChangeAvatar">
+                      <v-icon class="icon icon-edit"></v-icon>
+                    </v-btn>
+                    <v-btn
+                      fab
+                      small
+                      dark
+                      right
+                      class="reset colorRed mr-0"
+                      @click="handleResetAvatar"
+                    >
+                      <v-icon class="icon icon-edit"></v-icon>
+                    </v-btn>
+                    <input
+                      type="file"
+                      style="display: none"
+                      ref="fileInput"
+                      accept="image/*"
+                      @change="onFilePicked"
                     >
                   </v-avatar>
                 </v-flex>
@@ -25,11 +47,8 @@
                 class="red--text"
                 label="Pseudo"
                 readonly
-                v-model="userData.pseudo"
+                v-model="profileDatas.pseudo"
                 required
-                :error-messages="pseudoErrors"
-                @input="$v.userData.pseudo.$touch()"
-                @blur="$v.userData.pseudo.$touch()"
               ></v-text-field>
               <v-text-field
                 class="pt-1"
@@ -37,80 +56,8 @@
                 color="secondary"
                 label="Email"
                 readonly
-                v-model="userData.email"
+                v-model="profileDatas.email"
                 required
-              ></v-text-field>
-              <div v-if="editing" class="fieldset fieldset--password">
-                <v-text-field
-                  :type="formComponents.passwordType"
-                  class="pt-1"
-                  color="secondary"
-                  label="Password"
-                  readonly
-                  v-model.trim="userData.password"
-                ></v-text-field>
-                <v-icon
-                  @click="togglePasswordVisibility('password')"
-                  :class="['icon', formComponents.iconShowPassword, 'customIcon']"
-                ></v-icon>
-              </div>
-            </v-card>
-          </div>
-
-          <div class="fieldset fieldset--informations">
-            <h6 class="subheader subheader--first my-3 black--text">Informations</h6>
-            <v-card class="pt-4 pl-3 pr-3 pb-0">
-              <v-select
-                :disabled="!editing"
-                class="pt-1"
-                color="secondary"
-                :items="formComponents.gender"
-                label="Gender"
-                v-model="userData.gender"
-                @change="genderChange()"
-              ></v-select>
-              <v-select
-                class="pt-1"
-                :disabled="!editing"
-                color="secondary"
-                :items="formComponents.maritalStatus"
-                label="Marital status"
-                v-model="userData.maritalStatus"
-              ></v-select>
-              <v-slider
-                :readonly="!editing"
-                class="pt-3 px-1"
-                label="Age"
-                :value="userData.age"
-                v-model="userData.age"
-                thumb-color="colorGreen"
-                thumb-size="35"
-                thumb-label="always"
-                color="colorGreen"
-                min="10"
-                max="122"
-              ></v-slider>
-              <v-text-field
-                :disabled="!editing"
-                class="pt-1"
-                color="secondary"
-                label="City"
-                v-model.trim="userData.city"
-              ></v-text-field>
-              <v-select
-                class="pt-1"
-                :disabled="!editing"
-                color="secondary"
-                :items="formComponents.countries"
-                label="Country"
-                v-model="userData.country"
-              ></v-select>
-              <v-text-field
-                :disabled="!editing"
-                class="pt-1"
-                color="secondary"
-                label="Occupation"
-                v-model.trim="userData.occupation"
               ></v-text-field>
             </v-card>
           </div>
@@ -133,6 +80,7 @@ export default {
     return {
       editing: false,
       formComponents: {
+        avatarImageRaw: null,
         passwordType: 'password',
         iconShowPassword: 'icon-eye',
         repeatPassword: '',
@@ -149,14 +97,15 @@ export default {
           'widowed'
         ],
         countries: []
-      }
+      },
+      profileDatas: {}
     }
   },
   mixins: [validationMixin],
   validations: {
     formComponents: {
     },
-    userData: {
+    profileDatas: {
       pseudo: { required }
     }
   },
@@ -166,28 +115,32 @@ export default {
       utility: state => state.utility
     }),
     ...mapGetters({
-      userData: 'profile/getProfileData',
       getCountries: 'utility/getCountries'
     }),
     pseudoErrors () {
       const errors = []
-      if (!this.$v.userData.pseudo.$dirty) return errors
-      !this.$v.userData.pseudo.required && errors.push('Pseudo is required')
+      if (!this.$v.profileDatas.pseudo.$dirty) return errors
+      !this.$v.profileDatas.pseudo.required && errors.push('Pseudo is required')
       return errors
     },
     emailErrors () {
       const errors = []
-      if (!this.$v.userData.email.$dirty) return errors
-      !this.$v.userData.email.email && errors.push('Must be a valid e-mail')
-      !this.$v.userData.email.required && errors.push('Email is required')
+      if (!this.$v.profileDatas.email.$dirty) return errors
+      !this.$v.profileDatas.email.email && errors.push('Must be a valid e-mail')
+      !this.$v.profileDatas.email.required && errors.push('Email is required')
       return errors
     },
-    passwordErrors () {
-      const errors = []
-      if (!this.$v.userData.password.$dirty) return errors
-      !this.$v.userData.password.required && errors.push('Password is required')
-      !this.$v.userData.password.minLength && errors.push(`Password must have at least ${this.$v.userData.password.$params.minLength.min} letters.`)
-      return errors
+    profileDatasChange: function () {
+      return this.profileDatas
+    }
+  },
+  watch: {
+    profileDatasChange: {
+      handler (val, oldVal) {
+        // console.log('profileDatasChange')
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -199,41 +152,50 @@ export default {
       this.formComponents.passwordType === 'password' ? this.formComponents.passwordType = 'clear' : this.formComponents.passwordType = 'password'
       this.formComponents.iconShowPassword === 'icon-eye' ? this.formComponents.iconShowPassword = 'icon-eye_hidden' : this.formComponents.iconShowPassword = 'icon-eye'
     },
-    genderChange () {
-      this.userData.avatarDefault = 'woman'
-      setTimeout(() => {
-        if (this.userData.gender === 'Undefined' || this.userData.gender === '' || this.userData.gender === 'Male') {
-          this.userData.avatarDefault = 'man'
-        } else {
-          this.userData.avatarDefault = 'woman'
-        }
-      }, 100)
-    },
     handleEditProfile () {
       this.toggleProfileDialog(true)
     },
     saveProfile () {
-      this.$v.userData.$touch()
-      if (this.$v.userData.$invalid) {
-        // Throw form errors
-        console.log('invalid form')
-      } else {
-        // Validation passed
-        console.log('valid form')
-        console.log('avatarDefault = ' + this.userData.avatarDefault)
-
-        const userData = JSON.parse(JSON.stringify(this.userData))
-        this.updateProfile(userData).then(() => {
-          EventBus.$emit('updateFirebase')
-        })
-        // Everything is done :
-        EventBus.$emit('editProfile', false)
-        this.toggleProfileDialog(false)
+      console.log('valid form')
+      const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+      console.log(profileDatas)
+      this.updateProfile(profileDatas).then(() => {
+        EventBus.$emit('updateFirebase')
+      })
+    },
+    handleChangeAvatar () {
+      this.$refs.fileInput.click()
+      console.log('handleChangeAvatar')
+    },
+    handleResetAvatar () {
+      console.log('handleResetAvatar')
+      this.profileDatas.avatarImage = ''
+      this.saveProfile()
+    },
+    onFilePicked (event) {
+      const files = event.target.files
+      let filename = files[0].name
+      // Prevent dots in filename
+      if (filename.indexOf('.') <= 0) {
+        return alert('Please add a valid file!')
       }
+      // Convert file to base 64 string
+      const fileReader = new FileReader()
+      fileReader.readAsDataURL(files[0])
+      fileReader.addEventListener('load', () => {
+        this.profileDatas.avatarImage = fileReader.result
+        this.saveProfile()
+      })
+      // Temporary store raw file
+      this.formComponents.avatarImageRaw = files[0]
     }
   },
   created () {
+    // Popupate getCountries
     this.formComponents.countries = this.getCountries
+    // Populate local datas
+    const retrievedProfile = JSON.parse(JSON.stringify(this.$store.state.profile))
+    this.profileDatas = retrievedProfile
 
     EventBus.$on('editProfile', (status) => {
       this.editing = status
@@ -257,8 +219,12 @@ export default {
   }
   .v-avatar {
     .v-btn--right {
+      position: absolute;
       right: -9px;
-      bottom: -9px;
+      bottom: -5px;
+      &.reset {
+        right: 20px;
+      }
     }
   }
   .fieldset {
