@@ -120,10 +120,12 @@
                       autocapitalize="none"
                       v-model.trim="password"
                     ></v-text-field>
-                    <v-icon
-                      @click="togglePasswordVisibility('password')"
-                      :class="['icon', formComponents.iconShowPassword, 'customIcon']"
-                    ></v-icon>
+                    <div class="customIcon">
+                      <v-icon
+                        @click="togglePasswordVisibility('password')"
+                        :class="['icon', formComponents.iconShowPassword]"
+                      ></v-icon>
+                    </div>
                   </div>
                   <div class="signInCatchError">{{signInCatchError}}</div>
                   <v-btn
@@ -462,8 +464,10 @@ export default {
     }
   },
   mounted () {
-    // Trigger logo animation
-    setTimeout(() => { this.play() }, 500)
+    this.$nextTick(function () {
+      // Trigger logo animation
+      setTimeout(() => { this.play() }, 500)
+    })
   },
   created () {
     // Collect all users pseudo

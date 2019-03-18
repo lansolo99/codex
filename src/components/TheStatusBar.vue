@@ -14,21 +14,24 @@
     <div class="theStatusBar__btn-detail">...</div>
     <v-dialog v-model="guestDialog" max-width="350" content-class="standard-dialog guest">
       <v-card>
-        <v-card-title class="title red white--text pt-3 pb-3" primary-title>Guest mode!
+        <v-card-title class="title red white--text pt-3 pb-3" primary-title>Test mode!
           <v-icon
             right
             class="white--text icon icon-delete close"
             @click="handleGuestDialog ('continue')"
           ></v-icon>
         </v-card-title>
-        <v-card-text>You are testing Weekx as a guest. Accordingly, there is not records tracking. Please sign-up or use a sign-in method to do so.</v-card-text>
+        <v-card-text>
+          <p>You are testing Weekx as a guest. Therefore, there is not records tracking.</p>
+          <p class="mb-0">Please log in or register from the launch screen.</p>
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             color="red darken-1"
             flat="flat"
             @click="handleGuestDialog('backToLogin')"
-          >Back to the login screen</v-btn>
+          >Back to the launch screen</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -98,6 +101,7 @@ export default {
   &.fixedConf {
     position: fixed;
     top: 0;
+    z-index: 200;
   }
 
   background: $color-golden-darker;
