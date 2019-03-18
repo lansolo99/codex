@@ -38,13 +38,11 @@
         </v-dialog>
       </v-layout>
     </v-container>
-    <ProfileEditor/>
   </div>
 </template>
 
 <script>
 import ProfileForm from '@/components/ProfileForm'
-import ProfileEditor from '@/components/ProfileEditor'
 import { mapState, mapActions, mapMutations } from 'vuex'
 import { EventBus } from '@/bus'
 import store from '@/store/store'
@@ -53,8 +51,7 @@ import firebase from 'firebase'
 export default {
   name: 'Profile',
   components: {
-    ProfileForm,
-    ProfileEditor
+    ProfileForm
   },
   data () {
     return {

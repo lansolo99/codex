@@ -1,7 +1,11 @@
 <template>
   <div :class="['theStatusBar', statusBarDisplayConf]" @click="statusBarRedirection()">
     <v-avatar class="theStatusBar__avatar" size="23px">
-      <img :src="require(`@/assets/images/avatar/${this.profile.avatarDefault}.svg`)">
+      <img
+        v-if="profile.avatarImage === ''"
+        :src="require(`@/assets/images/avatar/${this.profile.avatarDefault}.svg`)"
+      >
+      <img v-else :src="profile.avatarImage">
     </v-avatar>
     <span class="theStatusBar__text-status">
       Connected as

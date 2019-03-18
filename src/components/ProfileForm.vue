@@ -17,17 +17,7 @@
                     >
                     <img v-else :src="profileDatas.avatarImage">
                     <v-btn fab small dark right class="colorGreen mr-0" @click="handleChangeAvatar">
-                      <v-icon class="icon icon-edit"></v-icon>
-                    </v-btn>
-                    <v-btn
-                      fab
-                      small
-                      dark
-                      right
-                      class="reset colorRed mr-0"
-                      @click="handleResetAvatar"
-                    >
-                      <v-icon class="icon icon-edit"></v-icon>
+                      <v-icon class="icon icon-camera"></v-icon>
                     </v-btn>
                     <input
                       type="file"
@@ -36,6 +26,16 @@
                       accept="image/*"
                       @change="onFilePicked"
                     >
+                    <v-btn
+                      fab
+                      small
+                      dark
+                      right
+                      class="reset colorRed mr-0"
+                      @click="handleResetAvatar"
+                    >
+                      <v-icon class="icon icon-reset"></v-icon>
+                    </v-btn>
                   </v-avatar>
                 </v-flex>
               </v-layout>
@@ -72,6 +72,7 @@ import { EventBus } from '@/bus'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
+import firebase from 'firebase'
 
 export default {
   comments: true,
@@ -116,32 +117,7 @@ export default {
     }),
     ...mapGetters({
       getCountries: 'utility/getCountries'
-    }),
-    pseudoErrors () {
-      const errors = []
-      if (!this.$v.profileDatas.pseudo.$dirty) return errors
-      !this.$v.profileDatas.pseudo.required && errors.push('Pseudo is required')
-      return errors
-    },
-    emailErrors () {
-      const errors = []
-      if (!this.$v.profileDatas.email.$dirty) return errors
-      !this.$v.profileDatas.email.email && errors.push('Must be a valid e-mail')
-      !this.$v.profileDatas.email.required && errors.push('Email is required')
-      return errors
-    },
-    profileDatasChange: function () {
-      return this.profileDatas
-    }
-  },
-  watch: {
-    profileDatasChange: {
-      handler (val, oldVal) {
-        // console.log('profileDatasChange')
-      },
-      deep: true,
-      immediate: true
-    }
+    })
   },
   methods: {
     ...mapActions({
@@ -156,12 +132,34 @@ export default {
       this.toggleProfileDialog(true)
     },
     saveProfile () {
-      console.log('valid form')
-      const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
-      console.log(profileDatas)
-      this.updateProfile(profileDatas).then(() => {
-        EventBus.$emit('updateFirebase')
-      })
+      // Upload/update new avatar image
+      const avatarImageRaw = this.formComponents.avatarImageRaw
+
+      if (avatarImageRaw) {
+        firebase.storage().ref('users').child(this.utility.authUserID)
+          .put(avatarImageRaw)
+          .then(url => {
+            firebase.storage().ref('users').child(this.utility.authUserID).getDownloadURL()
+              .then(url => {
+                // Update profile store
+                this.profileDatas.avatarImage = url
+                const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+
+                this.updateProfile(profileDatas).then(() => {
+                  // Update firebase
+                  EventBus.$emit('updateFirebase')
+                })
+              })
+          })
+      } else {
+        // Update profile store
+        const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+
+        this.updateProfile(profileDatas).then(() => {
+        // Update firebase
+          EventBus.$emit('updateFirebase')
+        })
+      }
     },
     handleChangeAvatar () {
       this.$refs.fileInput.click()
@@ -170,7 +168,19 @@ export default {
     handleResetAvatar () {
       console.log('handleResetAvatar')
       this.profileDatas.avatarImage = ''
-      this.saveProfile()
+      this.formComponents.avatarImageRaw = null
+      // Delete image file if it exists
+      firebase.storage().ref('users').child(this.utility.authUserID).getDownloadURL()
+        .then(res => {
+          console.log(res)
+          firebase.storage().ref('users').child(this.utility.authUserID)
+            .delete()
+            .then(() => {
+              this.saveProfile()
+            })
+        }).catch(res => {
+          console.log(res.message)
+        })
     },
     onFilePicked (event) {
       const files = event.target.files
@@ -183,14 +193,19 @@ export default {
       const fileReader = new FileReader()
       fileReader.readAsDataURL(files[0])
       fileReader.addEventListener('load', () => {
+        // Populate local data with Base 64 string
         this.profileDatas.avatarImage = fileReader.result
+        // Temporary store raw image file
+        this.formComponents.avatarImageRaw = files[0]
+        // Save profile
         this.saveProfile()
       })
-      // Temporary store raw file
-      this.formComponents.avatarImageRaw = files[0]
     }
   },
   created () {
+    // Reset local datas
+    this.avatarImageRaw = null
+
     // Popupate getCountries
     this.formComponents.countries = this.getCountries
     // Populate local datas
@@ -199,9 +214,6 @@ export default {
 
     EventBus.$on('editProfile', (status) => {
       this.editing = status
-    })
-    EventBus.$on('saveProfile', () => {
-      this.saveProfile()
     })
   }
 
@@ -220,10 +232,10 @@ export default {
   .v-avatar {
     .v-btn--right {
       position: absolute;
-      right: -9px;
-      bottom: -5px;
+      right: -18px;
+      bottom: 36px;
       &.reset {
-        right: 20px;
+        bottom: -5px;
       }
     }
   }

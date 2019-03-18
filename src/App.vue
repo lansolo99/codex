@@ -385,8 +385,9 @@ export default {
     })
 
     // Firebase Updates
-    EventBus.$on('updateFirebase', () => {
+    EventBus.$on('updateFirebase', (avatarImageRaw) => {
       console.log('updateFirebase')
+
       firebase.database()
         .ref('users')
         .child(this.utility.authUserID)

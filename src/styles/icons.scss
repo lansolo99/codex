@@ -40,48 +40,56 @@
 			$char: "\E003";
 		}
 
-		 @if $filename==check {
+		 @if $filename==camera {
 			$char: "\E004";
 		}
 
-		 @if $filename==checkbox_filled {
+		 @if $filename==check {
 			$char: "\E005";
 		}
 
-		 @if $filename==checkbox_off {
+		 @if $filename==checkbox_filled {
 			$char: "\E006";
 		}
 
-		 @if $filename==checkbox_on {
+		 @if $filename==checkbox_off {
 			$char: "\E007";
 		}
 
-		 @if $filename==delete {
+		 @if $filename==checkbox_on {
 			$char: "\E008";
 		}
 
-		 @if $filename==edit {
+		 @if $filename==delete {
 			$char: "\E009";
 		}
 
-		 @if $filename==eye {
+		 @if $filename==edit {
 			$char: "\E00A";
 		}
 
-		 @if $filename==eye_hidden {
+		 @if $filename==eye {
 			$char: "\E00B";
 		}
 
-		 @if $filename==profile {
+		 @if $filename==eye_hidden {
 			$char: "\E00C";
 		}
 
-		 @if $filename==question_mark {
+		 @if $filename==profile {
 			$char: "\E00D";
 		}
 
-		 @if $filename==stats {
+		 @if $filename==question_mark {
 			$char: "\E00E";
+		}
+
+		 @if $filename==reset {
+			$char: "\E00F";
+		}
+
+		 @if $filename==stats {
+			$char: "\E010";
 		}
 
 		@return $char;
@@ -111,6 +119,10 @@
 
 	.icon-arrow_return {
 		@include icon(arrow_return);
+	}
+
+	.icon-camera {
+		@include icon(camera);
 	}
 
 	.icon-check {
@@ -151,6 +163,10 @@
 
 	.icon-question_mark {
 		@include icon(question_mark);
+	}
+
+	.icon-reset {
+		@include icon(reset);
 	}
 
 	.icon-stats {
