@@ -205,6 +205,17 @@
                     <v-btn to="/tasks" block large @click="signInAsGuest">Test without account</v-btn>
                   </v-flex>
                 </v-layout>
+                <v-layout justify-center class="mt-2" :style="{'display': installBtn}">
+                  <v-flex xs12 class="text-xs-center">
+                    <v-btn
+                      to="/tasks"
+                      large
+                      center
+                      @click="installer()"
+                      class="black white--text mt-4"
+                    >Add to homescreen</v-btn>
+                  </v-flex>
+                </v-layout>
 
                 <v-layout v-if="authUser" class="mt-3">
                   <v-flex xs12>
@@ -259,6 +270,8 @@ export default {
       signInCatchError: '',
       resetPasswordCatchError: '',
       resetPasswordResolved: '',
+      installBtn: 'none',
+      installer: undefined,
       formComponents: {
         passwordType: 'password',
         iconShowPassword: 'icon-eye'
@@ -470,6 +483,27 @@ export default {
     })
   },
   created () {
+    // Install to homescreen feature
+    let installPrompt
+
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault()
+      installPrompt = e
+      this.installBtn = 'block'
+    })
+
+    this.installer = () => {
+      this.installBtn = 'none'
+      installPrompt.prompt()
+      installPrompt.userChoice.then(result => {
+        if (result.outcome === 'accepted') {
+          console.log('Install accepted!')
+        } else {
+          console.log('Install denied!')
+        }
+      })
+    }
+
     // Collect all users pseudo
     firebase.database()
       .ref('users')

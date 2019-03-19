@@ -14,7 +14,12 @@ module.exports = {
   pwa: {
     name: 'Weekx',
     themeColor: '#FFBA4C',
-    msTileColor: '#FFBA4C'
+    msTileColor: '#FFBA4C',
+    // Workbox plugin
+    workboxPluginMode: 'InjectManifest',
+    workboxOptions: {
+      swSrc: 'src/service-worker.js'
+    }
   },
   baseUrl: '/',
   configureWebpack: {
