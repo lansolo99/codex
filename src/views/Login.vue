@@ -505,12 +505,12 @@ export default {
       .ref('users')
       .once('value', snapshot => {
         if (snapshot.exists()) {
-          this.allUsersList = snapshot.val()
+          this.allUsersPseudos = Object.values(snapshot.val()).map(v => {
+            return v.profile.pseudo
+          })
+        } else {
+          this.allUsersPseudos = []
         }
-      }).then(user => {
-        this.allUsersPseudos = Object.values(user.val()).map(v => {
-          return v.profile.pseudo
-        })
       })
 
     // Auth state observer
