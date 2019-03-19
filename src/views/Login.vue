@@ -577,6 +577,30 @@ export default {
 </script>
 
 <style lang="scss">
+html.webp {
+  .login {
+    background-image: url(../assets/images/theme/desktop.jpg);
+    background-image: -webkit-image-set(
+      url(../assets/images/theme/desktop.webp) 1x,
+      url(../assets/images/theme/desktop@2x.webp) 2x
+    );
+
+    @include responsive(tablet) {
+      background-image: url(../assets/images/theme/tablet.jpg);
+      background-image: -webkit-image-set(
+        url(../assets/images/theme/tablet.webp) 1x,
+        url(../assets/images/theme/tablet@2x.webp) 2x
+      );
+    }
+    @include responsive(mobile) {
+      background-image: url(../assets/images/theme/mobile.jpg);
+      background-image: -webkit-image-set(
+        url(../assets/images/theme/mobile.webp) 1x,
+        url(../assets/images/theme/mobile@2x.webp) 2x
+      );
+    }
+  }
+}
 .login {
   height: 100%;
 
