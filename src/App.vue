@@ -65,6 +65,7 @@ export default {
           this.toolbarConf = 'toolbarNone'
         }
         if (this.$route.path === '/') {
+          // Start page
           this.view = 'login'
         } else {
           this.view = 'inApp'
@@ -340,11 +341,66 @@ export default {
 
     // Initial feed
     EventBus.$on('initFirebase', () => {
-      firebase.database()
-        .ref('users')
-        .child(this.utility.authUserID)
-        .once('value', snapshot => {
-          if (snapshot.exists()) {
+      console.log('initFirebase')
+
+      // Firebase offline capabilities test
+
+      // Firebase State connection
+      // var connectedRef = firebase.database().ref('.info/connected')
+      // connectedRef.on('value', function (snap) {
+      //   if (snap.val() === true) {
+      //     alert('connected')
+      //   } else {
+      //     alert('not connected')
+      //   }
+      // })
+
+      // Firestore tryout
+      // Set data
+      firebase.firestore().collection('users').doc(this.utility.authUserID).set({
+        profile: this.profile
+      })
+        .then(function (docRef) {
+          console.log('Document written with ID: ', docRef)
+        })
+        .catch(function (error) {
+          console.error('Error adding document: ', error)
+        })
+      // Get data (profile)
+      // firebase.firestore().collection('users').doc(this.utility.authUserID).get()
+      //   .then(function (doc) {
+      //     if (doc.exists) {
+      //       // User exists
+      //       console.log('firestore User exists')
+      //       // const datas = doc.data()
+      //       console.log(doc.data())
+      //     } else {
+      //       // doc.data() will be undefined in this case
+      //       console.log('No firestore user')
+      //     }
+      //   })
+
+      // firebase.firestore()
+      //   .collection('users')
+      //   .doc(this.utility.authUserID)
+      //   .get()
+      //   .then(doc => {
+      //     console.log(doc.data().profile)
+      //   })
+      // End Firestore tryout
+
+      // firebase.database()
+      //   .ref('users')
+      //   .child(this.utility.authUserID)
+      //   .once('value', snapshot => {
+      //     if (snapshot.exists()) {
+
+      firebase.firestore()
+        .collection('users')
+        .doc(this.utility.authUserID)
+        .get()
+        .then(doc => {
+          if (doc.exists) {
             // User exists
             console.log('User exists')
 
@@ -360,6 +416,9 @@ export default {
                     this.tasksReady()
                     this.globalUpdate()
                   })
+              }).catch(res => {
+                console.log('fetchTasksDatas echec')
+                console.log(res)
               })
           } else {
             // Create new user

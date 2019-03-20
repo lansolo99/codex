@@ -257,7 +257,7 @@ export default {
       animationSpeed: 1,
       authUser: null,
       pseudo: null,
-      allUsersPseudos: null,
+      allUsersPseudos: [],
       email: '',
       password: '',
       loginDisplay: 'allButtons',
@@ -479,7 +479,7 @@ export default {
     })
   },
   created () {
-    // Install to homescreen feature
+    // Install PWA homescreen feature
     let installPrompt
 
     window.addEventListener('beforeinstallprompt', e => {
@@ -501,17 +501,43 @@ export default {
     }
 
     // Collect all users pseudo
-    firebase.database()
-      .ref('users')
-      .once('value', snapshot => {
-        if (snapshot.exists()) {
-          this.allUsersPseudos = Object.values(snapshot.val()).map(v => {
-            return v.profile.pseudo
+    // firebase.firestore().collection('users').get()
+    //   .then(function (doc) {
+    //     if (doc.exists) {
+    //       console.log('users collection exists')
+    //     }
+    //   })
+
+    firebase.firestore()
+      .collection('users')
+      .get()
+      .then(users => {
+        if (users.docs.length > 0) {
+          console.log('some users')
+          users.forEach(doc => {
+            // console.log(doc.data().profile.pseudo)
+
+            this.allUsersPseudos.push(doc.data().profile.pseudo)
           })
         } else {
+          console.log('no users')
           this.allUsersPseudos = []
         }
       })
+
+    // firebase.database()
+    //   .ref('users')
+    //   .once('value', snapshot => {
+    //     if (snapshot.exists()) {
+    //       console.log(snapshot.val())
+
+    //       this.allUsersPseudos = Object.values(snapshot.val()).map(v => {
+    //         return v.profile.pseudo
+    //       })
+    //     } else {
+    //       this.allUsersPseudos = []
+    //     }
+    //   })
 
     // Auth state observer
     firebase.auth().onAuthStateChanged(user => {

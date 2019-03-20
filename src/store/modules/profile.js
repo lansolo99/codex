@@ -36,6 +36,8 @@ export default {
           .child(authUserID)
           .child('profile')
           .once('value', snapshot => {
+            console.log(snapshot.val())
+
             commit('updateProfile', snapshot.val())
             resolve()
           })
