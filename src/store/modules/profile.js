@@ -31,14 +31,12 @@ export default {
       commit
     }, authUserID) {
       return new Promise((resolve, reject) => {
-        firebase.database()
-          .ref('users')
-          .child(authUserID)
-          .child('profile')
-          .once('value', snapshot => {
-            console.log(snapshot.val())
-
-            commit('updateProfile', snapshot.val())
+        firebase.firestore()
+          .collection('users')
+          .doc(authUserID)
+          .get()
+          .then(doc => {
+            commit('updateProfile', doc.data().profile)
             resolve()
           })
       })

@@ -575,7 +575,6 @@ export default {
     handleDelete (taskId) {
       this.deleteTask(taskId).then(() => {
         return this.utility.authUserID === 'guest' ? '' : EventBus.$emit('updateFirebase')
-        // EventBus.$emit('updateFirebase')
       })
       this.dialogDeleteTask = false
       this.toggleTaskDialog(false)

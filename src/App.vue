@@ -355,46 +355,6 @@ export default {
       //   }
       // })
 
-      // Firestore tryout
-      // Set data
-      firebase.firestore().collection('users').doc(this.utility.authUserID).set({
-        profile: this.profile
-      })
-        .then(function (docRef) {
-          console.log('Document written with ID: ', docRef)
-        })
-        .catch(function (error) {
-          console.error('Error adding document: ', error)
-        })
-      // Get data (profile)
-      // firebase.firestore().collection('users').doc(this.utility.authUserID).get()
-      //   .then(function (doc) {
-      //     if (doc.exists) {
-      //       // User exists
-      //       console.log('firestore User exists')
-      //       // const datas = doc.data()
-      //       console.log(doc.data())
-      //     } else {
-      //       // doc.data() will be undefined in this case
-      //       console.log('No firestore user')
-      //     }
-      //   })
-
-      // firebase.firestore()
-      //   .collection('users')
-      //   .doc(this.utility.authUserID)
-      //   .get()
-      //   .then(doc => {
-      //     console.log(doc.data().profile)
-      //   })
-      // End Firestore tryout
-
-      // firebase.database()
-      //   .ref('users')
-      //   .child(this.utility.authUserID)
-      //   .once('value', snapshot => {
-      //     if (snapshot.exists()) {
-
       firebase.firestore()
         .collection('users')
         .doc(this.utility.authUserID)
@@ -429,15 +389,29 @@ export default {
 
             this.updateProfile(this.userData).then(() => {
               console.log('profileUpdated')
+
               // Push initial profile object
-              firebase.database().ref('users').child(this.utility.authUserID)
+              firebase.firestore().collection('users').doc(this.utility.authUserID)
                 .set({ profile: this.profile })
-                .then(user => {
+                .then(() => {
                   console.log('early profile node basically created')
                   this.appReady()
                   this.tasksReady()
                   this.globalUpdate()
                 })
+                .catch(error => {
+                  console.error('Error adding document: ', error)
+                })
+
+              // Push initial profile object
+              // firebase.database().ref('users').child(this.utility.authUserID)
+              //   .set({ profile: this.profile })
+              //   .then(user => {
+              //     console.log('early profile node basically created')
+              //     this.appReady()
+              //     this.tasksReady()
+              //     this.globalUpdate()
+              //   })
             })
           }
         })
@@ -447,9 +421,7 @@ export default {
     EventBus.$on('updateFirebase', (avatarImageRaw) => {
       console.log('updateFirebase')
 
-      firebase.database()
-        .ref('users')
-        .child(this.utility.authUserID)
+      firebase.firestore().collection('users').doc(this.utility.authUserID)
         .set({ profile: this.profile, tasks: this.tasks })
         .then(() => {
           console.log('CYCLE DONE ! : firebase profile + tasks updated')
@@ -458,6 +430,18 @@ export default {
             EventBus.$emit('signOut')
           }
         })
+
+      // firebase.database()
+      //   .ref('users')
+      //   .child(this.utility.authUserID)
+      //   .set({ profile: this.profile, tasks: this.tasks })
+      //   .then(() => {
+      //     console.log('CYCLE DONE ! : firebase profile + tasks updated')
+      //     if (this.utility.signUpProcess) {
+      //       console.log('signup process = true, signout')
+      //       EventBus.$emit('signOut')
+      //     }
+      //   })
     })
   }
 }

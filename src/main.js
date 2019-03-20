@@ -25,13 +25,6 @@ const config = {
 }
 firebase.initializeApp(config)
 
-Vue.mixin({
-  created () {
-    // eslint-disable-next-line
-    const firebaseUsers = firebase.firestore().collection('users')
-  }
-})
-
 firebase.firestore().enablePersistence()
   .catch(function (err) {
     if (err.code === 'failed-precondition') {

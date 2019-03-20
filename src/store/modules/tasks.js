@@ -15,32 +15,34 @@ export default {
       commit
     }, authUserID) {
       return new Promise((resolve, reject) => {
-        firebase
-          .database()
-          .ref('users')
-          .child(authUserID)
-          .child('tasks')
-          .once('value', snapshot => {
-            if (snapshot.exists()) {
-              // recreate empty nodes needed
-              const tasks = snapshot.val()
-
-              Object.entries(snapshot.val()).forEach((pair, index) => {
+        firebase.firestore()
+          .collection('users')
+          .doc(authUserID)
+          .get()
+          .then(doc => {
+            if (doc.data().tasks) {
+              console.log(doc.data().tasks)
+              const updatedTasks = doc.data().tasks
+              Object.entries(doc.data().tasks).forEach((pair, index) => {
                 // Subtasks
                 if (!pair[1].hasOwnProperty('subtasks')) {
-                  tasks[pair[0]]['subtasks'] = []
+                  updatedTasks[pair[0]]['subtasks'] = []
                 }
+
                 // Specific days
                 if (!pair[1]['schedule'].hasOwnProperty('specificDays')) {
-                  tasks[pair[0]]['schedule']['specificDays'] = []
+                  updatedTasks[pair[0]]['schedule']['specificDays'] = []
                 }
 
                 // Completion
                 if (!pair[1].hasOwnProperty('completion')) {
-                  tasks[pair[0]]['completion'] = []
+                  updatedTasks[pair[0]]['completion'] = []
                 }
               })
-              commit('fetchTasksDatas', tasks)
+              console.log(updatedTasks)
+              commit('fetchTasksDatas', updatedTasks)
+            } else {
+              console.log('user has no tasks')
             }
             resolve()
           })

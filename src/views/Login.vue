@@ -501,13 +501,6 @@ export default {
     }
 
     // Collect all users pseudo
-    // firebase.firestore().collection('users').get()
-    //   .then(function (doc) {
-    //     if (doc.exists) {
-    //       console.log('users collection exists')
-    //     }
-    //   })
-
     firebase.firestore()
       .collection('users')
       .get()
@@ -524,20 +517,6 @@ export default {
           this.allUsersPseudos = []
         }
       })
-
-    // firebase.database()
-    //   .ref('users')
-    //   .once('value', snapshot => {
-    //     if (snapshot.exists()) {
-    //       console.log(snapshot.val())
-
-    //       this.allUsersPseudos = Object.values(snapshot.val()).map(v => {
-    //         return v.profile.pseudo
-    //       })
-    //     } else {
-    //       this.allUsersPseudos = []
-    //     }
-    //   })
 
     // Auth state observer
     firebase.auth().onAuthStateChanged(user => {

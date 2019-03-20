@@ -126,14 +126,11 @@ export default {
       // Delete current user
       const deleteCurrentUser = () => {
         console.log('deleteCurrentUser')
-        // Firebase delete user's infos
-        firebase.database()
-          .ref('users')
-          .child(this.utility.authUserID)
-          .remove()
+        // Delete user infos
+        firebase.firestore().collection('users').doc(this.utility.authUserID).delete()
           .then(() => {
             console.log('Firebase users infos removed')
-            // Firebase delete user's account
+            // Delete user account
             user.delete().then(() => {
               // User deleted.
               console.log('User deleted')
