@@ -13,13 +13,11 @@
 
 <script>
 // eslint-disable-next-line
-import { format, getISODay, isToday, isSameDay, isThisWeek, isSameWeek, getISOWeek, getTime, addDays, differenceInCalendarWeeks, differenceInSeconds, endOfToday, endOfMinute } from 'date-fns'
+import { format, getISODay, isSameDay, isSameWeek, getISOWeek, addDays, differenceInCalendarWeeks, differenceInSeconds, endOfToday } from 'date-fns'
 import { getStringFromIsoDay } from '@/utils'
 import { EventBus } from '@/bus'
 import TheNavbar from '@/components/TheNavbar'
 import { mapState, mapGetters, mapActions } from 'vuex'
-// eslint-disable-next-line
-import Vue from 'vue'
 import firebase from './Firebase'
 import AppSpinner from '@/components/AppSpinner.vue'
 

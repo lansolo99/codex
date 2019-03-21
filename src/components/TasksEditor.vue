@@ -457,6 +457,7 @@ export default {
             const openDays = 7 - (this.time.isoDay - 1)
             const daysToCut = this.task.completion.length - openDays
             if (Math.sign(daysToCut) === -1) {
+              // Do nothing
             } else {
               this.task.completion = this.task.completion.slice(daysToCut)
             }

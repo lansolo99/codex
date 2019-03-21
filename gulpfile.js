@@ -2,7 +2,6 @@
 
 var gulp = require('gulp')
 var sass = require('gulp-sass')
-
 var cleanCSS = require('gulp-clean-css')
 var del = require('del')
 var git = require('gulp-git')
@@ -15,7 +14,6 @@ var stripCssComments = require('gulp-strip-css-comments')
 var removeHtmlComments = require('gulp-remove-html-comments')
 var tinyPng = require('gulp-tinypng')
 var useref = require('gulp-useref')
-var cleanCSS = require('gulp-clean-css')
 var uglify = require('gulp-uglify')
 var terser = require('gulp-terser')
 var rename = require('gulp-rename')

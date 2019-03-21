@@ -70,7 +70,7 @@
                   v-if="task.disabled === true"
                 ></v-checkbox>
                 <v-icon class="icon icon-checkbox_off"></v-icon>
-                <v-icon :class="{active: task.checked}" class="icon icon-checkbox_filled"></v-icon>
+                <v-icon :class="{active: subtask.checked}" class="icon icon-checkbox_filled"></v-icon>
               </v-flex>
               <v-flex grow class="pa-1 pt-2 pl-2 pr-3 body-1">
                 <span :class="['name', { completed: subtask.checked } ]">{{subtask.name}}</span>
@@ -105,7 +105,7 @@
 
 <script>
 // eslint-disable-next-line
-import { format, isToday, isSameDay, getTime, getISODay, isThisWeek, addDays } from 'date-fns'
+import { isToday } from 'date-fns'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { EventBus } from '@/bus'
 

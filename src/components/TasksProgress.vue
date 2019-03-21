@@ -30,9 +30,7 @@
 
 <script>
 // eslint-disable-next-line
-import { countObjectProperties, getIsoDayFromString, getStringFromIsoDay } from '@/utils'
-// eslint-disable-next-line
-import { getISODay, isThisWeek, getISOWeek} from 'date-fns'
+import { getIsoDayFromString, getStringFromIsoDay } from '@/utils'
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
