@@ -520,6 +520,22 @@ export default {
         }
       })
 
+    // Firestore offline test
+    firebase.firestore().collection('users')
+      .onSnapshot({ includeMetadataChanges: true }, function (snapshot) {
+        console.log(snapshot)
+
+        snapshot.docChanges().forEach(function (change) {
+          if (change.type === 'added') {
+            console.log('added: ', change.doc.data())
+          }
+
+          const source = snapshot.metadata.fromCache ? 'local cache' : 'server'
+          console.log('Data came from ' + source)
+        })
+      })
+      // End test
+
     // Auth state observer
     firebase.auth().onAuthStateChanged(user => {
       console.log('onAuthStateChanged')

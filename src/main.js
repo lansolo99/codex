@@ -28,7 +28,7 @@ firebase.initializeApp(config)
 firebase.firestore().enablePersistence()
   .catch(function (err) {
     if (err.code === 'failed-precondition') {
-      console.log('persistence error one-tab only')
+      console.log('persistence error : one-tab only')
     } else if (err.code === 'unimplemented') {
       console.log('persistence error non implemented')
     }
