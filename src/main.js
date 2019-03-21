@@ -9,6 +9,8 @@ import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import Vuelidate from 'vuelidate'
 import './registerServiceWorker'
+import VueOffline from 'vue-offline'
+Vue.use(VueOffline)
 require('dotenv').config()
 Vue.use(Vuelidate)
 

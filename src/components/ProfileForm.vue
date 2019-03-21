@@ -63,6 +63,28 @@
           </div>
         </v-form>
       </v-flex>
+      <v-dialog
+        v-model="dialogAvatarChangeNeedNetwork"
+        persistent
+        max-width="350"
+        content-class="standard-dialog"
+      >
+        <v-card>
+          <v-card-title class="title red white--text pt-3 pb-3" primary-title>A problem occured!</v-card-title>
+
+          <v-card-text>You can't make change to your avatar while offline, try again later.</v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn
+              color="red darken-1"
+              flat="flat"
+              @click="dialogAvatarChangeNeedNetwork = false"
+            >Ok</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-layout>
   </v-container>
 </template>
@@ -80,6 +102,7 @@ export default {
   data () {
     return {
       editing: false,
+      dialogAvatarChangeNeedNetwork: false,
       formComponents: {
         avatarImageRaw: null,
         passwordType: 'password',
@@ -136,51 +159,72 @@ export default {
       const avatarImageRaw = this.formComponents.avatarImageRaw
 
       if (avatarImageRaw) {
-        firebase.storage().ref('users').child(this.utility.authUserID)
-          .put(avatarImageRaw)
-          .then(url => {
-            firebase.storage().ref('users').child(this.utility.authUserID).getDownloadURL()
-              .then(url => {
+        if (this.isOnline) {
+          firebase.storage().ref('users').child(this.utility.authUserID)
+            .put(avatarImageRaw)
+            .then(url => {
+              firebase.storage().ref('users').child(this.utility.authUserID).getDownloadURL()
+                .then(url => {
                 // Update profile store
-                this.profileDatas.avatarImage = url
-                const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+                  this.profileDatas.avatarImage = url
+                  const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
 
-                this.updateProfile(profileDatas).then(() => {
+                  this.updateProfile(profileDatas).then(() => {
                   // Update firebase
-                  EventBus.$emit('updateFirebase')
+                    EventBus.$emit('updateFirebase')
+                  })
+                }).catch(res => {
+                  console.log(res.message)
+                  this.dialogAvatarChangeNeedNetwork = true
                 })
-              })
-          })
-      } else {
+            })
+            .catch(res => {
+              console.log(res.message)
+              this.dialogAvatarChangeNeedNetwork = true
+            })
+        } else {
         // Update profile store
-        const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+          const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
 
-        this.updateProfile(profileDatas).then(() => {
-        // Update firebase
-          EventBus.$emit('updateFirebase')
-        })
+          this.updateProfile(profileDatas).then(() => {
+            // Update firebase
+            EventBus.$emit('updateFirebase')
+          })
+        }
       }
     },
     handleChangeAvatar () {
-      this.$refs.fileInput.click()
-      console.log('handleChangeAvatar')
+      if (this.isOnline) {
+        this.$refs.fileInput.click()
+        console.log('handleChangeAvatar')
+      } else {
+        this.dialogAvatarChangeNeedNetwork = true
+      }
     },
     handleResetAvatar () {
       console.log('handleResetAvatar')
       this.profileDatas.avatarImage = ''
       this.formComponents.avatarImageRaw = null
-      // Delete image file if it exists
-      firebase.storage().ref('users').child(this.utility.authUserID).getDownloadURL()
-        .then(res => {
-          console.log(res)
-          firebase.storage().ref('users').child(this.utility.authUserID)
-            .delete()
-            .then(() => {
-              this.saveProfile()
-            })
-        }).catch(res => {
-          console.log(res.message)
-        })
+      if (this.isOnline) {
+        // Delete image file if it exists
+        firebase.storage().ref('users').child(this.utility.authUserID).getDownloadURL()
+          .then(res => {
+            console.log(res)
+            firebase.storage().ref('users').child(this.utility.authUserID)
+              .delete()
+              .then(() => {
+                this.saveProfile()
+              }).catch(error => {
+                console.log(error)
+                this.saveProfile()
+              })
+          }).catch(error => {
+            console.log(error)
+            this.saveProfile()
+          })
+      } else {
+        this.dialogAvatarChangeNeedNetwork = true
+      }
     },
     onFilePicked (event) {
       const files = event.target.files

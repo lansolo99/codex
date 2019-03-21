@@ -21,6 +21,7 @@
     "roboto-fontface": "*",
     "vue": "^2.5.21",
     "vue-apexcharts": "^1.2.8",
+    "vue-offline": "^2.0.6",
     "vue-router": "^3.0.1",
     "vuejs-heatmap": "^1.1.7",
     "vuelidate": "^0.7.4",

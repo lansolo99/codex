@@ -36,6 +36,25 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+
+        <v-dialog
+          v-model="dialogDeleteNeedNetwork"
+          persistent
+          max-width="350"
+          content-class="standard-dialog"
+        >
+          <v-card>
+            <v-card-title class="title red white--text pt-3 pb-3" primary-title>A problem occured!</v-card-title>
+
+            <v-card-text>You can't delete account while offline, try again later.</v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+
+              <v-btn color="red darken-1" flat="flat" @click="dialogDeleteNeedNetwork = false">Ok</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-layout>
     </v-container>
   </div>
@@ -55,7 +74,8 @@ export default {
   },
   data () {
     return {
-      dialogDeleteAccount: false
+      dialogDeleteAccount: false,
+      dialogDeleteNeedNetwork: false
     }
   },
   computed: {
@@ -105,6 +125,8 @@ export default {
           })
           .catch((error) => {
             console.log('reauthenticate user message = ' + error.message)
+            this.dialogDeleteNeedNetwork = true
+            EventBus.$emit('appSpinner', false)
           })
       } else {
         // Email account
@@ -120,6 +142,8 @@ export default {
           })
           .catch((error) => {
             console.log('reauthenticate user message = ' + error.message)
+            this.dialogDeleteNeedNetwork = true
+            EventBus.$emit('appSpinner', false)
           })
       }
 
@@ -144,6 +168,8 @@ export default {
             }).catch(function (error) {
               // An error happened.
               console.log(error.message)
+              this.dialogDeleteNeedNetwork = true
+              EventBus.$emit('appSpinner', false)
             })
           })
       }
