@@ -393,7 +393,7 @@ export default {
           // onAuthStateChanged take hands
         })
         .catch((error) => {
-          console.log('catch message = ' + error.message)
+          this.signInCatchError = error.message
           // Hide spinner
           EventBus.$emit('appSpinner', false)
         })
@@ -510,8 +510,6 @@ export default {
         if (users.docs.length > 0) {
           console.log('some users')
           users.forEach(doc => {
-            // console.log(doc.data().profile.pseudo)
-
             this.allUsersPseudos.push(doc.data().profile.pseudo)
           })
         } else {
@@ -523,18 +521,14 @@ export default {
     // Firestore offline test
     firebase.firestore().collection('users')
       .onSnapshot({ includeMetadataChanges: true }, function (snapshot) {
-        console.log(snapshot)
-
         snapshot.docChanges().forEach(function (change) {
           if (change.type === 'added') {
-            console.log('added: ', change.doc.data())
+            // console.log('added: ', change.doc.data())
           }
-
           const source = snapshot.metadata.fromCache ? 'local cache' : 'server'
           console.log('Data came from ' + source)
         })
       })
-      // End test
 
     // Auth state observer
     firebase.auth().onAuthStateChanged(user => {

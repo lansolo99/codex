@@ -389,16 +389,6 @@ export default {
                 .catch(error => {
                   console.error('Error adding document: ', error)
                 })
-
-              // Push initial profile object
-              // firebase.database().ref('users').child(this.utility.authUserID)
-              //   .set({ profile: this.profile })
-              //   .then(user => {
-              //     console.log('early profile node basically created')
-              //     this.appReady()
-              //     this.tasksReady()
-              //     this.globalUpdate()
-              //   })
             })
           }
         })
@@ -412,23 +402,7 @@ export default {
         .set({ profile: this.profile, tasks: this.tasks })
         .then(() => {
           console.log('CYCLE DONE ! : firebase profile + tasks updated')
-          if (this.utility.signUpProcess) {
-            console.log('signup process = true, signout')
-            EventBus.$emit('signOut')
-          }
         })
-
-      // firebase.database()
-      //   .ref('users')
-      //   .child(this.utility.authUserID)
-      //   .set({ profile: this.profile, tasks: this.tasks })
-      //   .then(() => {
-      //     console.log('CYCLE DONE ! : firebase profile + tasks updated')
-      //     if (this.utility.signUpProcess) {
-      //       console.log('signup process = true, signout')
-      //       EventBus.$emit('signOut')
-      //     }
-      //   })
     })
   }
 }
