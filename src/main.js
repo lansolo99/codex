@@ -27,7 +27,6 @@ const config = {
 }
 firebase.initializeApp(config)
 
-// Test
 firebase.firestore().enablePersistence()
   .catch(function (err) {
     if (err.code === 'failed-precondition') {
