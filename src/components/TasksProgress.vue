@@ -30,7 +30,7 @@
 
 <script>
 // eslint-disable-next-line
-import { getIsoDayFromString, getStringFromIsoDay } from '@/utils'
+import { getStringFromIsoDay } from '@/utils'
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
