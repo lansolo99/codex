@@ -46,7 +46,7 @@ import ProfileForm from '@/components/ProfileForm'
 import { mapState, mapActions, mapMutations } from 'vuex'
 import { EventBus } from '@/bus'
 import store from '@/store/store'
-import firebase from 'firebase'
+import firebase from '@/Firebase'
 
 export default {
   name: 'Profile',

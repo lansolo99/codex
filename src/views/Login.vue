@@ -17,7 +17,8 @@
           <!-- Signup form -->
           <div v-if="loginDisplay === 'signUp'">
             <v-card class="signInsignUpForm">
-              <v-card-title class="title primary white--text">Sign up
+              <v-card-title class="title primary white--text">
+                Sign up
                 <v-icon
                   right
                   class="white--text icon icon-delete close"
@@ -92,7 +93,8 @@
           <!-- Sign-in form -->
           <div v-if="loginDisplay === 'signIn'">
             <v-card class="signInsignUpForm">
-              <v-card-title class="title primary white--text">Sign in
+              <v-card-title class="title primary white--text">
+                Sign in
                 <v-icon
                   right
                   class="white--text icon icon-delete close"
@@ -233,7 +235,7 @@
 
 <script>
 import { EventBus } from '@/bus'
-import firebase from 'firebase'
+import firebase from '@/Firebase'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required, email, minLength } from 'vuelidate/lib/validators'

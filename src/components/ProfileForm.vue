@@ -72,7 +72,7 @@ import { EventBus } from '@/bus'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
-import firebase from 'firebase'
+import firebase from '@/Firebase'
 
 export default {
   comments: true,

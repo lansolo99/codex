@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import firebase from 'firebase'
+import firebase from '@/Firebase'
 import sourceData from '@/store/datas/profile'
 import {
   EventBus

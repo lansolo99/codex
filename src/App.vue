@@ -20,8 +20,7 @@ import TheNavbar from '@/components/TheNavbar'
 import { mapState, mapGetters, mapActions } from 'vuex'
 // eslint-disable-next-line
 import Vue from 'vue'
-// eslint-disable-next-line
-import firebase from 'firebase'
+import firebase from './Firebase'
 import AppSpinner from '@/components/AppSpinner.vue'
 
 export default {
@@ -342,18 +341,6 @@ export default {
     // Initial feed
     EventBus.$on('initFirebase', () => {
       console.log('initFirebase')
-
-      // Firebase offline capabilities test
-
-      // Firebase State connection
-      // var connectedRef = firebase.database().ref('.info/connected')
-      // connectedRef.on('value', function (snap) {
-      //   if (snap.val() === true) {
-      //     alert('connected')
-      //   } else {
-      //     alert('not connected')
-      //   }
-      // })
 
       firebase.firestore()
         .collection('users')
