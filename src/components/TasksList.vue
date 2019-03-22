@@ -14,6 +14,7 @@
               @click.native.stop
               hide-details
               class="ma-0 pa-0 pt-1"
+              :class="{hasSubtask : hasTaskSubtasks(task)}"
               color="black"
               off-icon
               on-icon="icon-checkbox_on"
@@ -364,6 +365,16 @@ export default {
         &.active {
           display: inherit;
         }
+      }
+      .hasSubtask + .icon-checkbox_off {
+        //position: relative;
+        opacity: 0.5;
+        // .icon-checkbox_off {
+        //   opacity: 0.5 !important;
+        //   &:before {
+        //     //opacity: 0.5 !important;
+        //   }
+        // }
       }
     }
     .preventExpansion {
