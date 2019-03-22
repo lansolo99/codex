@@ -36,6 +36,26 @@ firebase.firestore().enablePersistence()
     }
   })
 
+const messaging = firebase.messaging()
+
+messaging.usePublicVapidKey('BMZ27Tax1A9db5QrZpnHVs7mIUJS8walNQrElirXRA6B11i-t_I0INmYVUi0TFoMbkY-sitDCL2zS21ePvQb9e0') // 1. Generate a new key pair
+
+// Request Permission of Notifications
+messaging.requestPermission().then(() => {
+  console.log('Notification permission granted.')
+
+  // Get Token
+  messaging.getToken().then((token) => {
+    console.log(token)
+  })
+}).catch((err) => {
+  console.log('Unable to get permission to notify.', err)
+})
+
+messaging.onMessage(function (payload) {
+  console.log('Message received. ', payload)
+})
+
 new Vue({
   router,
   store,

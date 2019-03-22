@@ -44,10 +44,5 @@ module.exports = {
           preserveWhitespace: true
         }
       }))
-    config.module
-      .rule('modernizr')
-      .test(/\.modernizrrc$/)
-      .use('webpack-modernizr-loader')
-      .loader('webpack-modernizr-loader')
   }
 }

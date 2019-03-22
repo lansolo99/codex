@@ -367,14 +367,7 @@ export default {
         }
       }
       .hasSubtask + .icon-checkbox_off {
-        //position: relative;
         opacity: 0.5;
-        // .icon-checkbox_off {
-        //   opacity: 0.5 !important;
-        //   &:before {
-        //     //opacity: 0.5 !important;
-        //   }
-        // }
       }
     }
     .preventExpansion {
