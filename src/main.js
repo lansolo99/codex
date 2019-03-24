@@ -1,4 +1,7 @@
+// import '@babel/polyfill'
+import Es6Promise from 'es6-promise'
 import '@babel/polyfill'
+
 import Vue from 'vue'
 import './plugins/vuetify'
 import App from './App.vue'
@@ -10,12 +13,11 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import Vuelidate from 'vuelidate'
 import './registerServiceWorker'
 import VueOffline from 'vue-offline'
-import es6Promise from 'es6-promise'
 Vue.use(VueOffline)
 require('dotenv').config()
 Vue.use(Vuelidate)
 
-es6Promise.polyfill()
+Es6Promise.polyfill()
 
 Vue.config.productionTip = false
 
