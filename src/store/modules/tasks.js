@@ -21,7 +21,6 @@ export default {
           .get()
           .then(doc => {
             if (doc.data().tasks) {
-              console.log(doc.data().tasks)
               const updatedTasks = doc.data().tasks
               Object.entries(doc.data().tasks).forEach((pair, index) => {
                 // Subtasks
@@ -39,7 +38,6 @@ export default {
                   updatedTasks[pair[0]]['completion'] = []
                 }
               })
-              console.log(updatedTasks)
               commit('fetchTasksDatas', updatedTasks)
             } else {
               console.log('user has no tasks')

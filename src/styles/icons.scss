@@ -92,6 +92,10 @@
 			$char: "\E010";
 		}
 
+		 @if $filename==trash {
+			$char: "\E011";
+		}
+
 		@return $char;
 }
 
@@ -171,6 +175,10 @@
 
 	.icon-stats {
 		@include icon(stats);
+	}
+
+	.icon-trash {
+		@include icon(trash);
 	}
 
 	

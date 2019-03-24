@@ -1,20 +1,30 @@
 <template>
   <div :class="['theStatusBar', statusBarDisplayConf]" @click="statusBarRedirection()">
-    <v-avatar class="theStatusBar__avatar" size="23px">
-      <img
-        v-if="profile.avatarImage === ''"
-        :src="require(`@/assets/images/avatar/${this.profile.avatarDefault}.svg`)"
-      >
-      <img v-else :src="profile.avatarImage">
-    </v-avatar>
-    <span class="theStatusBar__text-status">
-      Connected as
-      <i>{{profile.pseudo}}</i>
-    </span>
-    <div class="theStatusBar__btn-detail">...</div>
+    <v-layout>
+      <v-flex shrink>
+        <v-avatar class="theStatusBar__avatar" size="23px">
+          <img
+            v-if="profile.avatarImage === ''"
+            :src="require(`@/assets/images/avatar/${this.profile.avatarDefault}.svg`)"
+          >
+          <img v-else :src="profile.avatarImage">
+        </v-avatar>
+      </v-flex>
+      <v-flex class="theStatusBar__text-status-wrapper">
+        <span class="theStatusBar__text-status">
+          Connected as
+          <i>{{profile.pseudo}}</i>
+        </span>
+      </v-flex>
+      <v-flex shrink>
+        <div class="theStatusBar__btn-detail">...</div>
+      </v-flex>
+    </v-layout>
+
     <v-dialog v-model="guestDialog" max-width="350" content-class="standard-dialog guest">
       <v-card>
-        <v-card-title class="title red white--text pt-3 pb-3" primary-title>Test mode!
+        <v-card-title class="title red white--text pt-3 pb-3" primary-title>
+          Test mode!
           <v-icon
             right
             class="white--text icon icon-delete close"
@@ -109,27 +119,35 @@ export default {
   height: 40px;
   width: 100%;
   padding-left: 20px;
+  padding-right: 20px;
   padding-top: 8px;
   &__avatar {
     margin-right: 10px;
-    vertical-align: middle;
     background-color: rgba(black, 0.5);
   }
-
+  &__text-status-wrapper {
+    height: 23px;
+    overflow: hidden;
+    padding-right: 25px;
+  }
   &__text-status {
-    vertical-align: middle;
+    text-overflow: ellipsis;
     position: relative;
-    top: 1px;
+    top: 2px;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   &__btn-detail {
-    position: absolute;
+    // position: absolute;
+    position: relative;
     top: 48%;
     transform: translateY(-50%);
     height: 10px;
     line-height: 0;
     letter-spacing: 3px;
-    right: 20px;
     color: $color-golden;
     font-size: 24px;
   }

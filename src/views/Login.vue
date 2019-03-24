@@ -198,13 +198,22 @@
                       block
                       large
                       class="colorGreen white--text"
-                      @click="loginElementsDisplay('signIn')"
-                    >Log in</v-btn>
+                      @click="loginElementsDisplay('signUp')"
+                    >Register</v-btn>
                   </v-flex>
                 </v-layout>
-                <v-layout class="mt-2">
+                <v-layout>
                   <v-flex xs12>
-                    <v-btn to="/tasks" block large @click="signInAsGuest">Test without account</v-btn>
+                    <v-btn block large @click="loginElementsDisplay('signIn')">Connexion</v-btn>
+                  </v-flex>
+                </v-layout>
+                <v-layout justify-center class="mt-3">
+                  <v-flex xs12 class="text-xs-center">
+                    <v-btn
+                      to="/tasks"
+                      class="black white--text"
+                      @click="signInAsGuest"
+                    >Test without account</v-btn>
                   </v-flex>
                 </v-layout>
                 <v-layout justify-center class="mt-2" :style="{'display': installBtn}">

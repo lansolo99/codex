@@ -27,6 +27,7 @@
                       @change="onFilePicked"
                     >
                     <v-btn
+                      v-if="formComponents.avatarImageRaw"
                       fab
                       small
                       dark
@@ -34,7 +35,7 @@
                       class="reset colorRed mr-0"
                       @click="handleResetAvatar"
                     >
-                      <v-icon class="icon icon-reset"></v-icon>
+                      <v-icon class="icon icon-trash"></v-icon>
                     </v-btn>
                   </v-avatar>
                 </v-flex>

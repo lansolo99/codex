@@ -10,6 +10,10 @@ if (workbox) {
       self.skipWaiting()
     }
   })
+
+
+
+
 } else {
   console.log(`Workbox didn't load`)
 }

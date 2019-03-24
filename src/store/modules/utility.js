@@ -72,8 +72,6 @@ export default {
       Object.assign(state, getDefaultState)
     },
     setUser (state, payload) {
-      console.log(payload)
-
       if (payload === 'null') {
         state.authUserID = null
         state.authUserEmail = null
