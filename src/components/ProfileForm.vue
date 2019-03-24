@@ -275,6 +275,9 @@ export default {
     }
   }
   .v-avatar {
+    img {
+      object-fit: cover;
+    }
     .v-btn--right {
       position: absolute;
       right: -18px;
