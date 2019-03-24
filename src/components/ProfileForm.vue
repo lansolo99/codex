@@ -27,7 +27,7 @@
                       @change="onFilePicked"
                     >
                     <v-btn
-                      v-if="formComponents.avatarImageRaw"
+                      v-if="profileDatas.avatarImage !==''"
                       fab
                       small
                       dark
