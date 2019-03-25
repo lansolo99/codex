@@ -492,6 +492,10 @@ export default {
       this.installBtn = true
     })
 
+    window.addEventListener('DOMContentLoaded', e => {
+      console.log('DOMContentLoaded')
+    })
+
     this.installer = () => {
       console.log('installer')
       this.installBtn = false

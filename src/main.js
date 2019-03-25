@@ -42,6 +42,10 @@ firebase.firestore().enablePersistence()
     }
   })
 
+window.addEventListener('beforeinstallprompt', e => {
+  console.log('beforeinstallprompt')
+})
+
 new Vue({
   router,
   store,
