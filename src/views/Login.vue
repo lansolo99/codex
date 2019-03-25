@@ -497,9 +497,10 @@ export default {
     this.installer = () => {
       console.log('installer')
       // this.installBtn = false
-      this.appInstall(false)
+
       installPrompt.prompt()
       installPrompt.userChoice.then(result => {
+        this.appInstall(false)
         if (result.outcome === 'accepted') {
           console.log('Install accepted!')
         } else {
