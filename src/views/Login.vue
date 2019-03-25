@@ -483,6 +483,7 @@ export default {
     })
   },
   created () {
+    this.appInstall(true)
     // Install PWA homescreen feature
     let installPrompt
 
@@ -500,9 +501,9 @@ export default {
 
       installPrompt.prompt()
       installPrompt.userChoice.then(result => {
-        this.appInstall(false)
         if (result.outcome === 'accepted') {
           console.log('Install accepted!')
+          this.appInstall(false)
         } else {
           console.log('Install denied!')
         }
