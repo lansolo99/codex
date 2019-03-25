@@ -229,6 +229,7 @@
       </v-layout>
     </v-container>
     <TheInstallAppBar v-if="installBtn" @click.native="installer"/>
+    <!-- <TheInstallAppBar @click.native="installer"/> -->
   </div>
 </template>
 
@@ -485,6 +486,7 @@ export default {
     let installPrompt
 
     window.addEventListener('beforeinstallprompt', e => {
+      console.log('beforeinstallprompt')
       e.preventDefault()
       installPrompt = e
       this.installBtn = true
