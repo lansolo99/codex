@@ -186,8 +186,6 @@
 
           <!-- All Buttons -->
           <div v-if="loginDisplay === 'allButtons'">
-            {{utility.appInstall}}
-            {{utility.appInstallOS}}
             <v-layout
               justify-center
               class="allButtonsWrapper"
@@ -231,7 +229,29 @@
       </v-layout>
     </v-container>
 
-    <TheInstallAppBar v-if=" utility.appInstall" @click.native="installer"/>
+    <TheInstallAppBar v-if="utility.appInstall" @click.native="installer(utility.appInstallOS)"/>
+    <v-dialog v-model="dialogAppleInstall" max-width="350" content-class="standard-dialog">
+      <v-btn slot="activator" fab small class="primary help mr-0">
+        <v-icon class="icon icon-question_mark white--text"></v-icon>
+      </v-btn>
+      <v-card>
+        <v-card-title class="title primary white--text" primary-title>
+          Install the app
+          <v-icon
+            right
+            class="white--text icon icon-delete close"
+            @click="dialogAppleInstall = false"
+          ></v-icon>
+        </v-card-title>
+        <v-card-text>
+          Install this webapp on your Apple device :
+          <div class="mt-2">
+            Tap
+            <v-icon class="blue--text icon icon-apple-share"></v-icon>and then Add to homescreen
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -264,6 +284,7 @@ export default {
       authUser: null,
       pseudo: null,
       allUsersPseudos: [],
+      dialogAppleInstall: null,
       email: '',
       password: '',
       loginDisplay: 'allButtons',
@@ -437,6 +458,7 @@ export default {
       this.authUser = null
       this.setUser('null')
       this.pseudo = null
+      this.dialogAppleInstall = null
       this.email = ''
       this.password = ''
       this.signInCatchError = ''
@@ -505,17 +527,23 @@ export default {
     })
 
     // Show prompt method
-    this.installer = () => {
+    this.installer = (os) => {
       console.log('installer')
-      installPrompt.prompt()
-      installPrompt.userChoice.then(result => {
-        if (result.outcome === 'accepted') {
-          console.log('Install accepted!')
-          this.appInstall(false)
-        } else {
-          console.log('Install denied!')
-        }
-      })
+      console.log('os = ' + os)
+
+      if (os === 'android') {
+        installPrompt.prompt()
+        installPrompt.userChoice.then(result => {
+          if (result.outcome === 'accepted') {
+            console.log('Install accepted!')
+            this.appInstall(false)
+          } else {
+            console.log('Install denied!')
+          }
+        })
+      } else if (os === 'apple') {
+        this.dialogAppleInstall = true
+      }
     }
 
     // Apple Install PWA homescreen feature

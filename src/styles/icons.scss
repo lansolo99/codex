@@ -32,72 +32,76 @@
 			$char: "\E001";
 		}
 
-		 @if $filename==arrow_chart {
+		 @if $filename==apple-share {
 			$char: "\E002";
 		}
 
-		 @if $filename==arrow_return {
+		 @if $filename==arrow_chart {
 			$char: "\E003";
 		}
 
-		 @if $filename==camera {
+		 @if $filename==arrow_return {
 			$char: "\E004";
 		}
 
-		 @if $filename==check {
+		 @if $filename==camera {
 			$char: "\E005";
 		}
 
-		 @if $filename==checkbox_filled {
+		 @if $filename==check {
 			$char: "\E006";
 		}
 
-		 @if $filename==checkbox_off {
+		 @if $filename==checkbox_filled {
 			$char: "\E007";
 		}
 
-		 @if $filename==checkbox_on {
+		 @if $filename==checkbox_off {
 			$char: "\E008";
 		}
 
-		 @if $filename==delete {
+		 @if $filename==checkbox_on {
 			$char: "\E009";
 		}
 
-		 @if $filename==download {
+		 @if $filename==delete {
 			$char: "\E00A";
 		}
 
-		 @if $filename==edit {
+		 @if $filename==download {
 			$char: "\E00B";
 		}
 
-		 @if $filename==eye {
+		 @if $filename==edit {
 			$char: "\E00C";
 		}
 
-		 @if $filename==eye_hidden {
+		 @if $filename==eye {
 			$char: "\E00D";
 		}
 
-		 @if $filename==profile {
+		 @if $filename==eye_hidden {
 			$char: "\E00E";
 		}
 
-		 @if $filename==question_mark {
+		 @if $filename==profile {
 			$char: "\E00F";
 		}
 
-		 @if $filename==reset {
+		 @if $filename==question_mark {
 			$char: "\E010";
 		}
 
-		 @if $filename==stats {
+		 @if $filename==reset {
 			$char: "\E011";
 		}
 
-		 @if $filename==trash {
+		 @if $filename==stats {
 			$char: "\E012";
+		}
+
+		 @if $filename==trash {
+			$char: "\E013";
 		}
 
 		@return $char;
@@ -119,6 +123,10 @@
 
 .icon-add {
 		@include icon(add);
+	}
+
+	.icon-apple-share {
+		@include icon(apple-share);
 	}
 
 	.icon-arrow_chart {
