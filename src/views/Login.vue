@@ -216,17 +216,6 @@
                     >Test without account</v-btn>
                   </v-flex>
                 </v-layout>
-                <v-layout justify-center class="mt-2" :style="{'display': installBtn}">
-                  <v-flex xs12 class="text-xs-center">
-                    <v-btn
-                      to="/tasks"
-                      large
-                      center
-                      @click="installer()"
-                      class="black white--text mt-4"
-                    >Add to homescreen</v-btn>
-                  </v-flex>
-                </v-layout>
 
                 <v-layout v-if="authUser" class="mt-3">
                   <v-flex xs12>
@@ -239,10 +228,12 @@
         </v-flex>
       </v-layout>
     </v-container>
+    <TheInstallAppBar v-if="installBtn" @click.native="installer"/>
   </div>
 </template>
 
 <script>
+import TheInstallAppBar from '@/components/TheInstallAppBar.vue'
 import { EventBus } from '@/bus'
 import firebase from '@/Firebase'
 import { mapState, mapGetters, mapActions } from 'vuex'
@@ -258,7 +249,8 @@ function notAnExistingPseudo (value) {
 export default {
   name: 'Login',
   components: {
-    Lottie
+    Lottie,
+    TheInstallAppBar
   },
   data () {
     return {
@@ -277,8 +269,7 @@ export default {
       signInCatchError: '',
       resetPasswordCatchError: '',
       resetPasswordResolved: '',
-      installBtn: 'none',
-      installer: undefined,
+      installBtn: false,
       formComponents: {
         passwordType: 'password',
         iconShowPassword: 'icon-eye'
@@ -496,11 +487,12 @@ export default {
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault()
       installPrompt = e
-      this.installBtn = 'block'
+      this.installBtn = true
     })
 
     this.installer = () => {
-      this.installBtn = 'none'
+      console.log('installer')
+      this.installBtn = false
       installPrompt.prompt()
       installPrompt.userChoice.then(result => {
         if (result.outcome === 'accepted') {

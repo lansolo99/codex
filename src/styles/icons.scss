@@ -64,36 +64,40 @@
 			$char: "\E009";
 		}
 
-		 @if $filename==edit {
+		 @if $filename==download {
 			$char: "\E00A";
 		}
 
-		 @if $filename==eye {
+		 @if $filename==edit {
 			$char: "\E00B";
 		}
 
-		 @if $filename==eye_hidden {
+		 @if $filename==eye {
 			$char: "\E00C";
 		}
 
-		 @if $filename==profile {
+		 @if $filename==eye_hidden {
 			$char: "\E00D";
 		}
 
-		 @if $filename==question_mark {
+		 @if $filename==profile {
 			$char: "\E00E";
 		}
 
-		 @if $filename==reset {
+		 @if $filename==question_mark {
 			$char: "\E00F";
 		}
 
-		 @if $filename==stats {
+		 @if $filename==reset {
 			$char: "\E010";
 		}
 
-		 @if $filename==trash {
+		 @if $filename==stats {
 			$char: "\E011";
+		}
+
+		 @if $filename==trash {
+			$char: "\E012";
 		}
 
 		@return $char;
@@ -147,6 +151,10 @@
 
 	.icon-delete {
 		@include icon(delete);
+	}
+
+	.icon-download {
+		@include icon(download);
 	}
 
 	.icon-edit {
