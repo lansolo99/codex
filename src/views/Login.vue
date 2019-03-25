@@ -228,8 +228,8 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <TheInstallAppBar v-if="installBtn" @click.native="installer"/>
-    <!-- <TheInstallAppBar @click.native="installer"/> -->
+    <!-- <TheInstallAppBar v-if="installBtn" @click.native="installer"/> -->
+    <TheInstallAppBar v-if=" utility.appInstall" @click.native="installer"/>
   </div>
 </template>
 
@@ -326,6 +326,7 @@ export default {
       setAuthUser: 'utility/setAuthUser',
       appReady: 'utility/appReady',
       tasksReady: 'utility/tasksReady',
+      appInstall: 'utility/appInstall',
       updateProfile: 'profile/updateProfile',
       resetProfileDatas: 'profile/resetProfileDatas',
       resetUtilityDatas: 'utility/resetUtilityDatas',
@@ -489,16 +490,14 @@ export default {
       console.log('beforeinstallprompt')
       e.preventDefault()
       installPrompt = e
-      this.installBtn = true
-    })
-
-    window.addEventListener('DOMContentLoaded', e => {
-      console.log('DOMContentLoaded')
+      // this.installBtn = true
+      this.appInstall(true)
     })
 
     this.installer = () => {
       console.log('installer')
-      this.installBtn = false
+      // this.installBtn = false
+      this.appInstall(false)
       installPrompt.prompt()
       installPrompt.userChoice.then(result => {
         if (result.outcome === 'accepted') {

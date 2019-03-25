@@ -16,6 +16,11 @@ export default {
     }
   },
   actions: {
+    appInstall ({
+      commit
+    }, payload) {
+      commit('appInstall', payload)
+    },
     resetUtilityDatas ({
       commit
     }) {
@@ -63,6 +68,9 @@ export default {
     }
   },
   mutations: {
+    appInstall (state, payload) {
+      state.appInstall = payload
+    },
     setDeleteAccount (state) {
       console.log('setDeleteAccount')
 

@@ -4,6 +4,7 @@
   "authUserEmail": null,
   "deleteAccount": false,
   "appReady": false,
+  "appInstall": false,
   "countries": [{
       "name": "Afghanistan",
       "code": "AF"
