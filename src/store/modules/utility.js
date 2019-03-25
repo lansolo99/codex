@@ -18,8 +18,17 @@ export default {
   actions: {
     appInstall ({
       commit
-    }, payload) {
-      commit('appInstall', payload)
+    }, {
+      status,
+      os
+    }) {
+      console.log(status)
+      console.log(os)
+
+      commit('appInstall', {
+        status,
+        os
+      })
     },
     resetUtilityDatas ({
       commit
@@ -68,8 +77,12 @@ export default {
     }
   },
   mutations: {
-    appInstall (state, payload) {
-      state.appInstall = payload
+    appInstall (state, {
+      status,
+      os
+    }) {
+      state.appInstall = status
+      state.appInstallOS = os
     },
     setDeleteAccount (state) {
       console.log('setDeleteAccount')

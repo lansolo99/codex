@@ -186,6 +186,8 @@
 
           <!-- All Buttons -->
           <div v-if="loginDisplay === 'allButtons'">
+            {{utility.appInstall}}
+            {{utility.appInstallOS}}
             <v-layout
               justify-center
               class="allButtonsWrapper"
@@ -228,7 +230,7 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <!-- <TheInstallAppBar v-if="installBtn" @click.native="installer"/> -->
+
     <TheInstallAppBar v-if=" utility.appInstall" @click.native="installer"/>
   </div>
 </template>
@@ -483,21 +485,28 @@ export default {
     })
   },
   created () {
-    // Install PWA homescreen feature
+    console.log('test')
+
+    // const status = true
+    // const os = 'android'
+    // this.appInstall({ status, os })
+    // Android Install PWA homescreen feature
+
     let installPrompt
 
+    // Listen to beforeinstallprompt event
     window.addEventListener('beforeinstallprompt', e => {
       console.log('beforeinstallprompt')
       e.preventDefault()
       installPrompt = e
-      // this.installBtn = true
-      this.appInstall(true)
+      const status = true
+      const os = 'android'
+      this.appInstall({ status, os })
     })
 
+    // Show prompt method
     this.installer = () => {
       console.log('installer')
-      // this.installBtn = false
-
       installPrompt.prompt()
       installPrompt.userChoice.then(result => {
         if (result.outcome === 'accepted') {
@@ -507,6 +516,21 @@ export default {
           console.log('Install denied!')
         }
       })
+    }
+
+    // Apple Install PWA homescreen feature
+    const isIos = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase()
+      return /iphone|ipad|ipod/.test(userAgent)
+    }
+    // Detects if device is in standalone mode
+    const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone)
+
+    // Checks if should display install popup notification:
+    if (isIos() && !isInStandaloneMode()) {
+      const status = true
+      const os = 'apple'
+      this.appInstall({ status, os })
     }
 
     // Collect all users pseudo
