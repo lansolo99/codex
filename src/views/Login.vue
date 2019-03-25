@@ -483,7 +483,6 @@ export default {
     })
   },
   created () {
-    this.appInstall(true)
     // Install PWA homescreen feature
     let installPrompt
 
