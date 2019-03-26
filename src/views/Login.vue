@@ -519,7 +519,7 @@ export default {
       installPrompt = e
       const status = true
       const os = 'android'
-      this.appInstall({ status, os })
+      this.appInstall({ status, os, installPrompt })
     })
 
     // Show prompt method

@@ -2,7 +2,8 @@ export default {
   namespaced: true,
   state: {
     appInstall: false,
-    appInstallOS: null
+    appInstallOS: null,
+    installPrompt: null
   },
 
   actions: {
@@ -10,24 +11,29 @@ export default {
       commit
     }, {
       status,
-      os
+      os,
+      installPrompt
     }) {
       console.log(status)
       console.log(os)
+      console.log(installPrompt)
 
       commit('appInstall', {
         status,
-        os
+        os,
+        installPrompt
       })
     }
   },
   mutations: {
     appInstall (state, {
       status,
-      os
+      os,
+      installPrompt
     }) {
       state.appInstall = status
       state.appInstallOS = os
+      state.installPrompt = installPrompt
     }
   }
 }
