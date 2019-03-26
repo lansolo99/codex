@@ -5,7 +5,7 @@
         <v-flex xs12>
           <v-layout>
             <v-flex xs12>
-              {{utility.appInstall}}
+              {{pwa.appInstall}}
               <!-- Logo -->
               <Lottie
                 :options="defaultOptions"
@@ -230,7 +230,7 @@
       </v-layout>
     </v-container>
 
-    <TheInstallAppBar v-if="utility.appInstall" @click.native="installer(utility.appInstallOS)"/>
+    <TheInstallAppBar v-if="pwa.appInstall" @click.native="installer(pwa.appInstallOS)"/>
     <v-dialog
       v-model="dialogAppleInstall"
       max-width="350"
@@ -317,7 +317,8 @@ export default {
   computed: {
     ...mapState({
       profile: state => state.profile,
-      utility: state => state.utility
+      utility: state => state.utility,
+      pwa: state => state.pwa
     }),
     ...mapGetters({
       'userData': 'profile/getProfileData'
@@ -351,7 +352,7 @@ export default {
       setAuthUser: 'utility/setAuthUser',
       appReady: 'utility/appReady',
       tasksReady: 'utility/tasksReady',
-      appInstall: 'utility/appInstall',
+      appInstall: 'pwa/appInstall',
       updateProfile: 'profile/updateProfile',
       resetProfileDatas: 'profile/resetProfileDatas',
       resetUtilityDatas: 'utility/resetUtilityDatas',
