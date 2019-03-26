@@ -455,9 +455,6 @@ export default {
       this.resetUtilityDatas()
       this.resetCurrentUserWeek()
       this.resetTasksDatas()
-      const status = false
-      const os = null
-      this.appInstall({ status, os })
       // Reset local datas
       this.authUser = null
       this.setUser('null')
