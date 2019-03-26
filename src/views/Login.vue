@@ -5,6 +5,7 @@
         <v-flex xs12>
           <v-layout>
             <v-flex xs12>
+              {{utility.appInstall}}
               <!-- Logo -->
               <Lottie
                 :options="defaultOptions"
@@ -541,29 +542,7 @@ export default {
     }
 
     // Apple Install PWA homescreen feature
-    // const isIos = () => {
-    //   const userAgent = window.navigator.userAgent.toLowerCase()
-    //   return /iphone|ipad|ipod/.test(userAgent)
-    // }
-    // function isIos () {
-    //   var iDevices = [
-    //     'iPad Simulator',
-    //     'iPhone Simulator',
-    //     'iPod Simulator',
-    //     'iPad',
-    //     'iPhone',
-    //     'iPod'
-    //   ]
-
-    //   if (navigator.platform) {
-    //     while (iDevices.length) {
-    //       if (navigator.platform === iDevices.pop()) { return true }
-    //     }
-    //   }
-
-    //   return false
-    // }
-    var isIos = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)
+    const isIos = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)
     // Detects if device is in standalone mode
     const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone)
 
