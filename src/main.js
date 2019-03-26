@@ -14,7 +14,6 @@ import Vuelidate from 'vuelidate'
 import './registerServiceWorker'
 import VueOffline from 'vue-offline'
 Vue.use(VueOffline)
-require('dotenv').config()
 Vue.use(Vuelidate)
 
 Es6Promise.polyfill()

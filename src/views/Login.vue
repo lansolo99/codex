@@ -230,10 +230,11 @@
     </v-container>
 
     <TheInstallAppBar v-if="utility.appInstall" @click.native="installer(utility.appInstallOS)"/>
-    <v-dialog v-model="dialogAppleInstall" max-width="350" content-class="standard-dialog">
-      <v-btn slot="activator" fab small class="primary help mr-0">
-        <v-icon class="icon icon-question_mark white--text"></v-icon>
-      </v-btn>
+    <v-dialog
+      v-model="dialogAppleInstall"
+      max-width="350"
+      content-class="standard-dialog dialogAppleInstall"
+    >
       <v-card>
         <v-card-title class="title primary white--text" primary-title>
           Install the app
@@ -247,7 +248,7 @@
           Install this webapp on your Apple device :
           <div class="mt-2">
             Tap
-            <v-icon class="blue--text icon icon-apple-share"></v-icon>and then Add to homescreen
+            <v-icon class="blue--text icon icon-apple-share mr-1"></v-icon>and then Add to homescreen
           </div>
         </v-card-text>
       </v-card>
@@ -284,7 +285,7 @@ export default {
       authUser: null,
       pseudo: null,
       allUsersPseudos: [],
-      dialogAppleInstall: null,
+      dialogAppleInstall: false,
       email: '',
       password: '',
       loginDisplay: 'allButtons',
@@ -454,6 +455,9 @@ export default {
       this.resetUtilityDatas()
       this.resetCurrentUserWeek()
       this.resetTasksDatas()
+      const status = false
+      const os = null
+      this.appInstall({ status, os })
       // Reset local datas
       this.authUser = null
       this.setUser('null')
@@ -507,13 +511,6 @@ export default {
     })
   },
   created () {
-    console.log('test')
-
-    // const status = true
-    // const os = 'android'
-    // this.appInstall({ status, os })
-    // Android Install PWA homescreen feature
-
     let installPrompt
 
     // Listen to beforeinstallprompt event
@@ -754,6 +751,12 @@ html.webp {
       top: 15px;
       right: 15px;
     }
+  }
+}
+.dialogAppleInstall {
+  .icon-apple-share {
+    position: relative;
+    top: 2px;
   }
 }
 </style>
