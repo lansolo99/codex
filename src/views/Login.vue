@@ -528,8 +528,10 @@ export default {
       console.log('os = ' + os)
 
       if (os === 'android') {
-        installPrompt.prompt()
-        installPrompt.userChoice.then(result => {
+        this.pwa.installPrompt.prompt()
+        // installPrompt.prompt()
+        // installPrompt.userChoice.then(result => {
+        this.pwa.installPrompt.userChoice.then(result => {
           if (result.outcome === 'accepted') {
             console.log('Install accepted!')
             this.appInstall(false)
