@@ -550,6 +550,8 @@ export default {
 
     // Checks if should display install popup notification:
     if (isIos() && !isInStandaloneMode()) {
+      console.log('so we are in ios in no standalone mode ?')
+
       const status = true
       const os = 'apple'
       this.appInstall({ status, os })
