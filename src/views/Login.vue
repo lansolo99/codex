@@ -246,7 +246,7 @@
           ></v-icon>
         </v-card-title>
         <v-card-text>
-          Install this webapp on your Apple device :
+          Install this webapp on your Apple device (from your Safari browser only!) :
           <div class="mt-2">
             Tap
             <v-icon class="blue--text icon icon-apple-share mr-1"></v-icon>and then Add to homescreen
@@ -552,6 +552,8 @@ export default {
     // Checks if should display install popup notification:
     if (isIos && !isInStandaloneMode()) {
       console.log('so we are in ios in no standalone mode ?')
+
+      document.querySelector('link[rel="manifest"]').setAttribute('rel', 'no-on-ios')
 
       const status = true
       const os = 'apple'
