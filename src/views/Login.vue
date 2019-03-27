@@ -551,7 +551,7 @@ export default {
 
     // Checks if should display install popup notification:
     if (isIos) {
-      document.querySelector('link[rel="manifest"]').setAttribute('rel', 'no-on-ios')
+      // document.querySelector('link[rel="manifest"]').setAttribute('rel', 'no-on-ios')
     }
 
     if (isIos && !isInStandaloneMode()) {
