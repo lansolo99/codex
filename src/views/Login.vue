@@ -5,7 +5,6 @@
         <v-flex xs12>
           <v-layout>
             <v-flex xs12>
-              {{pwa.appInstall}}
               <!-- Logo -->
               <Lottie
                 :options="defaultOptions"
