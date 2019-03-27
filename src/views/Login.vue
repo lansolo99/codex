@@ -550,10 +550,12 @@ export default {
     const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone)
 
     // Checks if should display install popup notification:
+    if (isIos) {
+      document.querySelector('link[rel="manifest"]').setAttribute('rel', 'no-on-ios')
+    }
+
     if (isIos && !isInStandaloneMode()) {
       console.log('so we are in ios in no standalone mode ?')
-
-      document.querySelector('link[rel="manifest"]').setAttribute('rel', 'no-on-ios')
 
       const status = true
       const os = 'apple'
