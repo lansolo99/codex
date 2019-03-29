@@ -6,9 +6,10 @@ Vue.use(Vuetify, {
   iconfont: 'md',
   theme: {
     primary: '#FFA81E',
+    primaryLighter: '#FFBA4C',
     secondary: '#00697F',
-    colorGreen: '#03CA89',
-    colorRed: '#EA6060',
+    colorGreen: '#06D491',
+    colorRed: '#E93A4F',
     colorFacebook: '#4267B2',
     colorMatterhorn: '#4A3642',
     colorGoogle: '#4285F4',

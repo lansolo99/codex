@@ -1,29 +1,59 @@
 <template>
   <v-container class="taskProgress pt-0 pb-2">
     <v-layout v-if="utility.appReady">
-      <v-flex xs12>
+      <v-flex xs6>
         <v-card
           flat
-          height="100%"
-          class="taskProgressContainer taskProgressContainer--bars taskProgressContainer--week transparent"
+          height="100%" class="taskProgressContainer transparent pr-4 pl-1"
         >
           <span class="label white--text">
-            <span class="week">Week {{time.currentUserWeek}} completion</span> |
-            <span class="day primary--text">{{ getStringDay }}</span>
+            <span>{{ getStringDay }}</span>
           </span>
-          <div class="progressbarContainer">
+        <v-layout>
+          <v-flex xs9>
+            <div class="progressbarContainer">
             <v-progress-linear
               v-model="userData.stats.progressWeek"
               height="15"
               class="mt-2"
-              width="80%"
             ></v-progress-linear>
+            </div>
+          </v-flex>
+          <v-flex xs3>
             <div
-              class="progressbarContainer__value white--text text-xs-right"
+              class="progressbarContainer__value white--text pl-2"
             >{{userData.stats.progressWeek || 0}}%</div>
-          </div>
+          </v-flex>
+        </v-layout>
         </v-card>
       </v-flex>
+      <v-flex xs6>
+        <v-card
+          flat
+          height="100%" class="taskProgressContainer transparent pl-3"
+        >
+          <span class="label white--text">
+            <span>Week {{time.currentUserWeek}}</span>
+          </span>
+        <v-layout>
+          <v-flex xs9>
+            <div class="progressbarContainer">
+            <v-progress-linear
+              v-model="userData.stats.progressWeek"
+              height="15"
+              class="mt-2"
+            ></v-progress-linear>
+            </div>
+          </v-flex>
+          <v-flex xs3>
+            <div
+              class="progressbarContainer__value white--text pl-2"
+            >{{userData.stats.progressWeek || 0}}%</div>
+          </v-flex>
+        </v-layout>
+        </v-card>
+      </v-flex>
+
     </v-layout>
   </v-container>
 </template>
@@ -78,31 +108,17 @@ export default {
     border-radius: 0 !important;
 
     .label {
-      .day {
-        font-size: 14px;
-        padding-left: 5px;
-      }
-      .week {
-        padding-right: 5px;
-      }
-      font-size: 16px;
-    }
-    &--bars {
-      padding-right: 60px !important;
-    }
-
-    &--week {
-      position: relative;
-      left: 5px;
+      font-size: 14px;
+      text-transform: uppercase;
+      opacity: 0.7;
     }
 
     .progressbarContainer {
       position: relative;
       top: -4px;
       &__value {
-        position: absolute;
-        top: -5px;
-        right: -45px;
+        position: relative;
+        top: 1px;
       }
     }
     .v-progress-linear__bar__determinate {

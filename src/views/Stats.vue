@@ -211,12 +211,12 @@ export default {
                 ranges: [{
                   from: 0,
                   to: 0,
-                  color: '#EA6060'
+                  color: '#E93A4F'
                 },
                 {
                   from: 1,
                   to: 1,
-                  color: '#56E39F'
+                  color: '#06D491'
                 },
                 {
                   from: 2,
@@ -560,9 +560,6 @@ export default {
         top: -1px;
       }
     }
-    // Apexchart
-    .heatmap {
-    }
 
     .dailyCompletionsWrapper {
       margin-top: 10px;
@@ -581,9 +578,6 @@ export default {
           opacity: 0.8;
         }
       }
-      // .apexcharts-yaxis-texts-g{
-
-      // }
       .apexcharts-yaxis {
         transform: translate(36px, 3px) !important;
       }

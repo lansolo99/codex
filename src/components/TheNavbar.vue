@@ -79,7 +79,7 @@ export default {
       }
     }
     &--active {
-      background-color: #e19c2e !important;
+      background-color: #df9115 !important;
     }
   }
 
@@ -98,8 +98,8 @@ export default {
     pointer-events: none;
     background-image: linear-gradient(
       -180deg,
-      rgba(255, 186, 76, 0) 20%,
-      #ffba4c 100%
+      rgba(255, 168, 30, 0) 20%,
+      #ffa81e 100%
     );
   }
 }

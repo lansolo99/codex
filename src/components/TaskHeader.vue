@@ -2,7 +2,7 @@
   <header>
     <v-toolbar dark app class="taskHeader secondary">
       <TheStatusBar/>
-      <v-toolbar-title class="primary--text font-weight-bold">Tasks</v-toolbar-title>
+      <v-toolbar-title class="primaryLighter--text font-weight-bold">Tasks</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn fab small class="colorGreen" @click="handleCreate">
         <v-icon class="icon icon-add"></v-icon>
