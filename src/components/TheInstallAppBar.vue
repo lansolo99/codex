@@ -26,7 +26,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  background: $color-golden-darker;
+  background: $color-matterhorn;
   color: $color-golden;
   height: 40px;
   width: 100%;

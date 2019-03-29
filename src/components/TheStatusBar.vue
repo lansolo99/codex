@@ -114,7 +114,7 @@ export default {
     z-index: 200;
   }
 
-  background: $color-golden-darker;
+  background: $color-matterhorn;
   color: $color-golden;
   height: 40px;
   width: 100%;
