@@ -75,6 +75,7 @@ export default {
     ...mapActions({
       fetchProfileDatas: 'profile/fetchProfileDatas',
       updateProfile: 'profile/updateProfile',
+      updateDayScore: 'profile/updateDayScore',
       recordWeekScore: 'profile/recordWeekScore',
       updateCurrentUserWeek: 'time/updateCurrentUserWeek',
       updateTime: 'time/updateTime',
@@ -226,6 +227,56 @@ export default {
 
       EventBus.$emit('recordProgress')
     },
+    calcDailyCompletion () {
+      console.log('calcDailyCompletion')
+
+      // todayProgress value is based on everydays + all specific days + singles
+
+      // Filter daily (due today) tasks from tasks
+      const dailyTasks = Object.values(this.tasks)
+        .filter(task => {
+          return (task.schedule.periodicity === 'Weekly' &&
+        task.schedule.weekly === 'Everyday') ||
+        (task.schedule.periodicity === 'On specific days' &&
+        task.schedule.specificDays.find(v => { return v === getStringFromIsoDay(this.time.isoDay) })) ||
+        (task.schedule.periodicity === 'Once' &&
+        task.schedule.once === 'single')
+        })
+
+      // Distribute tasks value
+      const countDailyTasks = dailyTasks.length
+      const taskValue = 100 / countDailyTasks
+      console.log('countDailyTasks = ' + countDailyTasks)
+
+      let total = 0
+      let totalSubtasks = 0
+
+      // Count checked
+      const countCheckedTasks = Object.entries(dailyTasks)
+        .filter(v => { return v[1].checked === true })
+        .length
+
+      // Distribute subtasks values
+      Object.entries(dailyTasks)
+        .filter(v => { return v[1].checked === false && v[1].subtasks.length > 0 })
+        .forEach(v => {
+          const subtaskLength = v[1].subtasks.length
+          const subtaskValue = taskValue / subtaskLength
+          const countSubtasksChecked = Object.entries(v[1].subtasks)
+            .filter(sub => { return sub[1].checked === true })
+            .length
+          totalSubtasks += subtaskValue * countSubtasksChecked
+        })
+
+      // Set todayProgress value
+      total = Math.trunc((taskValue * countCheckedTasks) + totalSubtasks)
+      if (isNaN(total)) { total = 0 }
+
+      // Update data
+      const progressToday = total
+      console.log('progressToday = ' + progressToday)
+      this.updateDayScore({ progressToday, countDailyTasks, countCheckedTasks })
+    },
     calcWeeklyCompletion () {
       console.log('calcWeeklyCompletion')
 
@@ -331,6 +382,7 @@ export default {
       const isoWeek = getISOWeek(addDays(new Date(Date.now()), this.utility.addedDays))
       this.updateTime({ isoDay, isoWeek })
       // Do calculations
+      this.calcDailyCompletion()
       this.calcWeeklyCompletion()
     })
 

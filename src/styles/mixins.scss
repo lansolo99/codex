@@ -86,6 +86,12 @@
 // Progress bars
 @mixin progress-linear-fill {
     background-color: $color-green !important;
+    background: repeating-linear-gradient(-45deg,
+        darken($color-green, 0%),
+        darken($color-green, 0%) 2px,
+        darken($color-green, 8%) 4px,
+        darken($color-green, 8%) 4px,
+        );
     border-radius: 3px;
 }
 

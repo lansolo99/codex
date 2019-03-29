@@ -13,6 +13,11 @@
   "country": "France",
   "occupation": "Your occupation",
   "stats": {
+    "dayScore": {
+      "score": 0,
+      "checked": 0,
+      "total": 0
+    },
     "progressWeek": 0,
     "weeksRecords": {
       "W1": 0

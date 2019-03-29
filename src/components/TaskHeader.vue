@@ -47,6 +47,9 @@ export default {
 
   .TasksProgressWrapper {
     height: auto;
+    &.container {
+      max-width: none !important;
+    }
   }
 
   .v-toolbar__extension {

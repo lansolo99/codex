@@ -8,12 +8,14 @@
         >
           <span class="label white--text">
             <span>{{ getStringDay }}</span>
+            <span v-if="userData.stats.dayScore.total !== 0" class="details">({{userData.stats.dayScore.checked}}/{{userData.stats.dayScore.total}} tasks)</span>
+            <span v-else class="details">(No tasks)</span>
           </span>
         <v-layout>
           <v-flex xs9>
-            <div class="progressbarContainer">
+            <div class="progressbarContainer" :class="{progressbarContainer__disabled: userData.stats.dayScore.total === 0}">
             <v-progress-linear
-              v-model="userData.stats.progressWeek"
+              v-model="userData.stats.dayScore.score"
               height="15"
               class="mt-2"
             ></v-progress-linear>
@@ -21,8 +23,9 @@
           </v-flex>
           <v-flex xs3>
             <div
+            v-if="userData.stats.dayScore.total !== 0"
               class="progressbarContainer__value white--text pl-2"
-            >{{userData.stats.progressWeek || 0}}%</div>
+            >{{userData.stats.dayScore.score || 0}}%</div>
           </v-flex>
         </v-layout>
         </v-card>
@@ -88,6 +91,16 @@ export default {
     },
     getStringDay () {
       return getStringFromIsoDay(this.time.isoDay)
+    },
+    dayProgress: function () {
+      return this.userData.stats.dayProgress
+    }
+  },
+  watch: {
+    dayProgress: {
+      handler: function (val, oldVal) {
+      },
+      deep: true
     }
   },
   methods: {
@@ -96,7 +109,6 @@ export default {
       recordWeekScore: 'profile/recordWeekScore',
       updateProfile: 'profile/updateProfile'
     })
-
   }
 }
 </script>
@@ -108,14 +120,24 @@ export default {
     border-radius: 0 !important;
 
     .label {
-      font-size: 14px;
-      text-transform: uppercase;
       opacity: 0.7;
+      span {
+        font-size: 14px;
+        text-transform: uppercase;
+        &.details {
+          text-transform: none;
+          font-size: 12px;
+        }
+      }
     }
 
     .progressbarContainer {
       position: relative;
       top: -4px;
+      &__disabled {
+        opacity: 0.5;
+      }
+
       &__value {
         position: relative;
         top: 1px;

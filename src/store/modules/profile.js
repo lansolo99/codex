@@ -51,6 +51,21 @@ export default {
     }, payload) {
       commit('updateProfile', payload)
     },
+    updateDayScore ({
+      commit
+    }, {
+      progressToday,
+      countDailyTasks,
+      countCheckedTasks
+    }) {
+      console.log('progressToday from profile store = ' + progressToday)
+
+      commit('updateDayScore', {
+        progressToday,
+        countDailyTasks,
+        countCheckedTasks
+      })
+    },
     recordWeekScore ({
       commit,
       dispatch,
@@ -79,6 +94,16 @@ export default {
     },
     disableFirstTimeUser (state) {
       state.firstTime = false
+    },
+    updateDayScore (state, {
+      progressToday,
+      countDailyTasks,
+      countCheckedTasks
+    }) {
+      console.log('progressToday from profile store mutation = ' + progressToday)
+      Vue.set(state.stats.dayScore, 'score', progressToday)
+      Vue.set(state.stats.dayScore, 'checked', countCheckedTasks)
+      Vue.set(state.stats.dayScore, 'total', countDailyTasks)
     },
     recordWeekScore (state, {
       progressWeek,
