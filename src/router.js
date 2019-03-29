@@ -6,7 +6,7 @@ import Stats from './views/Stats.vue'
 import Profile from './views/Profile.vue'
 
 Vue.use(Router)
-
+// Router
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
