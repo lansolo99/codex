@@ -207,13 +207,13 @@
                     <v-btn block large @click="loginElementsDisplay('signIn')">Connexion</v-btn>
                   </v-flex>
                 </v-layout>
-                <v-layout justify-center class="mt-3">
-                  <v-flex xs12 class="text-xs-center">
+                <v-layout justify-center class="mt-3 guest" >
+                  <v-flex xs12 class="text-xs-center ">
                     <v-btn
                       to="/tasks"
                       class="black white--text"
                       @click="signInAsGuest"
-                    >Test without account</v-btn>
+                    ><span>Test without account</span></v-btn>
                   </v-flex>
                 </v-layout>
 
@@ -746,6 +746,12 @@ html.webp {
     &.displayAllButtons {
       opacity: 1;
       transform: translateY(0px);
+    }
+    .guest {
+      .v-btn__content {
+        position: relative;
+        top: 2px;
+      }
     }
   }
   .signInsignUpForm {

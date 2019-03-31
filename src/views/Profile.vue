@@ -30,8 +30,8 @@
             <v-card-text>All recorded data will be lost</v-card-text>
 
             <v-card-actions>
+              <v-btn color="red darken-1" flat="flat" @click="dialogDeleteAccount = false">Cancel</v-btn>
               <v-spacer></v-spacer>
-
               <v-btn color="red darken-1" flat="flat" @click="deleteAccount()">Agree</v-btn>
             </v-card-actions>
           </v-card>

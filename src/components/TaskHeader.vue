@@ -34,6 +34,7 @@ export default {
 .taskHeader {
   padding-top: 10px;
   padding-top: 50px;
+  z-index: 3;
 
   &.v-toolbar {
     margin: auto;

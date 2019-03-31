@@ -19,6 +19,7 @@
                     <v-btn fab small dark right class="colorGreen mr-0" @click="handleChangeAvatar">
                       <v-icon class="icon icon-camera"></v-icon>
                     </v-btn>
+                    <!-- Avatar input type file -->
                     <input
                       type="file"
                       style="display: none"
@@ -26,6 +27,7 @@
                       accept="image/*"
                       @change="onFilePicked"
                     >
+                    <!-- End of Avatar input type file -->
                     <v-btn
                       v-if="profileDatas.avatarImage !==''"
                       fab
@@ -280,10 +282,10 @@ export default {
     }
     .v-btn--right {
       position: absolute;
-      right: -18px;
-      bottom: 36px;
+      right: -10px;
+      bottom: -5px;
       &.reset {
-        bottom: -5px;
+        right: 80px;
       }
     }
   }

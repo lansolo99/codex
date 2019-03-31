@@ -91,15 +91,16 @@ export default {
   &:before {
     content: "";
     position: absolute;
-    top: -51px;
+    // substract container's height
+    top: calc(-75px + 1px);
     left: 0;
-    height: 50px;
+    height: 75px;
     width: 100%;
     pointer-events: none;
     background-image: linear-gradient(
       -180deg,
-      rgba(255, 168, 30, 0) 20%,
-      #ffa81e 100%
+      rgba($color-golden, 0) 0%,
+      rgba($color-golden, 0.7) 100%
     );
   }
 }

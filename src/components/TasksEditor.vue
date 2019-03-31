@@ -628,7 +628,6 @@ export default {
         document.getElementsByClassName('menuable__content__active')[0].scrollTop = 0
       }, 100)
     }
-
   },
   mounted () {
     EventBus.$on('createTask', () => {

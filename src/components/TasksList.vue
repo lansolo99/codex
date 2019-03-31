@@ -1,6 +1,6 @@
 <template>
   <div class="taskList">
-    <v-expansion-panel v-model="panel" class="mt-2" v-if="utility.tasksReady">
+    <v-expansion-panel v-model="panel" class="mt-2" v-if="utility.tasksReady" v-click-outside="closeTasksPanels">
       <v-expansion-panel-content v-for="(task,key) in filterTasks(periodicity.name)" :key="key">
         <v-layout
           slot="header"
@@ -109,6 +109,7 @@
 import { isToday } from 'date-fns'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { EventBus } from '@/bus'
+import { clickOutsideDirective } from '@/utils/directives'
 
 export default {
 
@@ -118,11 +119,10 @@ export default {
       panel: []
     }
   },
+  directives: {
+    'click-outside': clickOutsideDirective
+  },
   props: {
-    // tasks: {
-    //   required: true,
-    //   type: Object
-    // },
     periodicity: {
       required: true,
       type: Object
@@ -281,6 +281,9 @@ export default {
     handleEdit (taskId) {
       this.setCurrentTask(taskId)
       this.toggleTaskDialog(true)
+    },
+    closeTasksPanels () {
+      EventBus.$emit('closeTasksListPanels')
     }
   },
   mounted () {
