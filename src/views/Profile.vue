@@ -14,8 +14,46 @@
         <v-btn block large center @click="signOut" class="colorGreen white--text">Sign out</v-btn>
       </v-layout>
     </v-container>
-    <!-- Delete account -->
+    <!-- Delete + reset account -->
     <v-container class="primary darken-1">
+      <!-- Reset account -->
+      <v-layout class="mx-3 mt-2 mb-2" justify-center>
+        <v-dialog
+          v-model="dialogResetAccount"
+          persistent
+          content-class="standard-dialog"
+        >
+          <v-btn slot="activator" large center color="red white--text px-5">Reset my account</v-btn>
+          <v-card>
+            <v-card-title class="title red white--text pt-3 pb-3" primary-title>Reset my account?</v-card-title>
+
+            <v-card-text>You will loose all your task and progression since the beginning!</v-card-text>
+
+            <v-card-actions>
+              <v-btn color="red darken-1" flat="flat" @click="dialogResetAccount = false">Cancel</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn color="red darken-1" flat="flat" @click="resetAccount()">Agree</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-layout>
+      <v-dialog
+          v-model="dialogResetAccountConfirmation"
+          content-class="standard-dialog"
+        >
+          <v-card>
+            <v-card-title class="title green white--text pt-3 pb-3" primary-title>Reset done!</v-card-title>
+
+            <v-card-text>Let's start over again ...</v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+
+              <v-btn color="green darken-1" flat="flat" @click="dialogResetAccountConfirmation = false">Ok</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+       <!-- Delete account -->
       <v-layout class="mx-3 mt-2 mb-2" justify-center>
         <v-dialog
           v-model="dialogDeleteAccount"
@@ -23,11 +61,11 @@
           max-width="350"
           content-class="standard-dialog"
         >
-          <v-btn slot="activator" large center color="red white--text px-5">Delete account</v-btn>
+          <v-btn slot="activator" large center color="red white--text px-5">Delete my account</v-btn>
           <v-card>
             <v-card-title class="title red white--text pt-3 pb-3" primary-title>Delete my account?</v-card-title>
 
-            <v-card-text>All recorded data will be lost</v-card-text>
+            <v-card-text>Your account will be deleted forever and couldn't be restored. All recorded data will be lost</v-card-text>
 
             <v-card-actions>
               <v-btn color="red darken-1" flat="flat" @click="dialogDeleteAccount = false">Cancel</v-btn>
@@ -36,11 +74,10 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-
+        <!-- Delete account : network needed -->
         <v-dialog
           v-model="dialogDeleteNeedNetwork"
           persistent
-          max-width="350"
           content-class="standard-dialog"
         >
           <v-card>
@@ -55,7 +92,9 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+
       </v-layout>
+
     </v-container>
   </div>
 </template>
@@ -74,21 +113,28 @@ export default {
   },
   data () {
     return {
+      dialogResetAccountConfirmation: false,
       dialogDeleteAccount: false,
+      dialogResetAccount: false,
       dialogDeleteNeedNetwork: false
     }
   },
   computed: {
     ...mapState({
       profile: state => state.profile,
+      tasks: state => state.tasks,
       utility: state => state.utility
     })
   },
   methods: {
     ...mapActions({
-      toggleProfileDialog: 'utility/toggleProfileDialog'
+      toggleProfileDialog: 'utility/toggleProfileDialog',
+      resetTasksDatas: 'tasks/resetTasksDatas',
+      setResetProfileProgression: 'profile/setResetProfileProgression'
     }),
     ...mapMutations({
+      // setResetProfileProgression: 'profile/setResetProfileProgression',
+      // resetTasksDatas: 'tasks/resetTasksDatas',
       setDeleteAccount: 'utility/setDeleteAccount'
     }),
     handleEditProfile () {
@@ -173,6 +219,22 @@ export default {
             })
           })
       }
+    },
+    resetAccount () {
+      console.log('resetAccount')
+
+      // Display spinner
+      // EventBus.$emit('appSpinner', true)
+
+      // Close delete account Modal
+      this.dialogResetAccount = false
+      this.setResetProfileProgression()
+      this.resetTasksDatas('resetAccount')
+        .then((res) => {
+          this.dialogResetAccountConfirmation = true
+          EventBus.$emit('recordProgress')
+          EventBus.$emit('updateProfileDatas')
+        })
     }
   },
   beforeRouteEnter (to, from, next) {

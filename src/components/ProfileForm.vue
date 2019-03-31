@@ -262,6 +262,11 @@ export default {
     EventBus.$on('editProfile', (status) => {
       this.editing = status
     })
+
+    EventBus.$on('updateProfileDatas', (status) => {
+      const retrievedProfile = JSON.parse(JSON.stringify(this.$store.state.profile))
+      this.profileDatas = retrievedProfile
+    })
   }
 
 }

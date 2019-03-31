@@ -8,8 +8,11 @@ export default {
   actions: {
     resetTasksDatas ({
       commit
-    }) {
-      commit('resetTasksDatas')
+    }, payload) {
+      return new Promise((resolve, reject) => {
+        commit('resetTasksDatas', payload)
+        resolve('resetTasksData action finished')
+      })
     },
     fetchTasksDatas ({
       commit
@@ -108,7 +111,7 @@ export default {
     }
   },
   mutations: {
-    resetTasksDatas (state) {
+    resetTasksDatas (state, payload) {
       for (let key of Object.keys(state)) {
         Vue.delete(state, key)
       }

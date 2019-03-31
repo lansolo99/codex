@@ -1,12 +1,17 @@
 import Vue from 'vue'
 import firebase from '@/Firebase'
 import sourceData from '@/store/datas/profile'
+import defaultStats from '@/store/datas/profileDefaultStats'
 import {
   EventBus
 } from '@/bus'
 
 const getDefaultState = {
   ...sourceData
+}
+
+const getDefaultStats = {
+  ...defaultStats
 }
 
 export default {
@@ -22,6 +27,11 @@ export default {
     }
   },
   actions: {
+    setResetProfileProgression ({
+      commit
+    }) {
+      commit('setResetProfileProgression')
+    },
     resetProfileDatas ({
       commit
     }) {
@@ -104,6 +114,11 @@ export default {
       Vue.set(state.stats.dayScore, 'score', progressToday)
       Vue.set(state.stats.dayScore, 'checked', countCheckedTasks)
       Vue.set(state.stats.dayScore, 'total', countDailyTasks)
+    },
+    setResetProfileProgression (state) {
+      state.connexionDateLast = Number(new Date(Date.now()))
+      state.avatarImage = ''
+      Object.assign(state.stats, getDefaultStats)
     },
     recordWeekScore (state, {
       progressWeek,
