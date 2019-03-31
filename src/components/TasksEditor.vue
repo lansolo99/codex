@@ -22,7 +22,7 @@
       <v-card-text class="pa-0 dialogTaskScrollablePart">
         <v-container class="dialogContainer pa-0">
           <v-form lazy-validation>
-            <div class="secondary pa-4">
+            <div class="secondary pa-4 information-wrapper">
               <h6 class="white--text mb-3">Informations</h6>
               <v-text-field
                 dark
@@ -71,7 +71,7 @@
                 </v-select>
               </div>
             </div>
-            <div class="primary pa-4">
+            <div class="primary pa-4 schedule-wrapper">
               <div class="schedule">
                 <h6 class="my-3">Schedule</h6>
                 <v-tabs
@@ -658,6 +658,10 @@ export default {
   }
   .v-toolbar {
     .v-toolbar__title {
+      //font-size: 23px !important;
+      @media screen and (max-width: 400px) {
+        font-size: 20px !important;
+      }
       font-size: 23px !important;
     }
     .v-toolbar__title:not(:first-child) {
@@ -701,6 +705,12 @@ export default {
   }
   .dialogContainer {
     height: 100%;
+    @media screen and (max-width: 400px) {
+      .information-wrapper,
+      .schedule-wrapper {
+        padding: 24px 16px !important;
+      }
+    }
   }
 
   .v-input.categorySelect {
