@@ -335,6 +335,26 @@ export default {
     // console.log(format(new Date(2019, 0, 18, 11, 45, 5, 123), 'DD/MM/YYYY'))
     // console.log(getTime(new Date(2019, 0, 18, 11, 45, 5, 123)))
 
+    // FIREBASE CLOUD MESSAGING
+
+    // Retrieve Firebase Messaging object.
+    const messaging = firebase.messaging()
+
+    // Add the public key generated from the console here.
+    messaging.usePublicVapidKey('BMZ27Tax1A9db5QrZpnHVs7mIUJS8walNQrElirXRA6B11i-t_I0INmYVUi0TFoMbkY-sitDCL2zS21ePvQb9e0')
+
+    // Permission request
+    messaging.requestPermission().then(function () {
+      console.log('Notification permission granted.')
+      // TODO(developer): Retrieve an Instance ID token for use with FCM.
+      // Get Token
+      messaging.getToken().then((token) => {
+        console.log(token)
+      })
+    }).catch(function (err) {
+      console.log('Unable to get permission to notify.', err)
+    })
+
     // EVENTS
 
     const dailyCountdown = () => {
