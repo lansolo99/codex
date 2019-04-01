@@ -20,7 +20,7 @@ exports.sendNotifications = functions.firestore
     }
 
     console.info(payload)
-    return admin.messaging().sendToDevice('fedcKkCXKns:APA91bHhX5GfHc_slAJCgIhkt7qetYprdoEI3vm2pqrX5VvmOByUz0CKuxllHCjV-pcBhNqmjEXzZXEVff9kd9KwwEBisYdA0NPDWPWOGRONESPUnvqkbEk3jY8S0wcjh71lrURpQRzO', payload)
+    return admin.messaging().sendToDevice('fVyaCagfOqU:APA91bE9fRiT-mqzxS_wlJjnhvSMPduJ77jKnXRL0_nQsfDeRO8P0v2QUEz6SfgCXGYDB_jGoxM2e59KisNsNJdCyJ-KDguqi6JKwtik09PB08C82h3AjVYhISImistbMIYx81ZUkqOm', payload)
       .then((response) => console.info(response))
 
   })
