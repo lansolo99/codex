@@ -64,6 +64,7 @@
               ></v-text-field>
               <v-btn @click="subscribeToNotifications" class="colorGreen white--text mb-3">Subscribe to notifications</v-btn>
               <v-btn @click="unSubscribeFromNotifications" class="colorGreen white--text mb-3">Unsubscribe to notifications</v-btn>
+              <v-btn @click="sendNotification" class="colorGreen white--text mb-3">sendNotifications</v-btn>
 
             </v-card>
           </div>
@@ -254,8 +255,6 @@ export default {
     },
     subscribeToNotifications () {
       console.log('subscribeToNotifications')
-      // local test purpose
-
       // Retrieve Firebase Messaging object.
       const messaging = firebase.messaging()
       messaging.requestPermission().then(() => {
@@ -264,6 +263,7 @@ export default {
           console.log('token =' + token)
           this.addUserToken(token).then(() => {
             EventBus.$emit('recordProgress')
+            EventBus.$emit('updateProfileDatas')
           })
         })
       }).catch(function (err) {
@@ -284,6 +284,14 @@ export default {
             EventBus.$emit('updateProfileDatas')
           })
         })
+    },
+    sendNotification () {
+      console.log('sendNotification')
+      var callSendNotification = firebase.functions().httpsCallable('sendNotifications')
+      callSendNotification().then(function (result) {
+        console.log('callSendNotification called')
+      })
+      // const notificationMessage = 'Tagueule'
     }
   },
   created () {
