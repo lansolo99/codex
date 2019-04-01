@@ -63,6 +63,7 @@
                 required
               ></v-text-field>
               <v-btn @click="subscribeToNotifications" class="colorGreen white--text mb-3">Subscribe to notifications</v-btn>
+              <v-btn @click="unSubscribeFromNotifications" class="colorGreen white--text mb-3">Unsubscribe to notifications</v-btn>
 
             </v-card>
           </div>
@@ -150,6 +151,7 @@ export default {
   methods: {
     ...mapActions({
       updateProfile: 'profile/updateProfile',
+      addUserToken: 'profile/addUserToken',
       toggleProfileDialog: 'utility/toggleProfileDialog'
     }),
     togglePasswordVisibility (field) {
@@ -252,18 +254,37 @@ export default {
     },
     subscribeToNotifications () {
       console.log('subscribeToNotifications')
+      // local test purpose
+
       // Retrieve Firebase Messaging object.
       const messaging = firebase.messaging()
       messaging.requestPermission().then(() => {
         console.log('Notification permission granted.')
         messaging.getToken().then(token => {
           console.log('token =' + token)
+          this.addUserToken(token).then(() => {
+            EventBus.$emit('recordProgress')
+          })
         })
       }).catch(function (err) {
         console.log('Unable to get permission to notify.', err)
       })
+    },
+    unSubscribeFromNotifications () {
+      console.log('unSubscribeFromNotifications')
+      // Retrieve Firebase Messaging object.
+      const messaging = firebase.messaging()
+      messaging.getToken()
+        .then(token => {
+          messaging.deleteToken(token)
+        })
+        .then(() => {
+          this.addUserToken('').then(() => {
+            EventBus.$emit('recordProgress')
+            EventBus.$emit('updateProfileDatas')
+          })
+        })
     }
-
   },
   created () {
     // Reset local datas

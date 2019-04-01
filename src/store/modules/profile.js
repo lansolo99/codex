@@ -27,6 +27,11 @@ export default {
     }
   },
   actions: {
+    addUserToken ({
+      commit
+    }, payload) {
+      commit('addUserToken', payload)
+    },
     setResetProfileProgression ({
       commit
     }) {
@@ -93,6 +98,9 @@ export default {
     }
   },
   mutations: {
+    addUserToken (state, payload) {
+      Vue.set(state, 'token', payload)
+    },
     resetProfileDatas (state) {
       Object.assign(state, getDefaultState)
     },

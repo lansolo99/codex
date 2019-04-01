@@ -222,10 +222,6 @@ export default {
     },
     resetAccount () {
       console.log('resetAccount')
-
-      // Display spinner
-      // EventBus.$emit('appSpinner', true)
-
       // Close delete account Modal
       this.dialogResetAccount = false
       this.setResetProfileProgression()

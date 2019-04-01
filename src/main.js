@@ -1,4 +1,3 @@
-// import '@babel/polyfill'
 import Es6Promise from 'es6-promise'
 import '@babel/polyfill'
 import Vue from 'vue'
