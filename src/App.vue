@@ -27,6 +27,7 @@ export default {
     return {
       showAppSpinner: true,
       authUser: null,
+      token: null,
       toolbarConf: 'toolbarNone',
       view: 'login',
       logged: false,
@@ -338,28 +339,82 @@ export default {
     // FIREBASE CLOUD MESSAGING
 
     // Retrieve Firebase Messaging object.
+    const messaging = firebase.messaging()
+    // Add the public key generated from the console here.
+    messaging.usePublicVapidKey('BMZ27Tax1A9db5QrZpnHVs7mIUJS8walNQrElirXRA6B11i-t_I0INmYVUi0TFoMbkY-sitDCL2zS21ePvQb9e0')
+    // On receive message in the browser
+    messaging.onMessage(function (payload) {
+      console.log('Message received. ', payload)
+      // ...
+    })
 
     EventBus.$on('acceptPushNotifications', () => {
       const askForPermissioToReceiveNotifications = async () => {
-        const messaging = firebase.messaging()
-        // Add the public key generated from the console here.
-        messaging.usePublicVapidKey('BMZ27Tax1A9db5QrZpnHVs7mIUJS8walNQrElirXRA6B11i-t_I0INmYVUi0TFoMbkY-sitDCL2zS21ePvQb9e0')
         try {
           await messaging.requestPermission()
           const token = await messaging.getToken()
           console.log('token:', token)
-
+          this.token = token
+          EventBus.$emit('sendPushMessage')
           return token
         } catch (error) {
           console.error(error)
         }
-        messaging.onMessage(function (payload) {
-          console.log('Message received. ', payload)
-          // ...
-        })
       }
       askForPermissioToReceiveNotifications()
     })
+
+    // Firebase Admin SDK
+    const admin = require('firebase-admin')
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId: 'codex-208f0',
+        clientEmail: 'firebase-adminsdk-3zl9t@codex-208f0.iam.gserviceaccount.com',
+        privateKey: '-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCw0p2Wf4lJ60m/\nEZ9rPSZScRdfUX/S59buXHsDHO+0JQ7sTY8FJkkp1W2sueKwljJriD/kb2BJLp16\nPVZo2vn7DfY/y2qNq/dUM4mQyvfghalBQmqOn1utrE0rpKg8YUXL7MPwbGShmQdZ\nWL871QUutLg+3MrVONwSzS7jvC0sslHxIU3e6xqxd1zwY2itMBGf6zM4AzHRUOJ2\n4HnJZsqzervLFhBQ6fcGr7jgmOt3IIbmhU6Hrv3r+T4gkqu+Dj/IMKI956bbiVXu\n/xjawu+pTqWxLCW2fQ2SqmW912PDwBM1TF3pMMeGph83XKMwMzqCo1/Muc895XL9\nN+vjuRvrAgMBAAECggEAPIc8TqJFuroCOpervKfoEFyKJaTeXrHiDyI1MbGcFEyD\nOTyrcpXSgbF/o5rWEKC5jbnMNUQy75o3afrJM4eR/vCelOPrC6gMOBSUSK5R/9eB\nQsebdkrytRbAK+pndJPPsqjPweM452Bc9aa9f5vB9GUElPA7tpWKMB1wqaBmzl+B\nP4uSKB9hDMh/4wvjoSqt8BizVYccZN5sqY4IbVrFyaZRGvmyorAZZAeqk6hgk7dV\n/UadE9gJz+LV2lpmtdTGxz0jmCuVj7ca7eCwu1H8Rnje2z0yywUxpr6hDUp3an0U\n3qOGb+lrxpQ+DvqDYsnHgW+LVANkHbyb6OLMIjo3wQKBgQD0drpv39JmFerw05JV\nuHorgH7er2Vqk2OHy2CvKrNAfJZx7lek9Oktb+y2ozz0BCp2WGLJicgv4cRV3gyX\nVt3RvVef4K7agTYRCPP69P9aNui1G4bVmzmSlsekTRBOdtIfArVig69fST0O3x+g\n+MmWTa9gV7keLnf7YRSQgsi0sQKBgQC5Kr3wPDKYfQo8MMQgP9a0f24d6rPNiohw\nPMd//1FvjYwvX5lQfi7L9gLElLxX5Vk7VyYHtsBIzY9VPx7LtfSa6UbYLFhu7O3u\nDDrU6TmO0rgKPF0Od2vG+8qQ67pc7e/DonA3lftrew3EPZM6WE81qeI13vWZMqhD\nFAoahzsxWwKBgQDKgM9PfQi8p8tGUvwVJguNnZN6w7Au6Ii6JC6i66ww7wNwvQ69\nBmNh0CU15WLIf+rsvaqXaBr8DvikaJvlgX+eDkpXlbdCKWawFcqFSA1+nZ2G6JZ4\nu2ylkWEvKOcpGCRWq9e1E4BiXjjF6O46WdwjNZbhJ8mgxr187p4qVywLAQKBgQCe\n3koqpStv49B1Rg3v8XXgVXkAGA/+qP5Y9fzhGAkh4dtGBgq/ohO6kS9cxJQ4AaIm\npKYPdj/R9vQkWsysUUg15TIQZTPWsFePp1SOui/VF3wp5BKfR9zj08K/xlCWTNsr\nCeKn/nnBhMmR9pasN3p2e3SHbe1gbLMrIjVs/1vNAwKBgQCMCQvdtGws9x11gh2p\nBl07ONBO1vEuXJoxngBSFQkP9babUeFEKerBlNErkiK8lIiqGEcGh1Oxcf1NkQrN\nqfC7GW8L087zcIRROejuKAmyF/sI4Uu5N5NUgwoEf6BJ3Ir3/u+wFlhoF4PjhCZk\n8Z9YjFDqTgOeffTFcYca8u9yGg==\n-----END PRIVATE KEY-----\n'
+      })
+    })
+
+    EventBus.$on('sendPushMessage', () => {
+      console.log('sendPushMessage')
+
+      // Send message
+      var registrationToken = this.token
+
+      var message = {
+        data: {
+          score: '850',
+          time: '2:45'
+        },
+        token: registrationToken
+      }
+
+      // Send a message to the device corresponding to the provided
+      // registration token.
+      admin.messaging().send(message)
+        .then((response) => {
+        // Response is a message ID string.
+          console.log('Successfully sent message:', response)
+        })
+        .catch((error) => {
+          console.log('Error sending message:', error)
+        })
+    })
+
+    // const Messaging = admin.messaging()
+
+    // var payload = {
+    //   webpush: {
+    //     notification: {
+    //       title: 'Notification title',
+    //       body: 'Notification info',
+    //       icon: 'http://i.imgur.com/image.png',
+    //       click_action: 'http://yoursite.com/redirectPage'
+    //     }
+    //   },
+    //   topic: 'Tamere'
+    // }
+
+    // return Messaging.send(payload)
 
     // EVENTS
 
