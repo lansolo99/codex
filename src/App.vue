@@ -338,23 +338,27 @@ export default {
     // FIREBASE CLOUD MESSAGING
 
     // Retrieve Firebase Messaging object.
-    const messaging = firebase.messaging()
-
-    // Add the public key generated from the console here.
-    messaging.usePublicVapidKey('BMZ27Tax1A9db5QrZpnHVs7mIUJS8walNQrElirXRA6B11i-t_I0INmYVUi0TFoMbkY-sitDCL2zS21ePvQb9e0')
 
     EventBus.$on('acceptPushNotifications', () => {
-      // Permission request
-      messaging.requestPermission().then(function () {
-        console.log('Notification permission granted.')
-        // TODO(developer): Retrieve an Instance ID token for use with FCM.
-        // Get Token
-        messaging.getToken().then((token) => {
-          console.log(token)
+      const askForPermissioToReceiveNotifications = async () => {
+        const messaging = firebase.messaging()
+        // Add the public key generated from the console here.
+        messaging.usePublicVapidKey('BMZ27Tax1A9db5QrZpnHVs7mIUJS8walNQrElirXRA6B11i-t_I0INmYVUi0TFoMbkY-sitDCL2zS21ePvQb9e0')
+        try {
+          await messaging.requestPermission()
+          const token = await messaging.getToken()
+          console.log('token:', token)
+
+          return token
+        } catch (error) {
+          console.error(error)
+        }
+        messaging.onMessage(function (payload) {
+          console.log('Message received. ', payload)
+          // ...
         })
-      }).catch(function (err) {
-        console.log('Unable to get permission to notify.', err)
-      })
+      }
+      askForPermissioToReceiveNotifications()
     })
 
     // EVENTS
