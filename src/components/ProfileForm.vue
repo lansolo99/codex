@@ -62,6 +62,8 @@
                 v-model="profileDatas.email"
                 required
               ></v-text-field>
+              <v-btn @click="subscribeToNotifications" class="colorGreen white--text mb-3">Subscribe to notifications</v-btn>
+
             </v-card>
           </div>
         </v-form>
@@ -247,7 +249,21 @@ export default {
         // Save profile
         this.saveProfile()
       })
+    },
+    subscribeToNotifications () {
+      console.log('subscribeToNotifications')
+      // Retrieve Firebase Messaging object.
+      const messaging = firebase.messaging()
+      messaging.requestPermission().then(() => {
+        console.log('Notification permission granted.')
+        messaging.getToken().then(token => {
+          console.log('token =' + token)
+        })
+      }).catch(function (err) {
+        console.log('Unable to get permission to notify.', err)
+      })
     }
+
   },
   created () {
     // Reset local datas
