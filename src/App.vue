@@ -348,24 +348,8 @@ export default {
       console.log('Notification permission granted.')
       // TODO(developer): Retrieve an Instance ID token for use with FCM.
       // Get Token
-      // messaging.getToken().then((token) => {
-      //   console.log(token)
-      // })
-      messaging.getToken().then(function (currentToken) {
-        if (currentToken) {
-          sendTokenToServer(currentToken)
-          updateUIForPushEnabled(currentToken)
-        } else {
-          // Show permission request.
-          console.log('No Instance ID token available. Request permission to generate one.')
-          // Show permission UI.
-          updateUIForPushPermissionRequired()
-          setTokenSentToServer(false)
-        }
-      }).catch(function (err) {
-        console.log('An error occurred while retrieving token. ', err)
-        showToken('Error retrieving Instance ID token. ', err)
-        setTokenSentToServer(false)
+      messaging.getToken().then((token) => {
+        console.log(token)
       })
     }).catch(function (err) {
       console.log('Unable to get permission to notify.', err)
