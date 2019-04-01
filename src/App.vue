@@ -343,33 +343,19 @@ export default {
     // Add the public key generated from the console here.
     messaging.usePublicVapidKey('BMZ27Tax1A9db5QrZpnHVs7mIUJS8walNQrElirXRA6B11i-t_I0INmYVUi0TFoMbkY-sitDCL2zS21ePvQb9e0')
 
-    // Permission request
-    messaging.requestPermission().then(function () {
-      console.log('Notification permission granted.')
-      // TODO(developer): Retrieve an Instance ID token for use with FCM.
-      // Get Token
-      messaging.getToken().then((token) => {
-        console.log(token)
+    EventBus.$on('acceptPushNotifications', () => {
+      // Permission request
+      messaging.requestPermission().then(function () {
+        console.log('Notification permission granted.')
+        // TODO(developer): Retrieve an Instance ID token for use with FCM.
+        // Get Token
+        messaging.getToken().then((token) => {
+          console.log(token)
+        })
+      }).catch(function (err) {
+        console.log('Unable to get permission to notify.', err)
       })
-    }).catch(function (err) {
-      console.log('Unable to get permission to notify.', err)
     })
-
-    // Callback fired if Instance ID token is updated.
-    // messaging.onTokenRefresh(function () {
-    //   messaging.getToken().then(function (refreshedToken) {
-    //     console.log('Token refreshed.')
-    //     // Indicate that the new Instance ID token has not yet been sent to the
-    //     // app server.
-    //     setTokenSentToServer(false)
-    //     // Send Instance ID token to app server.
-    //     sendTokenToServer(refreshedToken)
-    //     // ...
-    //   }).catch(function (err) {
-    //     console.log('Unable to retrieve refreshed token ', err)
-    //     showToken('Unable to retrieve refreshed token ', err)
-    //   })
-    // })
 
     // EVENTS
 

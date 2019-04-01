@@ -216,6 +216,15 @@
                     ><span>Test without account</span></v-btn>
                   </v-flex>
                 </v-layout>
+                <v-layout justify-center class="mt-3" >
+                  <v-flex xs12 class="text-xs-center ">
+                    <v-btn
+                      to="/tasks"
+                      class="black white--text"
+                      @click="acceptPushNotifications"
+                    ><span>Accept push notifications</span></v-btn>
+                  </v-flex>
+                </v-layout>
 
                 <v-layout v-if="authUser" class="mt-3">
                   <v-flex xs12>
@@ -500,6 +509,10 @@ export default {
 
     play: function () {
       this.anim.play()
+    },
+    acceptPushNotifications () {
+      console.log('acceptPushNotifications')
+      EventBus.$emit('acceptPushNotifications')
     }
   },
   mounted () {
