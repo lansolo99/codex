@@ -287,11 +287,10 @@ export default {
     },
     sendNotification () {
       console.log('sendNotification')
-      var callSendNotification = firebase.functions().httpsCallable('sendNotifications')
+      var callSendNotification = firebase.functions().httpsCallable(this.profile.token)
       callSendNotification().then(function (result) {
         console.log('callSendNotification called')
       })
-      // const notificationMessage = 'Tagueule'
     }
   },
   created () {

@@ -17,4 +17,6 @@ exports.sendNotifications = functions.https.onCall((data, context) => {
 
   console.info(payload)
 
+  return admin.messaging().sendToDevice(data, payload)
+
 })
