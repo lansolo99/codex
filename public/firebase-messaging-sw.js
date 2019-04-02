@@ -17,10 +17,12 @@ const messaging = firebase.messaging()
 messaging.setBackgroundMessageHandler(function (payload) {
   console.log('[firebase-messaging-sw.js] Received background message ', payload)
   // Customize notification here
-  var notificationTitle = 'Background Message Title'
+  var notificationTitle = 'Weekx'
   var notificationOptions = {
-    body: 'Background Message body.',
-    icon: '/firebase-logo.png'
+    title: 'Weekx',
+    body: 'You have some tasks today!',
+    click_action: 'https://weekx.netlify.com',
+    icon: 'https://weekx.netlify.com/img/icons/android-chrome-512x512.png'
   }
 
   return self.registration.showNotification(notificationTitle,
