@@ -193,6 +193,16 @@ export default {
     ...mapGetters({
       getCountries: 'utility/getCountries'
     })
+
+  },
+  watch: {
+    profileDatas: {
+      handler: function (val, oldVal) {
+        console.log('profileDatas has changed')
+        this.saveProfile()
+      },
+      deep: true
+    }
   },
   methods: {
     ...mapActions({
@@ -232,6 +242,7 @@ export default {
                 })
             })
             .catch(res => {
+              // Need online to change image
               console.log(res.message)
               this.dialogAvatarChangeNeedNetwork = true
             })
@@ -244,6 +255,14 @@ export default {
             EventBus.$emit('updateFirebase')
           })
         }
+      } else {
+        // Update profile store
+        const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+
+        this.updateProfile(profileDatas).then(() => {
+          // Update firebase
+          EventBus.$emit('updateFirebase')
+        })
       }
     },
     handleChangeAvatar () {
