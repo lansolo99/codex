@@ -74,6 +74,7 @@
                 <v-layout row wrap>
                   <v-flex xs5>
                     <v-switch
+                      @click.native="manageSubscribe()"
                       v-model="profileDatas.notifications.dailyTaskReminder.status"
                       :label="profileDatas.notifications.dailyTaskReminder.status ? 'On':'Off'"
                     ></v-switch>
@@ -111,6 +112,34 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog
+      v-model="dialogNotificationPermissionDenied"
+      max-width="350"
+      content-class="standard-dialog"
+    >
+      <v-card>
+        <v-card-title class="title red white--text pt-3 pb-3" primary-title>
+          Notifications denied
+          <v-icon
+            right
+            class="white--text icon icon-delete close"
+            @click="dialogNotificationPermissionDenied = false"
+          ></v-icon>
+        </v-card-title>
+
+        <v-card-text>You chose to deny notification. You might want to manually toggle that choice in your browser settings if you change your mind.</v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="red darken-1"
+            flat="flat"
+            @click="dialogNotificationPermissionDenied = false"
+          >Ok</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -128,6 +157,7 @@ export default {
     return {
       editing: false,
       dialogAvatarChangeNeedNetwork: false,
+      dialogNotificationPermissionDenied: false,
       formComponents: {
         reminderSwitch: false,
         reminderHour: [
@@ -194,15 +224,6 @@ export default {
       getCountries: 'utility/getCountries'
     })
 
-  },
-  watch: {
-    profileDatas: {
-      handler: function (val, oldVal) {
-        console.log('profileDatas has changed')
-        this.saveProfile()
-      },
-      deep: true
-    }
   },
   methods: {
     ...mapActions({
@@ -317,44 +338,54 @@ export default {
         this.saveProfile()
       })
     },
-    subscribeToNotifications () {
-      console.log('subscribeToNotifications')
-      // Retrieve Firebase Messaging object.
-      const messaging = firebase.messaging()
-      messaging.requestPermission().then(() => {
-        console.log('Notification permission granted.')
-        messaging.getToken().then(token => {
-          console.log('token =' + token)
-          this.addUserToken(token).then(() => {
-            EventBus.$emit('recordProgress')
-            EventBus.$emit('updateProfileDatas')
+    manageSubscribe () {
+      // Subscription Logic
+      console.log('manageSubscribe')
+      // status True
+      if (this.profileDatas.notifications.dailyTaskReminder.status) {
+        // Request permission
+        console.log('subscribeToNotifications')
+        // Retrieve Firebase Messaging object.
+        const messaging = firebase.messaging()
+        messaging.requestPermission().then(() => {
+          console.log('Notification permission granted.')
+          messaging.getToken().then(token => {
+            console.log('token =' + token)
+            this.profileDatas.token = token
+            const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+            this.updateProfile(profileDatas).then(() => {
+              // Update firebase
+              EventBus.$emit('updateFirebase')
+            })
           })
+        }).catch(err => {
+          console.log('Unable to get permission to notify.', err)
+          this.dialogNotificationPermissionDenied = true
+          this.profileDatas.notifications.dailyTaskReminder.status = false
         })
-      }).catch(function (err) {
-        console.log('Unable to get permission to notify.', err)
-      })
-    },
-    unSubscribeFromNotifications () {
-      console.log('unSubscribeFromNotifications')
-      // Retrieve Firebase Messaging object.
-      const messaging = firebase.messaging()
-      messaging.getToken()
-        .then(token => {
-          messaging.deleteToken(token)
-        })
-        .then(() => {
-          this.addUserToken('').then(() => {
-            EventBus.$emit('recordProgress')
-            EventBus.$emit('updateProfileDatas')
-          })
-        })
-    },
-    sendNotification () {
-      console.log('sendNotification')
-      var callSendNotification = firebase.functions().httpsCallable(this.profile.token)
-      callSendNotification().then(function (result) {
-        console.log('callSendNotification called')
-      })
+      } else {
+        // status False
+        console.log('go false')
+        // If user had token
+        if (!this.profileDatas.notifications.dailyTaskReminder.status && this.profileDatas.token !== '') {
+          console.log('unSubscribeFromNotifications')
+          // Retrieve Firebase Messaging object.
+          const messaging = firebase.messaging()
+          messaging.getToken()
+            .then(token => {
+              messaging.deleteToken(token)
+            })
+            .then(() => {
+              this.profileDatas.token = ''
+              const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+              this.updateProfile(profileDatas).then(() => {
+              // Update firebase
+                EventBus.$emit('updateFirebase')
+              })
+            })
+        }
+      }
+      console.log(this.profileDatas.notifications.dailyTaskReminder.status)
     }
   },
   created () {
