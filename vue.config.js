@@ -32,7 +32,7 @@ module.exports = {
       }
     }
   },
-  chainWebpack (config) {
+  chainWebpack(config) {
     config.module
       .rule('vue')
       .use('vue-loader')
@@ -44,5 +44,11 @@ module.exports = {
           preserveWhitespace: true
         }
       }))
+    config.module
+      .rule('modernizr')
+      .test(/\.modernizrrc$/)
+      .use('webpack-modernizr-loader')
+      .loader('webpack-modernizr-loader')
   }
+}
 }

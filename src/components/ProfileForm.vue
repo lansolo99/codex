@@ -6,7 +6,7 @@
         <v-form ref="profileForm" lazy-validation>
           <!-- Account -->
           <div class="fieldset fieldset--account">
-            <h6 class="subheader subheader--first my-3 black--text">Account</h6>
+            <h6 class="subheader subheader--first my-3 black--text">{{profileDatas.pseudo}}</h6>
             <v-card class="secondary pa-3">
               <v-layout row wrap>
                 <v-flex xs-12 text-xs-center>
@@ -47,52 +47,70 @@
               <v-text-field
                 :disabled="!editing"
                 color="secondary"
-                class="red--text"
-                label="Pseudo"
-                readonly
-                v-model="profileDatas.pseudo"
-                required
-              ></v-text-field>
-              <v-text-field
-                class="pt-1"
-                :disabled="!editing"
-                color="secondary"
                 label="Email"
                 readonly
                 v-model="profileDatas.email"
                 required
               ></v-text-field>
-              <v-btn @click="subscribeToNotifications" class="colorGreen white--text mb-3">Subscribe to notifications</v-btn>
-              <v-btn @click="unSubscribeFromNotifications" class="colorGreen white--text mb-3">Unsubscribe to notifications</v-btn>
-              <v-btn @click="sendNotification" class="colorGreen white--text mb-3">sendNotifications</v-btn>
-
+            </v-card>
+          </div>
+          <!-- Settings -->
+          <div class="fieldset fieldset--settings pt-3">
+            <h6 class="subheader subheader--first my-3 black--text">Settings</h6>
+            <v-card>
+              <v-container class="secondary ma-0 pb-2 white--text">
+                <v-layout row wrap>
+                  <v-flex shrink>
+                    <div class="category">
+                      <img :src="require(`@/assets/images/icons_categories/Reminder.svg`)" alt>
+                    </div>
+                  </v-flex>
+                  <v-flex grow class="pt-1 pl-3 pr-3 pb-1">
+                    <span class="custom-title">Daily tasks reminders</span>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+              <v-container>
+                <v-layout row wrap>
+                  <v-flex xs5>
+                    <v-switch
+                      v-model="profileDatas.notifications.dailyTaskReminder.status"
+                      :label="profileDatas.notifications.dailyTaskReminder.status ? 'On':'Off'"
+                    ></v-switch>
+                  </v-flex>
+                  <v-flex xs7>
+                    <v-select
+                      v-if="profileDatas.notifications.dailyTaskReminder.status"
+                      :items="formComponents.reminderHour"
+                      label="Time"
+                      v-model="profileDatas.notifications.dailyTaskReminder.time"
+                    ></v-select>
+                  </v-flex>
+                </v-layout>
+              </v-container>
             </v-card>
           </div>
         </v-form>
       </v-flex>
-      <v-dialog
-        v-model="dialogAvatarChangeNeedNetwork"
-        persistent
-        max-width="350"
-        content-class="standard-dialog"
-      >
-        <v-card>
-          <v-card-title class="title red white--text pt-3 pb-3" primary-title>A problem occured!</v-card-title>
-
-          <v-card-text>You can't make change to your avatar while offline, try again later.</v-card-text>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-
-            <v-btn
-              color="red darken-1"
-              flat="flat"
-              @click="dialogAvatarChangeNeedNetwork = false"
-            >Ok</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </v-layout>
+    <v-dialog
+      v-model="dialogAvatarChangeNeedNetwork"
+      persistent
+      max-width="350"
+      content-class="standard-dialog"
+    >
+      <v-card>
+        <v-card-title class="title red white--text pt-3 pb-3" primary-title>A problem occured!</v-card-title>
+
+        <v-card-text>You can't make change to your avatar while offline, try again later.</v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="red darken-1" flat="flat" @click="dialogAvatarChangeNeedNetwork = false">Ok</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -111,6 +129,33 @@ export default {
       editing: false,
       dialogAvatarChangeNeedNetwork: false,
       formComponents: {
+        reminderSwitch: false,
+        reminderHour: [
+          '00:00',
+          '00:01',
+          '00:02',
+          '00:03',
+          '00:04',
+          '00:05',
+          '00:06',
+          '00:07',
+          '00:08',
+          '00:09',
+          '00:10',
+          '00:11',
+          '00:12',
+          '00:13',
+          '00:14',
+          '00:15',
+          '00:16',
+          '00:17',
+          '00:18',
+          '00:19',
+          '00:20',
+          '00:21',
+          '00:22',
+          '00:23'
+        ],
         avatarImageRaw: null,
         passwordType: 'password',
         iconShowPassword: 'icon-eye',
@@ -318,6 +363,9 @@ export default {
 
 <style lang="scss">
 .profileForm {
+  .custom-title {
+    font-size: 16px;
+  }
   h6.subheader {
     opacity: 0.7;
     margin-top: 35px !important;
@@ -339,6 +387,14 @@ export default {
     }
   }
   .fieldset {
+    &--settings {
+      .category {
+        img {
+          display: block;
+          width: 34px;
+        }
+      }
+    }
     &--password {
       position: relative;
       .customIcon {

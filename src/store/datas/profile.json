@@ -12,6 +12,13 @@
   "city": "Your city",
   "country": "France",
   "occupation": "Your occupation",
+  "token": "",
+  "notifications": {
+    "dailyTaskReminder": {
+      "status": false,
+      "time": ""
+    }
+  },
   "stats": {
     "dayScore": {
       "score": 0,

@@ -448,7 +448,7 @@ export default {
         color: rgba(black, 0.6);
       }
       g {
-        dominant-baseline: hanging !important;
+        //dominant-baseline: hanging !important;
         transform: translateY(10px);
       }
       &--last10Weeks {
