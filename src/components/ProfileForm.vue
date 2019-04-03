@@ -66,7 +66,7 @@
                     </div>
                   </v-flex>
                   <v-flex grow class="pt-1 pl-3 pr-3 pb-1">
-                    <span class="custom-title">Daily tasks reminders</span>
+                    <span class="custom-title">Daily tasks reminder</span>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -84,6 +84,7 @@
                       v-if="profileDatas.notifications.dailyTaskReminder.status"
                       :items="formComponents.reminderHour"
                       label="Time"
+                      suffix="GMT+1"
                       v-model="profileDatas.notifications.dailyTaskReminder.time"
                     ></v-select>
                   </v-flex>
@@ -161,30 +162,30 @@ export default {
       formComponents: {
         reminderSwitch: false,
         reminderHour: [
-          '00:00',
-          '00:01',
-          '00:02',
-          '00:03',
-          '00:04',
-          '00:05',
-          '00:06',
-          '00:07',
-          '00:08',
-          '00:09',
-          '00:10',
-          '00:11',
-          '00:12',
-          '00:13',
-          '00:14',
-          '00:15',
-          '00:16',
-          '00:17',
-          '00:18',
-          '00:19',
-          '00:20',
-          '00:21',
-          '00:22',
-          '00:23'
+          { text: '00:00', value: 0 },
+          { text: '00:01', value: 1 },
+          { text: '00:02', value: 2 },
+          { text: '00:03', value: 3 },
+          { text: '00:04', value: 4 },
+          { text: '00:05', value: 5 },
+          { text: '00:06', value: 6 },
+          { text: '00:07', value: 7 },
+          { text: '00:08', value: 8 },
+          { text: '00:09', value: 9 },
+          { text: '00:10', value: 10 },
+          { text: '00:11', value: 11 },
+          { text: '00:12', value: 12 },
+          { text: '00:13', value: 13 },
+          { text: '00:14', value: 14 },
+          { text: '00:15', value: 15 },
+          { text: '00:16', value: 16 },
+          { text: '00:17', value: 17 },
+          { text: '00:18', value: 18 },
+          { text: '00:19', value: 19 },
+          { text: '00:20', value: 20 },
+          { text: '00:21', value: 21 },
+          { text: '00:22', value: 22 },
+          { text: '00:23', value: 23 }
         ],
         avatarImageRaw: null,
         passwordType: 'password',
@@ -222,8 +223,17 @@ export default {
     }),
     ...mapGetters({
       getCountries: 'utility/getCountries'
-    })
-
+    }),
+    dailyTaskRemindertime: function () {
+      return this.profileDatas.notifications.dailyTaskReminder.time
+    }
+  },
+  watch: {
+    'profileDatas.notifications.dailyTaskReminder.time': function (newVal, oldVal) {
+      console.log('dailyTaskReminderTime')
+      console.log(this.profileDatas.notifications.dailyTaskReminder.time)
+      this.notificationHour()
+    }
   },
   methods: {
     ...mapActions({
@@ -341,7 +351,7 @@ export default {
     manageSubscribe () {
       // Subscription Logic
       console.log('manageSubscribe')
-      // status True
+      // status True -> try subscription
       if (this.profileDatas.notifications.dailyTaskReminder.status) {
         // Request permission
         console.log('subscribeToNotifications')
@@ -366,7 +376,7 @@ export default {
       } else {
         // status False
         console.log('go false')
-        // If user had token
+        // User had token -> delete token
         if (!this.profileDatas.notifications.dailyTaskReminder.status && this.profileDatas.token !== '') {
           console.log('unSubscribeFromNotifications')
           // Retrieve Firebase Messaging object.
@@ -383,9 +393,20 @@ export default {
                 EventBus.$emit('updateFirebase')
               })
             })
+        } else {
+          // User had no token
+          this.profileDatas.notifications.dailyTaskReminder.status = false
         }
       }
       console.log(this.profileDatas.notifications.dailyTaskReminder.status)
+    },
+    notificationHour () {
+      // Update profile store
+      const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+      this.updateProfile(profileDatas).then(() => {
+        // // Update firebase
+        EventBus.$emit('updateFirebase')
+      })
     }
   },
   created () {

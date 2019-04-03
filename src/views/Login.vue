@@ -263,7 +263,8 @@ import { required, email, minLength } from 'vuelidate/lib/validators'
 import Lottie from '@/components/Lottie.vue'
 import * as animationData from '@/assets/animations/data.json'
 // eslint-disable-next-line
-import { getStringFromIsoDay } from '@/utils'
+import {getStringFromIsoDay } from '@/utils'
+import { getHours } from 'date-fns'
 
 function notAnExistingPseudo (value) {
   return this.allUsersPseudos.includes(value) !== true
@@ -576,25 +577,35 @@ export default {
             // If user has tasks
             if (doc.data().tasks) {
               console.log('user has tasks')
-              console.log(doc.data().tasks)
+              // User has defined a reminder hour that match the current one
+              const currentHour = getHours(new Date(Date.now()))
+              console.info('currentHour = ' + currentHour)
+              const currentUserDefinedHour = doc.data().profile.notifications.dailyTaskReminder.time
+              if (currentHour === currentUserDefinedHour) {
+                console.info(`a user has defined an hour that match the current one which is ${currentHour}`)
 
-              const dailyTasks = Object.keys(doc.data().tasks)
-                .map(e => doc.data().tasks[e])
-                .filter(task => {
-                  return (task.schedule.periodicity === 'Weekly' &&
+                // console.log('currenthour = ' + currentHour)
+                // console.log('userDefinedHourdoc = ' + doc.data().profile.notifications.dailyTaskReminder.time)
+
+                // Retrieve daily non-checked task
+                const dailyTasks = Object.keys(doc.data().tasks)
+                  .map(e => doc.data().tasks[e])
+                  .filter(task => {
+                    return (task.schedule.periodicity === 'Weekly' &&
               task.schedule.weekly === 'Everyday') ||
               (task.schedule.periodicity === 'On specific days' &&
               task.schedule.specificDays.find(v => { return v === getStringFromIsoDay(this.time.isoDay) })) ||
               (task.schedule.periodicity === 'Once' &&
               task.schedule.once === 'single')
-                })
-                .filter(task => {
-                  return task.checked === false
-                })
+                  })
+                  .filter(task => {
+                    return task.checked === false
+                  })
 
-              if (dailyTasks.length) {
-                console.log('user has daily tasks')
-                elligibleUsers.push(userToken)
+                if (dailyTasks.length) {
+                  console.log('user has daily tasks')
+                  elligibleUsers.push(userToken)
+                }
               }
             }
           } else {

@@ -32,7 +32,7 @@ module.exports = {
       }
     }
   },
-  chainWebpack(config) {
+  chainWebpack (config) {
     config.module
       .rule('vue')
       .use('vue-loader')
@@ -50,5 +50,4 @@ module.exports = {
       .use('webpack-modernizr-loader')
       .loader('webpack-modernizr-loader')
   }
-}
 }
