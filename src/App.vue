@@ -115,30 +115,30 @@ export default {
       // Check if device has a token
 
       // Retrieve Firebase Messaging object.
-      const messaging = firebase.messaging()
+      // const messaging = firebase.messaging()
 
-      messaging.getToken().then(currentToken => {
-        if (currentToken) {
-          console.warn('token retrieved : ' + currentToken)
-          if (currentToken !== 'undefined') {
-            const userStatus = true
-            this.addUserToken({ currentToken, userStatus })
-          } else {
-            const currentToken = ''
-            const userStatus = false
-            this.addUserToken({ currentToken, userStatus })
-          }
-        } else {
-        // Show permission request.
-          console.warn('No Instance ID token available. Request permission to generate one.')
-          // Show permission UI.
-          const currentToken = ''
-          const userStatus = false
-          this.addUserToken({ currentToken, userStatus })
-        }
-      }).catch(function (err) {
-        console.warn('An error occurred while retrieving token. ', err)
-      })
+      // messaging.getToken().then(currentToken => {
+      //   if (currentToken) {
+      //     console.warn('token retrieved : ' + currentToken)
+      //     if (currentToken !== 'undefined') {
+      //       const userStatus = true
+      //       this.addUserToken({ currentToken, userStatus })
+      //     } else {
+      //       const currentToken = ''
+      //       const userStatus = false
+      //       this.addUserToken({ currentToken, userStatus })
+      //     }
+      //   } else {
+      //   // Show permission request.
+      //     console.warn('No Instance ID token available. Request permission to generate one.')
+      //     // Show permission UI.
+      //     const currentToken = ''
+      //     const userStatus = false
+      //     this.addUserToken({ currentToken, userStatus })
+      //   }
+      // }).catch(function (err) {
+      //   console.warn('An error occurred while retrieving token. ', err)
+      // })
 
       // Set currentUserWeek
       const lastUserRecordedWeek = parseInt(Object.keys(this.userData.stats.weeksRecords).slice(-1).join('').substr(1))

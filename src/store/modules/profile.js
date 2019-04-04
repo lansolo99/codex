@@ -116,7 +116,8 @@ export default {
       console.warn('addUserToken mutation and user status = ' + userStatus)
       state.notifications.token = currentToken
       state.notifications.dailyTaskReminder.status = userStatus
-      // Vue.set(state.notifications, 'token', payload)
+      // Update firebase
+      EventBus.$emit('updateFirebase')
     },
     resetProfileDatas (state) {
       Object.assign(state, getDefaultState)
