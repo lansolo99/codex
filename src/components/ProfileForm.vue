@@ -74,7 +74,7 @@
                 <v-layout row wrap>
                   <v-flex xs8>
                     <v-switch
-                      @click.native="manageSubscribe()"
+                      @change="manageSubscribe()"
                       v-model="profileDatas.notifications.dailyTaskReminder.status"
                       :label="profileDatas.notifications.dailyTaskReminder.status ? 'On':'Off'"
                     ></v-switch>
@@ -350,10 +350,12 @@ export default {
     manageSubscribe () {
       // Subscription Logic
       console.log('manageSubscribe')
+      console.warn('dailyTaskReminderStatus = ' + this.profileDatas.notifications.dailyTaskReminder.status)
       // status True -> try subscription
       if (this.profileDatas.notifications.dailyTaskReminder.status) {
         // Request permission
         console.log('subscribeToNotifications')
+
         // Retrieve Firebase Messaging object.
         const messaging = firebase.messaging()
         messaging.requestPermission().then(() => {

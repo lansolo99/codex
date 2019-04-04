@@ -554,10 +554,6 @@ export default {
     const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone)
 
     // Checks if should display install popup notification:
-    if (isIos) {
-      // document.querySelector('link[rel="manifest"]').setAttribute('rel', 'no-on-ios')
-    }
-
     if (isIos && !isInStandaloneMode()) {
       console.log('so we are in ios in no standalone mode ?')
 
@@ -574,7 +570,6 @@ export default {
       .get()
       .then(users => {
         if (users.docs.length > 0) {
-          console.log('some users')
           users.forEach(doc => {
             this.allUsersPseudos.push(doc.data().profile.pseudo)
           })
@@ -591,8 +586,8 @@ export default {
           if (change.type === 'added') {
             // console.log('added: ', change.doc.data())
           }
-          const source = snapshot.metadata.fromCache ? 'local cache' : 'server'
-          console.log('Data came from ' + source)
+          // const source = snapshot.metadata.fromCache ? 'local cache' : 'server'
+          // console.log('Data came from ' + source)
         })
       })
 
@@ -600,7 +595,7 @@ export default {
               FIREBASE AUTH STATE OBSERVER
     ============================================= */
     firebase.auth().onAuthStateChanged(user => {
-      console.log('onAuthStateChanged')
+      // console.log('onAuthStateChanged')
 
       if (user) {
         console.log('user is signed in')
