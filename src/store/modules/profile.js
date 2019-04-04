@@ -29,8 +29,14 @@ export default {
   actions: {
     addUserToken ({
       commit
-    }, payload) {
-      commit('addUserToken', payload)
+    }, {
+      currentToken,
+      userStatus
+    }) {
+      commit('addUserToken', {
+        currentToken,
+        userStatus
+      })
     },
     setResetProfileProgression ({
       commit
@@ -102,8 +108,15 @@ export default {
       console.log(payload)
       state.notifications.timezone = payload
     },
-    addUserToken (state, payload) {
-      Vue.set(state.notifications, 'token', payload)
+    addUserToken (state, {
+      currentToken,
+      userStatus
+    }) {
+      console.warn('addUserToken mutation and current token = ' + currentToken)
+      console.warn('addUserToken mutation and user status = ' + userStatus)
+      state.notifications.token = currentToken
+      state.notifications.dailyTaskReminder.status = userStatus
+      // Vue.set(state.notifications, 'token', payload)
     },
     resetProfileDatas (state) {
       Object.assign(state, getDefaultState)

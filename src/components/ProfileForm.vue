@@ -237,7 +237,6 @@ export default {
   methods: {
     ...mapActions({
       updateProfile: 'profile/updateProfile',
-      addUserToken: 'profile/addUserToken',
       toggleProfileDialog: 'utility/toggleProfileDialog'
     }),
     togglePasswordVisibility (field) {
