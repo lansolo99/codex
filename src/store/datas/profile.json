@@ -12,11 +12,12 @@
   "city": "Your city",
   "country": "France",
   "occupation": "Your occupation",
-  "token": "",
   "notifications": {
+    "token": "",
+    "timezone": "",
     "dailyTaskReminder": {
       "status": false,
-      "time": ""
+      "time": 12
     }
   },
   "stats": {

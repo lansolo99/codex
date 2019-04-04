@@ -17,7 +17,7 @@ import { format, getISODay, isSameDay, isSameWeek, getISOWeek, addDays, differen
 import { getStringFromIsoDay } from '@/utils'
 import { EventBus } from '@/bus'
 import TheNavbar from '@/components/TheNavbar'
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import firebase from './Firebase'
 import AppSpinner from '@/components/AppSpinner.vue'
 
@@ -27,7 +27,6 @@ export default {
     return {
       showAppSpinner: true,
       authUser: null,
-      token: null,
       toolbarConf: 'toolbarNone',
       view: 'login',
       logged: false,
@@ -89,6 +88,9 @@ export default {
       rebootWeeklyTasksCompletions: 'tasks/rebootWeeklyTasksCompletions',
       updateTasksCompletionsHistory: 'tasks/updateTasksCompletionsHistory'
     }),
+    ...mapMutations({
+      updateUserTimeZone: 'profile/updateUserTimeZone'
+    }),
     globalUpdate (addedDays = 0) {
       // GLOBAL UPDATES
       console.log('globalUpdate')
@@ -104,6 +106,10 @@ export default {
         addDays(new Date(Date.now()), addedDays),
         new Date(this.userData.connexionDateLast)
       )
+
+      // Set current user time zone
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+      this.updateUserTimeZone(userTimeZone)
 
       // Set currentUserWeek
       const lastUserRecordedWeek = parseInt(Object.keys(this.userData.stats.weeksRecords).slice(-1).join('').substr(1))
@@ -336,7 +342,9 @@ export default {
     // console.log(format(new Date(2019, 0, 18, 11, 45, 5, 123), 'DD/MM/YYYY'))
     // console.log(getTime(new Date(2019, 0, 18, 11, 45, 5, 123)))
 
-    // FIREBASE CLOUD MESSAGING
+    /* =============================================
+                FIREBASE CLOUD MESSAGING
+    ============================================= */
 
     // Retrieve Firebase Messaging object.
     const messaging = firebase.messaging()
@@ -348,110 +356,9 @@ export default {
       // ...
     })
 
-    // messaging.getToken().then(function (currentToken) {
-    //   if (currentToken) {
-    //     sendTokenToServer(currentToken)
-    //     updateUIForPushEnabled(currentToken)
-    //   } else {
-    //     // Show permission request.
-    //     console.log('No Instance ID token available. Request permission to generate one.')
-    //     // Show permission UI.
-    //     updateUIForPushPermissionRequired()
-    //     setTokenSentToServer(false)
-    //   }
-    // }).catch(function (err) {
-    //   console.log('An error occurred while retrieving token. ', err)
-    //   showToken('Error retrieving Instance ID token. ', err)
-    //   setTokenSentToServer(false)
-    // })
-
-    // Callback fired if Instance ID token is updated.
-    // messaging.onTokenRefresh(function () {
-    //   messaging.getToken().then(function (refreshedToken) {
-    //     console.log('Token refreshed.')
-    //     // Indicate that the new Instance ID token has not yet been sent to the
-    //     // app server.
-    //     setTokenSentToServer(false)
-    //     // Send Instance ID token to app server.
-    //     sendTokenToServer(refreshedToken)
-    //     // ...
-    //   }).catch(function (err) {
-    //     console.log('Unable to retrieve refreshed token ', err)
-    //     showToken('Unable to retrieve refreshed token ', err)
-    //   })
-    // })
-
-    EventBus.$on('acceptPushNotifications', () => {
-      const askForPermissioToReceiveNotifications = async () => {
-        try {
-          await messaging.requestPermission()
-          const token = await messaging.getToken()
-          console.log('token:', token)
-          this.token = token
-          EventBus.$emit('sendPushMessage')
-          return token
-        } catch (error) {
-          console.error(error)
-        }
-      }
-      askForPermissioToReceiveNotifications()
-    })
-
-    // Firebase Admin SDK
-
-    // const admin = require('firebase-admin')
-    // admin.initializeApp({
-    //   credential: admin.credential.cert(firebaseCertif)
-    //   // credential: admin.credential.cert({
-    //   //   projectId: 'codex-208f0',
-    //   //   clientEmail: 'firebase-adminsdk-3zl9t@codex-208f0.iam.gserviceaccount.com',
-    //   //   privateKey: '-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCw0p2Wf4lJ60m/\nEZ9rPSZScRdfUX/S59buXHsDHO+0JQ7sTY8FJkkp1W2sueKwljJriD/kb2BJLp16\nPVZo2vn7DfY/y2qNq/dUM4mQyvfghalBQmqOn1utrE0rpKg8YUXL7MPwbGShmQdZ\nWL871QUutLg+3MrVONwSzS7jvC0sslHxIU3e6xqxd1zwY2itMBGf6zM4AzHRUOJ2\n4HnJZsqzervLFhBQ6fcGr7jgmOt3IIbmhU6Hrv3r+T4gkqu+Dj/IMKI956bbiVXu\n/xjawu+pTqWxLCW2fQ2SqmW912PDwBM1TF3pMMeGph83XKMwMzqCo1/Muc895XL9\nN+vjuRvrAgMBAAECggEAPIc8TqJFuroCOpervKfoEFyKJaTeXrHiDyI1MbGcFEyD\nOTyrcpXSgbF/o5rWEKC5jbnMNUQy75o3afrJM4eR/vCelOPrC6gMOBSUSK5R/9eB\nQsebdkrytRbAK+pndJPPsqjPweM452Bc9aa9f5vB9GUElPA7tpWKMB1wqaBmzl+B\nP4uSKB9hDMh/4wvjoSqt8BizVYccZN5sqY4IbVrFyaZRGvmyorAZZAeqk6hgk7dV\n/UadE9gJz+LV2lpmtdTGxz0jmCuVj7ca7eCwu1H8Rnje2z0yywUxpr6hDUp3an0U\n3qOGb+lrxpQ+DvqDYsnHgW+LVANkHbyb6OLMIjo3wQKBgQD0drpv39JmFerw05JV\nuHorgH7er2Vqk2OHy2CvKrNAfJZx7lek9Oktb+y2ozz0BCp2WGLJicgv4cRV3gyX\nVt3RvVef4K7agTYRCPP69P9aNui1G4bVmzmSlsekTRBOdtIfArVig69fST0O3x+g\n+MmWTa9gV7keLnf7YRSQgsi0sQKBgQC5Kr3wPDKYfQo8MMQgP9a0f24d6rPNiohw\nPMd//1FvjYwvX5lQfi7L9gLElLxX5Vk7VyYHtsBIzY9VPx7LtfSa6UbYLFhu7O3u\nDDrU6TmO0rgKPF0Od2vG+8qQ67pc7e/DonA3lftrew3EPZM6WE81qeI13vWZMqhD\nFAoahzsxWwKBgQDKgM9PfQi8p8tGUvwVJguNnZN6w7Au6Ii6JC6i66ww7wNwvQ69\nBmNh0CU15WLIf+rsvaqXaBr8DvikaJvlgX+eDkpXlbdCKWawFcqFSA1+nZ2G6JZ4\nu2ylkWEvKOcpGCRWq9e1E4BiXjjF6O46WdwjNZbhJ8mgxr187p4qVywLAQKBgQCe\n3koqpStv49B1Rg3v8XXgVXkAGA/+qP5Y9fzhGAkh4dtGBgq/ohO6kS9cxJQ4AaIm\npKYPdj/R9vQkWsysUUg15TIQZTPWsFePp1SOui/VF3wp5BKfR9zj08K/xlCWTNsr\nCeKn/nnBhMmR9pasN3p2e3SHbe1gbLMrIjVs/1vNAwKBgQCMCQvdtGws9x11gh2p\nBl07ONBO1vEuXJoxngBSFQkP9babUeFEKerBlNErkiK8lIiqGEcGh1Oxcf1NkQrN\nqfC7GW8L087zcIRROejuKAmyF/sI4Uu5N5NUgwoEf6BJ3Ir3/u+wFlhoF4PjhCZk\n8Z9YjFDqTgOeffTFcYca8u9yGg==\n-----END PRIVATE KEY-----\n'
-    //   // })
-    // })
-
-    // EventBus.$on('sendPushMessage', () => {
-    //   console.log('sendPushMessage')
-
-    //   // Send message
-    //   var registrationToken = this.token
-
-    //   var message = {
-    //     data: {
-    //       score: '850',
-    //       time: '2:45'
-    //     },
-    //     token: registrationToken
-    //   }
-
-    //   // Send a message to the device corresponding to the provided
-    //   // registration token.
-    //   admin.messaging().send(message)
-    //     .then((response) => {
-    //     // Response is a message ID string.
-    //       console.log('Successfully sent message:', response)
-    //     })
-    //     .catch((error) => {
-    //       console.log('Error sending message:', error)
-    //     })
-    // })
-
-    // const Messaging = admin.messaging()
-
-    // var payload = {
-    //   webpush: {
-    //     notification: {
-    //       title: 'Notification title',
-    //       body: 'Notification info',
-    //       icon: 'http://i.imgur.com/image.png',
-    //       click_action: 'http://yoursite.com/redirectPage'
-    //     }
-    //   },
-    //   topic: 'Tamere'
-    // }
-
-    // return Messaging.send(payload)
-
-    // EVENTS
+    /* =============================================
+                        EVENTS
+    ============================================= */
 
     const dailyCountdown = () => {
       // Minute helper -> testOnly
@@ -502,7 +409,9 @@ export default {
       this.calcWeeklyCompletion()
     })
 
-    // FIREBASE
+    /* =============================================
+                       FIREBASE
+    ============================================= */
 
     // Initial feed
     EventBus.$on('initFirebase', () => {

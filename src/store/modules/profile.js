@@ -98,8 +98,12 @@ export default {
     }
   },
   mutations: {
+    updateUserTimeZone (state, payload) {
+      console.log(payload)
+      state.notifications.timezone = payload
+    },
     addUserToken (state, payload) {
-      Vue.set(state, 'token', payload)
+      Vue.set(state.notifications, 'token', payload)
     },
     resetProfileDatas (state) {
       Object.assign(state, getDefaultState)

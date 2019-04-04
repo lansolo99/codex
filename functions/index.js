@@ -2,7 +2,11 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const getHours = require('date-fns/get_hours')
+const setHours = require('date-fns/set_hours')
 const getISODay = require('date-fns/get_iso_day')
+const {
+  convertToLocalTime
+} = require('date-fns-timezone/dist/convertToLocalTime')
 
 admin.initializeApp(functions.config().firebase)
 
@@ -20,7 +24,6 @@ const getStringFromIsoDay = isoDay => {
   return isoToWeekDays[isoDay]
 }
 
-console.info('getStringFromIsoDay = ' + getStringFromIsoDay(getISODay(Date.now())))
 // Send notifications reminder
 exports.sendNotificationsReminder = functions.pubsub.topic('weekx-reminders').onPublish((message) => {
   console.info(message)
@@ -37,24 +40,32 @@ exports.sendNotificationsReminder = functions.pubsub.topic('weekx-reminders').on
 
       users.forEach(doc => {
         // If user has a non-empty token
-        if (doc.data().profile.token && doc.data().profile.token !== '') {
+        if (doc.data().profile.notifications.token && doc.data().profile.notifications.token !== '') {
           console.info('user has token')
 
           // If user has tasks
           if (doc.data().tasks) {
             console.info('user has tasks')
+
             // Hour test
-            const currentHour = getHours(new Date(Date.now()))
-            console.info('currentHour = ' + currentHour)
-            const currentUserDefinedHour = doc.data().profile.notifications.dailyTaskReminder.time
-            console.info('currentUserDefinedHour = ' + currentUserDefinedHour)
-            if (currentHour === currentUserDefinedHour) {
-              console.info(`a user has defined an hour that match the current one which is ${currentHour}`)
+            const serverHour = getHours(new Date(Date.now()))
+            const userDefinedHour = doc.data().profile.notifications.dailyTaskReminder.time
+            const userDate = setHours(new Date(Date.now()), userDefinedHour)
+            const userTimeZone = doc.data().profile.notifications.timezone
+            const userConvertedDate = convertToLocalTime(userDate, {
+              timeZone: userTimeZone
+            })
+            const userConvertedToServerHour = getHours(userConvertedDate)
+            console.log('serverHour = ' + serverHour)
+            console.log('userConvertedToServerHour = ' + userConvertedToServerHour)
+
+            if (serverHour === userConvertedToServerHour) {
+              console.info(`a user has defined an hour that match the current one which is ${serverHour}`)
             }
             // End hour test
 
             // User defined hour is the right one
-            if (currentHour === currentUserDefinedHour) {
+            if (serverHour === userConvertedToServerHour) {
               const dailyTasks = Object.keys(doc.data().tasks)
                 .map(e => doc.data().tasks[e])
                 .filter(task => {
@@ -79,7 +90,7 @@ exports.sendNotificationsReminder = functions.pubsub.topic('weekx-reminders').on
                     score: '850',
                     time: '2:45'
                   },
-                  token: doc.data().profile.token
+                  token: doc.data().profile.notifications.token
                 }
                 admin.messaging().send(message)
               }

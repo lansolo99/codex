@@ -72,19 +72,18 @@
               </v-container>
               <v-container>
                 <v-layout row wrap>
-                  <v-flex xs5>
+                  <v-flex xs8>
                     <v-switch
                       @click.native="manageSubscribe()"
                       v-model="profileDatas.notifications.dailyTaskReminder.status"
                       :label="profileDatas.notifications.dailyTaskReminder.status ? 'On':'Off'"
                     ></v-switch>
                   </v-flex>
-                  <v-flex xs7>
+                  <v-flex xs4>
                     <v-select
                       v-if="profileDatas.notifications.dailyTaskReminder.status"
                       :items="formComponents.reminderHour"
                       label="Time"
-                      suffix="GMT+1"
                       v-model="profileDatas.notifications.dailyTaskReminder.time"
                     ></v-select>
                   </v-flex>
@@ -361,7 +360,7 @@ export default {
           console.log('Notification permission granted.')
           messaging.getToken().then(token => {
             console.log('token =' + token)
-            this.profileDatas.token = token
+            this.profileDatas.notifications.token = token
             const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
             this.updateProfile(profileDatas).then(() => {
               // Update firebase
@@ -377,7 +376,7 @@ export default {
         // status False
         console.log('go false')
         // User had token -> delete token
-        if (!this.profileDatas.notifications.dailyTaskReminder.status && this.profileDatas.token !== '') {
+        if (!this.profileDatas.notifications.dailyTaskReminder.status && this.profileDatas.notifications.token !== '') {
           console.log('unSubscribeFromNotifications')
           // Retrieve Firebase Messaging object.
           const messaging = firebase.messaging()
@@ -386,7 +385,7 @@ export default {
               messaging.deleteToken(token)
             })
             .then(() => {
-              this.profileDatas.token = ''
+              this.profileDatas.notifications.token = ''
               const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
               this.updateProfile(profileDatas).then(() => {
               // Update firebase

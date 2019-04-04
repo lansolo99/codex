@@ -265,7 +265,9 @@ import * as animationData from '@/assets/animations/data.json'
 // eslint-disable-next-line
 import {getStringFromIsoDay } from '@/utils'
 // eslint-disable-next-line
-import { getHours  } from 'date-fns'
+import { getHours, getYear ,setHours } from 'date-fns'
+// import { convertToLocalTime } from 'date-fns-timezone/dist/convertToLocalTime'
+// import { convertToTimeZone } from 'date-fns-timezone'
 
 function notAnExistingPseudo (value) {
   return this.allUsersPseudos.includes(value) !== true
@@ -564,60 +566,8 @@ export default {
       this.appInstall({ status, os })
     }
 
-    // Filter notification elligible users test
-    // firebase.firestore()
-    // .collection('users')
-    // .get()
-    // .then(users => {
-    //   const elligibleUsers = []
-    //   users.forEach(doc => {
-    //     // If user has a non-empty token
-    //     if (doc.data().profile.token && doc.data().profile.token !== '') {
-    //       console.log('has token')
-    //       const userToken = doc.data().profile.token
-    //       // If user has tasks
-    //       if (doc.data().tasks) {
-    //         console.log('user has tasks')
-    //         // User has defined a reminder hour that match the current one
-    //         const currentHour = getHours(new Date(Date.now()))
-    //         console.info('currentHour = ' + currentHour)
-    //         const currentUserDefinedHour = doc.data().profile.notifications.dailyTaskReminder.time
-    //         if (currentHour === currentUserDefinedHour) {
-    //           console.info(`a user has defined an hour that match the current one which is ${currentHour}`)
-
-    //           // console.log('currenthour = ' + currentHour)
-    //           // console.log('userDefinedHourdoc = ' + doc.data().profile.notifications.dailyTaskReminder.time)
-
-    //           // Retrieve daily non-checked task
-    //           const dailyTasks = Object.keys(doc.data().tasks)
-    //             .map(e => doc.data().tasks[e])
-    //             .filter(task => {
-    //               return (task.schedule.periodicity === 'Weekly' &&
-    //         task.schedule.weekly === 'Everyday') ||
-    //         (task.schedule.periodicity === 'On specific days' &&
-    //         task.schedule.specificDays.find(v => { return v === getStringFromIsoDay(this.time.isoDay) })) ||
-    //         (task.schedule.periodicity === 'Once' &&
-    //         task.schedule.once === 'single')
-    //             })
-    //             .filter(task => {
-    //               return task.checked === false
-    //             })
-
-    //           if (dailyTasks.length) {
-    //             console.log('user has daily tasks')
-    //             elligibleUsers.push(userToken)
-    //           }
-    //         }
-    //       }
-    //     } else {
-    //       console.log('no token')
-    //     }
-    //   })
-    //   console.log(elligibleUsers)
-    // })
-
     /* =============================================
-                 PSEUDOS COLLECTION
+                 GET PSEUDOS COLLECTION
     ============================================= */
     firebase.firestore()
       .collection('users')
