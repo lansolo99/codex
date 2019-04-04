@@ -104,6 +104,9 @@ export default {
     }
   },
   mutations: {
+    updateUserDeviceId (state, payload) {
+      state.notifications.deviceId = payload
+    },
     updateUserTimeZone (state, payload) {
       console.log(payload)
       state.notifications.timezone = payload

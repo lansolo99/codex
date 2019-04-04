@@ -20,6 +20,9 @@ import TheNavbar from '@/components/TheNavbar'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import firebase from './Firebase'
 import AppSpinner from '@/components/AppSpinner.vue'
+import uuid from 'uuid/v4'
+
+// import Uuid from 'uuid/v1'
 
 export default {
   name: 'App',
@@ -90,7 +93,8 @@ export default {
       updateTasksCompletionsHistory: 'tasks/updateTasksCompletionsHistory'
     }),
     ...mapMutations({
-      updateUserTimeZone: 'profile/updateUserTimeZone'
+      updateUserTimeZone: 'profile/updateUserTimeZone',
+      updateUserDeviceId: 'profile/updateUserDeviceId'
     }),
     globalUpdate (addedDays = 0) {
       // GLOBAL UPDATES
@@ -112,33 +116,57 @@ export default {
       const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
       this.updateUserTimeZone(userTimeZone)
 
-      // Check if device has a token
+      // User token & device management
 
+      // Retrieve unique user device id
+      const currentDeviceId = uuid()
       // Retrieve Firebase Messaging object.
       const messaging = firebase.messaging()
 
-      messaging.getToken().then(currentToken => {
-        if (currentToken) {
-          console.warn('token retrieved : ' + currentToken)
-          if (currentToken !== 'undefined') {
-            const userStatus = true
-            this.addUserToken({ currentToken, userStatus })
-          } else {
-            const currentToken = ''
-            const userStatus = false
-            this.addUserToken({ currentToken, userStatus })
-          }
+      console.log(currentDeviceId)
+
+      if (!this.profile.notifications.deviceId) {
+        // User has no id yet -> create one
+        this.updateUserDeviceId(currentDeviceId)
+      } else {
+        // User has a device id -> perform check
+        if (this.profile.notifications.deviceId === currentDeviceId) {
+          // User's device is the same as one recorded -> check retrieve token
+
+          messaging.getToken().then(currentToken => {
+            if (currentToken) {
+              console.warn('token retrieved : ' + currentToken)
+              if (currentToken !== 'undefined') {
+                const userStatus = true
+                this.addUserToken({ currentToken, userStatus })
+              } else {
+                const currentToken = ''
+                const userStatus = false
+                this.addUserToken({ currentToken, userStatus })
+              }
+            } else {
+              // Show permission request.
+              console.warn('No Instance ID token available. Request permission to generate one.')
+              const currentToken = ''
+              const userStatus = false
+              this.addUserToken({ currentToken, userStatus })
+            }
+          }).catch(function (err) {
+            console.warn('An error occurred while retrieving token. ', err)
+          })
         } else {
-        // Show permission request.
-          console.warn('No Instance ID token available. Request permission to generate one.')
-          // Show permission UI.
+          // User's device is not the same -> redefine new device Id
+          this.updateUserDeviceId(currentDeviceId)
+          // reset token & notification status
           const currentToken = ''
           const userStatus = false
           this.addUserToken({ currentToken, userStatus })
+          messaging.getToken()
+            .then(token => {
+              messaging.deleteToken(token)
+            })
         }
-      }).catch(function (err) {
-        console.warn('An error occurred while retrieving token. ', err)
-      })
+      }
 
       // Set currentUserWeek
       const lastUserRecordedWeek = parseInt(Object.keys(this.userData.stats.weeksRecords).slice(-1).join('').substr(1))

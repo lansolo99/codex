@@ -13,6 +13,7 @@
   "country": "France",
   "occupation": "Your occupation",
   "notifications": {
+    "deviceId": "",
     "token": "",
     "timezone": "",
     "dailyTaskReminder": {
