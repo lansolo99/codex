@@ -39,8 +39,6 @@ export default {
       state.currentUserWeek = null
     },
     updateCurrentUserWeek (state, payload) {
-      console.log('currentUserWeek from time.js = ' + payload)
-
       state.currentUserWeek = payload
     },
     updateTime (state, {

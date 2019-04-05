@@ -602,7 +602,6 @@ export default {
 
         // // User object to local data
         this.authUser = user
-        console.log('authUser.providerData = ' + this.authUser.providerData[0].providerId)
 
         // Email + password sign-in / sign-up
         if (this.authUser.providerData[0].providerId === 'password') {

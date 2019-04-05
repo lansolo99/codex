@@ -97,16 +97,19 @@ export default {
       updateUserDeviceId: 'profile/updateUserDeviceId'
     }),
     globalUpdate (addedDays = 0) {
-      // GLOBAL UPDATES
-      console.log('globalUpdate')
-      console.log('addedDays = ' + addedDays)
+      /* =============================================
+                     GLOBAL UPDATES
+      ============================================= */
 
+      console.log('globalUpdate')
+      // console.log('addedDays = ' + addedDays)
+
+      // Utils
       const isThisWeekCustom = isSameWeek(
         addDays(new Date(Date.now()), addedDays),
         new Date(this.userData.connexionDateLast),
         { weekStartsOn: 1 }
       )
-
       const isTodayCustom = isSameDay(
         addDays(new Date(Date.now()), addedDays),
         new Date(this.userData.connexionDateLast)
@@ -116,7 +119,7 @@ export default {
       const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
       this.updateUserTimeZone(userTimeZone)
 
-      // User token & device management
+      // USER TOKEN & DEVICE MANAGEMENT
 
       // Retrieve unique user device id
       const currentDeviceId = uuid()
@@ -127,9 +130,11 @@ export default {
 
       if (!this.profile.notifications.deviceId) {
         // User has no id yet -> create one
+        console.log('user has no device id yet => create one')
         this.updateUserDeviceId(currentDeviceId)
       } else {
         // User has a device id -> perform check
+        console.log('user has a device id')
         if (this.profile.notifications.deviceId === currentDeviceId) {
           // User's device is the same as one recorded -> check retrieve token
 
@@ -176,13 +181,13 @@ export default {
         { weekStartsOn: 1 }
       )
       const currentUserWeek = parseInt(lastUserRecordedWeek + getWeeksPassedSinceLastConnexion)
-      console.log('currentUserWeek from globalUpdate = ' + currentUserWeek)
+      // console.log('currentUserWeek from globalUpdate = ' + currentUserWeek)
       EventBus.$emit('updateCurrentUserWeek', currentUserWeek)
 
       // WEEK RESET
       // Wipe current tasks completions & delete singles
       if (!isThisWeekCustom) {
-        console.log('not the same week')
+        // console.log('not the same week')
         // Wipe current tasks completions
         this.rebootWeeklyTasksCompletions()
         // Delete singles
@@ -310,7 +315,6 @@ export default {
       // Distribute tasks value
       const countDailyTasks = dailyTasks.length
       const taskValue = 100 / countDailyTasks
-      console.log('countDailyTasks = ' + countDailyTasks)
 
       let total = 0
       let totalSubtasks = 0
@@ -338,12 +342,9 @@ export default {
 
       // Update data
       const progressToday = total
-      console.log('progressToday = ' + progressToday)
       this.updateDayScore({ progressToday, countDailyTasks, countCheckedTasks })
     },
     calcWeeklyCompletion () {
-      console.log('calcWeeklyCompletion')
-
       // Filter weekly tasks from tasks
       const weeklyTasks = Object.values(this.tasks)
         .filter(task => {
@@ -379,10 +380,7 @@ export default {
 
       // Update store
       const progressWeek = total
-
       const currentUserWeek = this.time.currentUserWeek
-      console.log('currentUserWeek from calcDailyCompletion = ' + currentUserWeek)
-
       this.recordWeekScore({ progressWeek, currentUserWeek })
 
       // Hide spinner
@@ -486,12 +484,12 @@ export default {
             // Fetch profile datas
             this.fetchProfileDatas(this.utility.authUserID)
               .then(res => {
-                console.log('firebase fetchProfileDatas + vuex update done')
+                console.log('fetchProfileDatas done')
 
                 // Fetch tasks datas
                 this.fetchTasksDatas(this.utility.authUserID)
                   .then((res) => {
-                    console.log('firebase fetchTasksDatas + vuex update done')
+                    console.log('fetchTasksDatas done')
                     this.appReady()
                     this.tasksReady()
                     this.globalUpdate()
@@ -529,12 +527,10 @@ export default {
 
     // Firebase Updates
     EventBus.$on('updateFirebase', (avatarImageRaw) => {
-      console.log('updateFirebase')
-
       firebase.firestore().collection('users').doc(this.utility.authUserID)
         .set({ profile: this.profile, tasks: this.tasks })
         .then(() => {
-          console.log('CYCLE DONE ! : firebase profile + tasks updated')
+          console.log('Firebase updated')
         })
     })
   }

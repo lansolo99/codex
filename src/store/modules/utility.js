@@ -112,11 +112,9 @@ export default {
       }
     },
     appReady (state) {
-      console.log('appReady')
       state.appReady = true
     },
     tasksReady (state) {
-      console.log('tasksReady')
       state.tasksReady = true
     },
     incrementAddedDays (state) {

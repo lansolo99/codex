@@ -79,7 +79,7 @@ export default {
       countDailyTasks,
       countCheckedTasks
     }) {
-      console.log('progressToday from profile store = ' + progressToday)
+      // console.log('progressToday from profile store = ' + progressToday)
 
       commit('updateDayScore', {
         progressToday,
@@ -108,19 +108,16 @@ export default {
       state.notifications.deviceId = payload
     },
     updateUserTimeZone (state, payload) {
-      console.log(payload)
       state.notifications.timezone = payload
     },
     addUserToken (state, {
       currentToken,
       userStatus
     }) {
-      console.warn('addUserToken mutation and current token = ' + currentToken)
-      console.warn('addUserToken mutation and user status = ' + userStatus)
+      console.warn('current token = ' + currentToken)
+      console.warn('user status = ' + userStatus)
       state.notifications.token = currentToken
       state.notifications.dailyTaskReminder.status = userStatus
-      // Update firebase
-      EventBus.$emit('updateFirebase')
     },
     resetProfileDatas (state) {
       Object.assign(state, getDefaultState)
@@ -139,7 +136,7 @@ export default {
       countDailyTasks,
       countCheckedTasks
     }) {
-      console.log('progressToday from profile store mutation = ' + progressToday)
+      // console.log('progressToday from profile store mutation = ' + progressToday)
       Vue.set(state.stats.dayScore, 'score', progressToday)
       Vue.set(state.stats.dayScore, 'checked', countCheckedTasks)
       Vue.set(state.stats.dayScore, 'total', countDailyTasks)
@@ -157,7 +154,7 @@ export default {
       Vue.set(state.stats, 'progressWeek', progressWeek)
       const weekKey = 'W' + currentUserWeek.toString()
       Vue.set(state.stats.weeksRecords, weekKey, progressWeek)
-      console.log('authUserID =' + authUserID)
+      // console.log('authUserID =' + authUserID)
 
       return authUserID === 'guest' ? '' : EventBus.$emit('updateFirebase')
     }
