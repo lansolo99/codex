@@ -140,6 +140,27 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog
+      v-model="dialogNotificationNotSupportedEnv"
+      max-width="350"
+      content-class="standard-dialog"
+    >
+      <v-card>
+        <v-card-title class="title red white--text pt-3 pb-3" primary-title>
+          Notifications not supported!
+          <v-icon
+            right
+            class="white--text icon icon-delete close"
+            @click="dialogNotificationNotSupportedEnv = false"
+          ></v-icon>
+        </v-card-title>
+
+        <v-card-text>
+          <p>Sorry but push notifications are not supported with your device. Maybe some days...</p>
+          <p>Try Android instead.</p>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -158,6 +179,7 @@ export default {
       editing: false,
       dialogAvatarChangeNeedNetwork: false,
       dialogNotificationPermissionDenied: false,
+      dialogNotificationNotSupportedEnv: false,
       formComponents: {
         reminderSwitch: false,
         reminderHour: [
@@ -356,53 +378,77 @@ export default {
     },
     subscribeNotification () {
       console.log('subscribeToNotifications')
-      // Request permission
-      const messaging = firebase.messaging()
-      messaging.requestPermission().then(() => {
-        console.log('Notification permission granted.')
-        messaging.getToken().then(token => {
-          console.log('token =' + token)
-          this.profileDatas.notifications.token = token
-          const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
-          this.updateProfile(profileDatas).then(() => {
+      if (firebase.messaging.isSupported()) {
+        // Request permission
+        const messaging = firebase.messaging()
+        messaging.requestPermission().then(() => {
+          console.log('Notification permission granted.')
+          messaging.getToken().then(token => {
+            console.log('token =' + token)
+            this.profileDatas.notifications.token = token
+            const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+            this.updateProfile(profileDatas).then(() => {
             // Update firebase
-            EventBus.$emit('updateFirebase')
+              EventBus.$emit('updateFirebase')
+            })
           })
+        }).catch(err => {
+          console.log('Unable to get permission to notify.', err)
+          this.dialogNotificationPermissionDenied = true
+          this.profileDatas.notifications.dailyTaskReminder.status = false
         })
-      }).catch(err => {
-        console.log('Unable to get permission to notify.', err)
-        this.dialogNotificationPermissionDenied = true
-        this.profileDatas.notifications.dailyTaskReminder.status = false
-      })
+      } else {
+        this.unsupportedNotifications()
+      }
     },
     unsubscribeNotification (context) {
       console.log('unSubscribeFromNotifications')
+      // SignOut context
       if (context === 'signOut') { this.profileDatas.notifications.dailyTaskReminder.status = false }
       // User had token -> delete token
       if (!this.profileDatas.notifications.dailyTaskReminder.status && this.profileDatas.notifications.token !== '') {
+        if (firebase.messaging.isSupported()) {
         // Retrieve Firebase Messaging object.
-        const messaging = firebase.messaging()
-        messaging.getToken()
-          .then(token => {
-            messaging.deleteToken(token)
-          })
-          .then(() => {
-            this.profileDatas.notifications.token = ''
-            const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
-            this.updateProfile(profileDatas).then(() => {
-              // Update firebase
-              EventBus.$emit('updateFirebase')
-              if (context === 'signOut') {
-                EventBus.$emit('updateFirebase', context)
-              } else {
-                EventBus.$emit('updateFirebase')
-              }
+          const messaging = firebase.messaging()
+          messaging.getToken()
+            .then(token => {
+              messaging.deleteToken(token)
             })
-          })
+            .then(() => {
+              this.profileDatas.notifications.token = ''
+              const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+              this.updateProfile(profileDatas).then(() => {
+              // Update firebase
+                if (context === 'signOut') {
+                  EventBus.$emit('updateFirebase', context)
+                } else {
+                  EventBus.$emit('updateFirebase')
+                }
+              })
+            })
+        } else {
+          if (context === 'signOut') {
+            EventBus.$emit('updateFirebase', context)
+          } else {
+            this.unsupportedNotifications()
+            EventBus.$emit('updateFirebase')
+          }
+        }
       } else {
         // User had no token, no need to delete token
         this.profileDatas.notifications.dailyTaskReminder.status = false
       }
+    },
+    unsupportedNotifications () {
+      // Web push not supported
+      this.dialogNotificationNotSupportedEnv = true
+      this.profileDatas.notifications.dailyTaskReminder.status = false
+      this.profileDatas.notifications.token = ''
+      const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+      this.updateProfile(profileDatas).then(() => {
+        // Update firebase
+        EventBus.$emit('updateFirebase')
+      })
     },
     notificationHour () {
       // Update profile store
@@ -517,6 +563,13 @@ export default {
   }
   .theme--light.v-input--is-disabled .v-label {
     opacity: 0.7;
+  }
+}
+.standard-dialog {
+  .close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
   }
 }
 </style>

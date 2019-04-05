@@ -346,15 +346,16 @@ export default {
                 FIREBASE CLOUD MESSAGING
     ============================================= */
 
-    // Retrieve Firebase Messaging object.
-    const messaging = firebase.messaging()
-    // Add the public key generated from the console here.
-    messaging.usePublicVapidKey('BMZ27Tax1A9db5QrZpnHVs7mIUJS8walNQrElirXRA6B11i-t_I0INmYVUi0TFoMbkY-sitDCL2zS21ePvQb9e0')
-    // On receive message in the browser
-    messaging.onMessage(function (payload) {
-      console.log('Message received. ', payload)
+    if (firebase.messaging.isSupported()) {
+      const messaging = firebase.messaging()
+      // Add the public key generated from the console here.
+      messaging.usePublicVapidKey('BMZ27Tax1A9db5QrZpnHVs7mIUJS8walNQrElirXRA6B11i-t_I0INmYVUi0TFoMbkY-sitDCL2zS21ePvQb9e0')
+      // On receive message in the browser
+      messaging.onMessage(function (payload) {
+        console.log('Message received. ', payload)
       // ...
-    })
+      })
+    }
 
     /* =============================================
                         EVENTS
