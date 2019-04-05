@@ -85,10 +85,12 @@ exports.sendNotificationsReminder = functions.pubsub.topic('weekx-reminders').on
               if (dailyTasks.length) {
                 // Send notification
                 console.log('user has daily tasks')
+
+                // Admin SDK
                 let message = {
                   data: {
-                    score: '850',
-                    time: '2:45'
+                    title: 'Weekx',
+                    body: 'You have some task(s) today!'
                   },
                   token: doc.data().profile.notifications.token
                 }

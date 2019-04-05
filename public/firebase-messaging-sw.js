@@ -20,7 +20,7 @@ messaging.setBackgroundMessageHandler(function (payload) {
   var notificationTitle = 'Weekx'
   var notificationOptions = {
     title: 'Weekx',
-    body: 'You have some tasks today!',
+    body: 'You have some task(s) today!',
     click_action: 'https://weekx.netlify.com',
     icon: 'https://weekx.netlify.com/img/icons/android-chrome-512x512.png'
   }
