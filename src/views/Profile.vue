@@ -131,7 +131,8 @@ export default {
     ...mapActions({
       toggleProfileDialog: 'utility/toggleProfileDialog',
       resetTasksDatas: 'tasks/resetTasksDatas',
-      setResetProfileProgression: 'profile/setResetProfileProgression'
+      setResetProfileProgression: 'profile/setResetProfileProgression',
+      addUserToken: 'profile/addUserToken'
     }),
     ...mapMutations({
       // setResetProfileProgression: 'profile/setResetProfileProgression',
@@ -143,8 +144,14 @@ export default {
       this.toggleProfileDialog(true)
     },
     signOut () {
-      EventBus.$emit('signOut')
-      this.$router.push({ name: 'login' })
+      // If user has token, delete it
+      if (this.profile.notifications.token !== '') {
+        const context = 'signOut'
+        EventBus.$emit('unsubscribeNotification', context)
+      } else {
+        EventBus.$emit('signOut')
+        this.$router.push({ name: 'login' })
+      }
     },
     deleteAccount () {
       console.log('deleteaccount')

@@ -20,7 +20,6 @@ import TheNavbar from '@/components/TheNavbar'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import firebase from './Firebase'
 import AppSpinner from '@/components/AppSpinner.vue'
-import uuid from 'uuid/v4'
 
 // import Uuid from 'uuid/v1'
 
@@ -118,60 +117,6 @@ export default {
       // Set current user time zone
       const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
       this.updateUserTimeZone(userTimeZone)
-
-      // USER TOKEN & DEVICE MANAGEMENT
-
-      // Retrieve unique user device id
-      const currentDeviceId = uuid()
-      // Retrieve Firebase Messaging object.
-      const messaging = firebase.messaging()
-
-      console.log(currentDeviceId)
-
-      if (!this.profile.notifications.deviceId) {
-        // User has no id yet -> create one
-        console.log('user has no device id yet => create one')
-        this.updateUserDeviceId(currentDeviceId)
-      } else {
-        // User has a device id -> perform check
-        console.log('user has a device id')
-        if (this.profile.notifications.deviceId === currentDeviceId) {
-          // User's device is the same as one recorded -> check retrieve token
-
-          messaging.getToken().then(currentToken => {
-            if (currentToken) {
-              console.warn('token retrieved : ' + currentToken)
-              if (currentToken !== 'undefined') {
-                const userStatus = true
-                this.addUserToken({ currentToken, userStatus })
-              } else {
-                const currentToken = ''
-                const userStatus = false
-                this.addUserToken({ currentToken, userStatus })
-              }
-            } else {
-              // Show permission request.
-              console.warn('No Instance ID token available. Request permission to generate one.')
-              const currentToken = ''
-              const userStatus = false
-              this.addUserToken({ currentToken, userStatus })
-            }
-          }).catch(function (err) {
-            console.warn('An error occurred while retrieving token. ', err)
-          })
-        } else {
-          // User's device is not the same -> redefine new device Id
-          this.updateUserDeviceId(currentDeviceId)
-          // reset token & notification status
-          const currentToken = ''
-          const userStatus = false
-          this.addUserToken({ currentToken, userStatus })
-          messaging.getToken()
-            .then(token => {
-              messaging.deleteToken(token)
-            })
-        }
-      }
 
       // Set currentUserWeek
       const lastUserRecordedWeek = parseInt(Object.keys(this.userData.stats.weeksRecords).slice(-1).join('').substr(1))
@@ -526,11 +471,15 @@ export default {
     })
 
     // Firebase Updates
-    EventBus.$on('updateFirebase', (avatarImageRaw) => {
+    EventBus.$on('updateFirebase', (context) => {
       firebase.firestore().collection('users').doc(this.utility.authUserID)
         .set({ profile: this.profile, tasks: this.tasks })
         .then(() => {
           console.log('Firebase updated')
+          if (context === 'signOut') {
+            EventBus.$emit('signOut')
+            this.$router.push({ name: 'login' })
+          }
         })
     })
   }

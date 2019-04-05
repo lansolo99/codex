@@ -229,8 +229,6 @@ export default {
   },
   watch: {
     'profileDatas.notifications.dailyTaskReminder.time': function (newVal, oldVal) {
-      console.log('dailyTaskReminderTime')
-      console.log(this.profileDatas.notifications.dailyTaskReminder.time)
       this.notificationHour()
     }
   },
@@ -238,6 +236,7 @@ export default {
     ...mapActions({
       updateProfile: 'profile/updateProfile',
       toggleProfileDialog: 'utility/toggleProfileDialog'
+
     }),
     togglePasswordVisibility (field) {
       this.formComponents.passwordType === 'password' ? this.formComponents.passwordType = 'clear' : this.formComponents.passwordType = 'password'
@@ -347,58 +346,63 @@ export default {
       })
     },
     manageSubscribe () {
-      // Subscription Logic
-      console.log('manageSubscribe')
-      console.warn('dailyTaskReminderStatus = ' + this.profileDatas.notifications.dailyTaskReminder.status)
-      // status True -> try subscription
       if (this.profileDatas.notifications.dailyTaskReminder.status) {
-        // Request permission
-        console.log('subscribeToNotifications')
-
+        // status just set to True -> try subscription
+        this.subscribeNotification()
+      } else {
+        // status just set to False -> unsubscribe
+        this.unsubscribeNotification()
+      }
+    },
+    subscribeNotification () {
+      console.log('subscribeToNotifications')
+      // Request permission
+      const messaging = firebase.messaging()
+      messaging.requestPermission().then(() => {
+        console.log('Notification permission granted.')
+        messaging.getToken().then(token => {
+          console.log('token =' + token)
+          this.profileDatas.notifications.token = token
+          const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+          this.updateProfile(profileDatas).then(() => {
+            // Update firebase
+            EventBus.$emit('updateFirebase')
+          })
+        })
+      }).catch(err => {
+        console.log('Unable to get permission to notify.', err)
+        this.dialogNotificationPermissionDenied = true
+        this.profileDatas.notifications.dailyTaskReminder.status = false
+      })
+    },
+    unsubscribeNotification (context) {
+      console.log('unSubscribeFromNotifications')
+      if (context === 'signOut') { this.profileDatas.notifications.dailyTaskReminder.status = false }
+      // User had token -> delete token
+      if (!this.profileDatas.notifications.dailyTaskReminder.status && this.profileDatas.notifications.token !== '') {
         // Retrieve Firebase Messaging object.
         const messaging = firebase.messaging()
-        messaging.requestPermission().then(() => {
-          console.log('Notification permission granted.')
-          messaging.getToken().then(token => {
-            console.log('token =' + token)
-            this.profileDatas.notifications.token = token
+        messaging.getToken()
+          .then(token => {
+            messaging.deleteToken(token)
+          })
+          .then(() => {
+            this.profileDatas.notifications.token = ''
             const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
             this.updateProfile(profileDatas).then(() => {
               // Update firebase
               EventBus.$emit('updateFirebase')
+              if (context === 'signOut') {
+                EventBus.$emit('updateFirebase', context)
+              } else {
+                EventBus.$emit('updateFirebase')
+              }
             })
           })
-        }).catch(err => {
-          console.log('Unable to get permission to notify.', err)
-          this.dialogNotificationPermissionDenied = true
-          this.profileDatas.notifications.dailyTaskReminder.status = false
-        })
       } else {
-        // status False
-        console.log('go false')
-        // User had token -> delete token
-        if (!this.profileDatas.notifications.dailyTaskReminder.status && this.profileDatas.notifications.token !== '') {
-          console.log('unSubscribeFromNotifications')
-          // Retrieve Firebase Messaging object.
-          const messaging = firebase.messaging()
-          messaging.getToken()
-            .then(token => {
-              messaging.deleteToken(token)
-            })
-            .then(() => {
-              this.profileDatas.notifications.token = ''
-              const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
-              this.updateProfile(profileDatas).then(() => {
-              // Update firebase
-                EventBus.$emit('updateFirebase')
-              })
-            })
-        } else {
-          // User had no token
-          this.profileDatas.notifications.dailyTaskReminder.status = false
-        }
+        // User had no token, no need to delete token
+        this.profileDatas.notifications.dailyTaskReminder.status = false
       }
-      console.log(this.profileDatas.notifications.dailyTaskReminder.status)
     },
     notificationHour () {
       // Update profile store
@@ -413,12 +417,15 @@ export default {
     // Reset local datas
     this.avatarImageRaw = null
 
-    // Popupate getCountries
+    // Populate getCountries
     this.formComponents.countries = this.getCountries
     // Populate local datas
     const retrievedProfile = JSON.parse(JSON.stringify(this.$store.state.profile))
     this.profileDatas = retrievedProfile
 
+    /* =============================================
+                       EVENTS
+    ============================================= */
     EventBus.$on('editProfile', (status) => {
       this.editing = status
     })
@@ -426,6 +433,10 @@ export default {
     EventBus.$on('updateProfileDatas', (status) => {
       const retrievedProfile = JSON.parse(JSON.stringify(this.$store.state.profile))
       this.profileDatas = retrievedProfile
+    })
+
+    EventBus.$on('unsubscribeNotification', (context) => {
+      this.unsubscribeNotification(context)
     })
   }
 
