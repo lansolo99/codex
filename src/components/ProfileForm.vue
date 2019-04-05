@@ -52,6 +52,14 @@
                 v-model="profileDatas.email"
                 required
               ></v-text-field>
+              <v-text-field
+                :disabled="!editing"
+                color="secondary"
+                label="Registration date"
+                readonly
+                v-model="profileDatas.registrationDate"
+                required
+              ></v-text-field>
             </v-card>
           </div>
           <!-- Settings -->

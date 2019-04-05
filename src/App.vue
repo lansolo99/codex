@@ -450,6 +450,11 @@ export default {
 
             // Init connexionDateLast to current time
             this.userData.connexionDateLast = Date.now()
+            // Init subscription date
+            this.userData.registrationDate = format(
+              new Date(Date.now()),
+              'D MMMM YYYY'
+            )
 
             this.updateProfile(this.userData).then(() => {
               console.log('profileUpdated')
