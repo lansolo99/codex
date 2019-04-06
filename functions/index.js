@@ -47,7 +47,6 @@ exports.sendNotificationsReminder = functions.pubsub.topic('weekx-reminders').on
           if (doc.data().tasks) {
             console.info('user has tasks')
 
-            // Hour test
             const serverHour = getHours(new Date(Date.now()))
             const userDefinedHour = doc.data().profile.notifications.dailyTaskReminder.time
             const userDate = setHours(new Date(Date.now()), userDefinedHour)
@@ -85,12 +84,19 @@ exports.sendNotificationsReminder = functions.pubsub.topic('weekx-reminders').on
               if (dailyTasks.length) {
                 // Send notification
                 console.log('user has daily tasks')
+                var plural = ""
+                var countDailyTasks = dailyTasks.length
+                if (dailyTasks.length > 1) {
+                  plural = "s"
+                } else {
+                  plural = ""
+                }
 
                 // Admin SDK
                 let message = {
                   data: {
                     title: 'Weekx',
-                    body: 'You have some task(s) today!'
+                    body: `You have ${countDailyTasks} task${plural}) today!'`
                   },
                   token: doc.data().profile.notifications.token
                 }

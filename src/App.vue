@@ -353,6 +353,7 @@ export default {
       // On receive message in the browser
       messaging.onMessage(function (payload) {
         console.log('Message received. ', payload)
+        console.log('body = ' + payload.data.body)
       // ...
       })
     }
