@@ -92,15 +92,15 @@ export default {
     content: "";
     position: absolute;
     // substract container's height
-    top: calc(-75px + 1px);
+    top: calc(-35px + 1px);
     left: 0;
-    height: 75px;
+    height: 35px;
     width: 100%;
     pointer-events: none;
     background-image: linear-gradient(
       -180deg,
       rgba($color-golden, 0) 0%,
-      rgba($color-golden, 0.7) 100%
+      rgba($color-golden, 0.5) 100%
     );
   }
 }

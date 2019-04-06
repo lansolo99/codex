@@ -93,14 +93,63 @@ exports.sendNotificationsReminder = functions.pubsub.topic('weekx-reminders').on
                 }
 
                 // Admin SDK
+
+                // let message = {
+                //   "message": {
+                //     "token": doc.data().profile.notifications.token,
+                //     "webpush": {
+                //       "notification": {
+                //         "title": "Weekx",
+                //         "body": "test",
+                //         "icon": 'https://weekx.netlify.com/img/icons/android-chrome-512x512.png'
+                //       }
+                //     }
+                //   }
+                // }
+
+                // let message = {
+                //   data: {
+                //     title: 'Weekx',
+                //     body: `You have ${countDailyTasks} task${plural} today!'`
+                //   },
+                //   token: doc.data().profile.notifications.token,
+                //   "notification": {
+                //     "title": "Weekx",
+                //     "body": `You have ${countDailyTasks} task${plural} today!'`,
+                //     "icon": 'https://weekx.netlify.com/img/icons/android-chrome-512x512.png'
+                //   },
+                //   "webpush": {
+                //     "headers": {
+                //       "TTL": "43200"
+                //     },
+                //     "fcm_options": {
+                //       "link": "https://weekx.netlify.com"
+                //     }
+                //   }
+                // }
+
                 let message = {
                   data: {
                     title: 'Weekx',
-                    body: `You have ${countDailyTasks} task${plural}) today!'`
+                    body: `You have ${countDailyTasks} task${plural} today!'`
                   },
-                  token: doc.data().profile.notifications.token
+                  token: doc.data().profile.notifications.token,
+                  "webpush": {
+                    "headers": {
+                      "TTL": "43200"
+                    },
+                    "notification": {
+                      "title": "Weekx",
+                      "body": `You have ${countDailyTasks} task${plural} today!'`,
+                      "icon": 'https://weekx.netlify.com/img/icons/android-chrome-512x512.png'
+                    },
+                    "fcm_options": {
+                      "link": "https://weekx.netlify.com"
+                    }
+                  }
                 }
                 admin.messaging().send(message)
+
               }
             } // End right hour
           } // End has task
