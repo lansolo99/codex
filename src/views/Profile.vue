@@ -147,6 +147,7 @@ export default {
     signOut () {
       // If user has token, delete it
       if (this.profile.notifications.token !== '') {
+        // Delete token (UI)
         const context = 'signOut'
         EventBus.$emit('unsubscribeNotification', context)
       } else {

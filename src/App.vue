@@ -432,9 +432,8 @@ export default {
             this.fetchProfileDatas(this.utility.authUserID)
               .then(res => {
                 console.log('fetchProfileDatas done')
-                if (this.profile.notifications.token !== '') {
-                  EventBus.$emit('unsubscribeNotification')
-                }
+                const context = 'signIn'
+                EventBus.$emit('unsubscribeNotification', context)
                 // Fetch tasks datas
                 this.fetchTasksDatas(this.utility.authUserID)
                   .then((res) => {

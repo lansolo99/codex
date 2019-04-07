@@ -331,7 +331,7 @@ export default {
     unsubscribeNotification (context) {
       console.log('unSubscribeFromNotifications')
       // SignOut context
-      if (context === 'signOut') { this.profileDatas.notifications.dailyTaskReminder.status = false }
+      if (context === 'signOut' || context === 'signIn') { this.profileDatas.notifications.dailyTaskReminder.status = false }
       // User had token -> delete token
       if (!this.profileDatas.notifications.dailyTaskReminder.status && this.profileDatas.notifications.token !== '') {
         if (firebase.messaging.isSupported()) {
