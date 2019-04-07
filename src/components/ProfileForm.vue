@@ -16,18 +16,37 @@
                       :src="require(`@/assets/images/avatar/${this.profileDatas.avatarDefault}.svg`)"
                     >
                     <img v-else :src="profileDatas.avatarImage">
-                    <v-btn fab small dark right class="colorGreen mr-0" @click="handleChangeAvatar">
-                      <v-icon class="icon icon-camera"></v-icon>
-                    </v-btn>
-                    <!-- Avatar input type file -->
-                    <input
-                      type="file"
-                      style="display: none"
+
+                    <image-uploader
                       ref="fileInput"
+                      :debug="1"
+                      :maxWidth="512"
+                      :quality="0.7"
+                      :autoRotate="true"
+                      outputFormat="string"
+                      :preview="false"
+                      :className="['fileinput', { 'fileinput--loaded' : formComponents.hasImage }]"
+                      capture="environment"
                       accept="image/*"
-                      @change="onFilePicked"
+                      doNotResize="['gif', 'svg']"
+                      @input="setImage"
+                      @onComplete="endImageResize"
                     >
-                    <!-- End of Avatar input type file -->
+                      <label for="fileInput" slot="upload-label">
+                        <figure>
+                          <v-btn
+                            fab
+                            small
+                            dark
+                            right
+                            class="colorGreen mr-0"
+                            @click="handleChangeAvatar"
+                          >
+                            <v-icon class="icon icon-camera"></v-icon>
+                          </v-btn>
+                        </figure>
+                      </label>
+                    </image-uploader>
                     <v-btn
                       v-if="profileDatas.avatarImage !==''"
                       fab
@@ -103,24 +122,6 @@
       </v-flex>
     </v-layout>
     <v-dialog
-      v-model="dialogAvatarChangeNeedNetwork"
-      persistent
-      max-width="350"
-      content-class="standard-dialog"
-    >
-      <v-card>
-        <v-card-title class="title red white--text pt-3 pb-3" primary-title>A problem occured!</v-card-title>
-
-        <v-card-text>You can't make change to your avatar while offline, try again later.</v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn color="red darken-1" flat="flat" @click="dialogAvatarChangeNeedNetwork = false">Ok</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog
       v-model="dialogNotificationPermissionDenied"
       max-width="350"
       content-class="standard-dialog"
@@ -174,10 +175,13 @@
 
 <script>
 import { EventBus } from '@/bus'
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 import firebase from '@/Firebase'
+import ImageUploader from 'vue-image-upload-resize'
+import Vue from 'vue'
+Vue.use(ImageUploader)
 
 export default {
   comments: true,
@@ -185,7 +189,6 @@ export default {
   data () {
     return {
       editing: false,
-      dialogAvatarChangeNeedNetwork: false,
       dialogNotificationPermissionDenied: false,
       dialogNotificationNotSupportedEnv: false,
       formComponents: {
@@ -216,7 +219,7 @@ export default {
           { text: '22:00', value: 22 },
           { text: '23:00', value: 23 }
         ],
-        avatarImageRaw: null,
+        hasImage: false,
         passwordType: 'password',
         iconShowPassword: 'icon-eye',
         repeatPassword: '',
@@ -250,9 +253,6 @@ export default {
       profile: state => state.profile,
       utility: state => state.utility
     }),
-    ...mapGetters({
-      getCountries: 'utility/getCountries'
-    }),
     dailyTaskRemindertime: function () {
       return this.profileDatas.notifications.dailyTaskReminder.time
     }
@@ -276,104 +276,21 @@ export default {
       this.toggleProfileDialog(true)
     },
     saveProfile () {
-      // Upload/update new avatar image
-      const avatarImageRaw = this.formComponents.avatarImageRaw
-
-      if (avatarImageRaw) {
-        if (this.isOnline) {
-          firebase.storage().ref('users').child(this.utility.authUserID)
-            .put(avatarImageRaw)
-            .then(url => {
-              firebase.storage().ref('users').child(this.utility.authUserID).getDownloadURL()
-                .then(url => {
-                // Update profile store
-                  this.profileDatas.avatarImage = url
-                  const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
-
-                  this.updateProfile(profileDatas).then(() => {
-                  // Update firebase
-                    EventBus.$emit('updateFirebase')
-                  })
-                }).catch(res => {
-                  console.log(res.message)
-                  this.dialogAvatarChangeNeedNetwork = true
-                })
-            })
-            .catch(res => {
-              // Need online to change image
-              console.log(res.message)
-              this.dialogAvatarChangeNeedNetwork = true
-            })
-        } else {
-        // Update profile store
-          const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
-
-          this.updateProfile(profileDatas).then(() => {
-            // Update firebase
-            EventBus.$emit('updateFirebase')
-          })
-        }
-      } else {
-        // Update profile store
-        const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
-
-        this.updateProfile(profileDatas).then(() => {
-          // Update firebase
-          EventBus.$emit('updateFirebase')
-        })
-      }
+      // Update profile store
+      const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
+      this.updateProfile(profileDatas).then(() => {
+        // Update firebase
+        EventBus.$emit('updateFirebase')
+      })
     },
     handleChangeAvatar () {
-      if (this.isOnline) {
-        this.$refs.fileInput.click()
-        console.log('handleChangeAvatar')
-      } else {
-        this.dialogAvatarChangeNeedNetwork = true
-      }
+      console.log('handleChangeAvatar')
+      console.log(this.$refs.fileInput.$el.childNodes[1].click())
     },
     handleResetAvatar () {
       console.log('handleResetAvatar')
       this.profileDatas.avatarImage = ''
-      this.formComponents.avatarImageRaw = null
-      if (this.isOnline) {
-        // Delete image file if it exists
-        firebase.storage().ref('users').child(this.utility.authUserID).getDownloadURL()
-          .then(res => {
-            console.log(res)
-            firebase.storage().ref('users').child(this.utility.authUserID)
-              .delete()
-              .then(() => {
-                this.saveProfile()
-              }).catch(error => {
-                console.log(error)
-                this.saveProfile()
-              })
-          }).catch(error => {
-            console.log(error)
-            this.saveProfile()
-          })
-      } else {
-        this.dialogAvatarChangeNeedNetwork = true
-      }
-    },
-    onFilePicked (event) {
-      const files = event.target.files
-      let filename = files[0].name
-      // Prevent dots in filename
-      if (filename.indexOf('.') <= 0) {
-        return alert('Please add a valid file!')
-      }
-      // Convert file to base 64 string
-      const fileReader = new FileReader()
-      fileReader.readAsDataURL(files[0])
-      fileReader.addEventListener('load', () => {
-        // Populate local data with Base 64 string
-        this.profileDatas.avatarImage = fileReader.result
-        // Temporary store raw image file
-        this.formComponents.avatarImageRaw = files[0]
-        // Save profile
-        this.saveProfile()
-      })
+      this.saveProfile()
     },
     manageSubscribe () {
       if (this.profileDatas.notifications.dailyTaskReminder.status) {
@@ -465,14 +382,20 @@ export default {
         // // Update firebase
         EventBus.$emit('updateFirebase')
       })
+    },
+    setImage: function (output) {
+      console.log('setImage')
+
+      this.formComponents.hasImage = true
+      this.profileDatas.avatarImage = output
+      this.formComponents.image = output
+      console.log(output)
+    },
+    endImageResize () {
+      this.saveProfile()
     }
   },
   created () {
-    // Reset local datas
-    this.avatarImageRaw = null
-
-    // Populate getCountries
-    this.formComponents.countries = this.getCountries
     // Populate local datas
     const retrievedProfile = JSON.parse(JSON.stringify(this.$store.state.profile))
     this.profileDatas = retrievedProfile
@@ -498,6 +421,9 @@ export default {
 </script>
 
 <style lang="scss">
+#fileInput {
+  display: none;
+}
 .profileForm {
   .custom-title {
     font-size: 16px;

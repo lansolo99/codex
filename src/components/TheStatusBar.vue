@@ -124,6 +124,9 @@ export default {
   &__avatar {
     margin-right: 10px;
     background-color: rgba(black, 0.5);
+    img {
+      object-fit: cover;
+    }
   }
   &__text-status-wrapper {
     height: 23px;
