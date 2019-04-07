@@ -126,6 +126,7 @@ export default {
     background-color: rgba(black, 0.5);
     img {
       object-fit: cover;
+      //
     }
   }
   &__text-status-wrapper {
