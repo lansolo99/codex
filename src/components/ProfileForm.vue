@@ -19,17 +19,16 @@
 
                     <image-uploader
                       ref="fileInput"
-                      :debug="1"
+                      :debug="2"
                       :maxWidth="512"
                       :quality="0.7"
                       :autoRotate="true"
                       outputFormat="string"
                       :preview="false"
                       :className="['fileinput', { 'fileinput--loaded' : formComponents.hasImage }]"
-                      capture="environment"
-                      accept="image/*"
                       doNotResize="['gif', 'svg']"
                       @input="setImage"
+                      @onUpload="startImageResize"
                       @onComplete="endImageResize"
                     >
                       <label for="fileInput" slot="upload-label">
@@ -285,7 +284,12 @@ export default {
     },
     handleChangeAvatar () {
       console.log('handleChangeAvatar')
-      console.log(this.$refs.fileInput.$el.childNodes[1].click())
+      const isSafari = window.safari !== undefined
+      const isIos = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)
+      if (isSafari || isIos) {
+      } else {
+        this.$refs.fileInput.$el.childNodes[1].click()
+      }
     },
     handleResetAvatar () {
       console.log('handleResetAvatar')
@@ -391,7 +395,11 @@ export default {
       this.formComponents.image = output
       console.log(output)
     },
+    startImageResize () {
+      EventBus.$emit('appSpinner', true)
+    },
     endImageResize () {
+      EventBus.$emit('appSpinner', false)
       this.saveProfile()
     }
   },
@@ -422,7 +430,11 @@ export default {
 
 <style lang="scss">
 #fileInput {
-  display: none;
+  //display: none;
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  overflow: hidden;
 }
 .profileForm {
   .custom-title {
