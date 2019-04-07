@@ -14,12 +14,11 @@
         <v-btn block large center @click="signOut" class="colorGreen white--text">Sign out</v-btn>
       </v-layout>
     </v-container>
-    <!-- Delete + reset account -->
     <v-container class="primary darken-1">
       <!-- Reset account -->
       <v-layout class="mx-3 mt-2 mb-2" justify-center>
         <v-dialog v-model="dialogResetAccount" persistent content-class="standard-dialog">
-          <v-btn slot="activator" large center color="red white--text px-5">Reset my account</v-btn>
+          <v-btn slot="activator" large center color="primary white--text px-5">Reset my account</v-btn>
           <v-card>
             <v-card-title class="title red white--text pt-3 pb-3" primary-title>Reset my account?</v-card-title>
 
@@ -54,6 +53,8 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-container>
+    <v-container class="primary darken-2">
       <!-- Delete account -->
       <v-layout class="mx-3 mt-2 mb-2" justify-center>
         <v-dialog
@@ -242,7 +243,7 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
-    // Prevent guest to access profile page
+    // Prevent guests to access profile page
     if (store.state.utility.authUserID && store.state.utility.authUserID !== 'guest') {
       next()
     } else {

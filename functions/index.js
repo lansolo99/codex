@@ -141,7 +141,8 @@ exports.sendNotificationsReminder = functions.pubsub.topic('weekx-reminders').on
                     "notification": {
                       "title": "Weekx",
                       "body": `You have ${countDailyTasks} task${plural} today!'`,
-                      "icon": 'https://weekx.netlify.com/img/icons/android-chrome-512x512.png'
+                      "icon": 'https://weekx.netlify.com/img/icons/android-chrome-512x512.png',
+                      "click_action": "https://weekx.netlify.com",
                     },
                     "fcm_options": {
                       "link": "https://weekx.netlify.com"

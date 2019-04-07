@@ -25,6 +25,7 @@
     "save": "^2.3.3",
     "vue": "^2.5.21",
     "vue-apexcharts": "^1.2.8",
+    "vue-image-upload-resize": "^2.0.4",
     "vue-offline": "^2.0.6",
     "vue-router": "^3.0.1",
     "vuelidate": "^0.7.4",
