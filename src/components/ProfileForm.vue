@@ -283,7 +283,6 @@ export default {
       })
     },
     handleChangeAvatar () {
-      console.log('handleChangeAvatar')
       const isSafari = window.safari !== undefined
       const isIos = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)
       if (isSafari || isIos) {
@@ -292,7 +291,6 @@ export default {
       }
     },
     handleResetAvatar () {
-      console.log('handleResetAvatar')
       this.profileDatas.avatarImage = ''
       this.saveProfile()
     },
