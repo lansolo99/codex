@@ -432,8 +432,10 @@ export default {
             this.fetchProfileDatas(this.utility.authUserID)
               .then(res => {
                 console.log('fetchProfileDatas done')
-                const context = 'signIn'
-                EventBus.$emit('unsubscribeNotification', context)
+                // Delete token (UI)
+                const currentToken = ''
+                const userStatus = false
+                this.addUserToken({ currentToken, userStatus })
                 // Fetch tasks datas
                 this.fetchTasksDatas(this.utility.authUserID)
                   .then((res) => {
