@@ -245,14 +245,12 @@ import { mapActions, mapState } from 'vuex'
 import { validationMixin } from 'vuelidate'
 import { required, requiredIf } from 'vuelidate/lib/validators'
 import { EventBus } from '@/bus'
-import * as easings from 'vuetify/es5/util/easing-patterns'
 import { getStringFromIsoDay } from '@/utils'
 
 export default {
 
   data () {
     return {
-      easings: Object.keys(easings),
       dialogTask: false,
       dialogEditSchedule: false,
       dialogDeleteTask: false,
