@@ -114,8 +114,6 @@ export default {
       currentToken,
       userStatus
     }) {
-      console.warn('current token = ' + currentToken)
-      console.warn('user status = ' + userStatus)
       state.notifications.token = currentToken
       state.notifications.dailyTaskReminder.status = userStatus
     },

@@ -14,6 +14,7 @@
           <TasksList :periodicity="periodicity" :ind="index"/>
         </div>
       </div>
+      <!-- <v-btn ref="button" color="primary" block @click="$vuetify.goTo(0)">scroll</v-btn> -->
     </v-container>
     <TasksEditor/>
   </div>
@@ -70,6 +71,9 @@ export default {
     getTaskFilter (periodicityName) {
       return this.taskFilters.find(v => v.periodicity === periodicityName).filter
     }
+  },
+  mounted () {
+    // $vuetify.goTo(0)
   },
   beforeRouteEnter (to, from, next) {
     if (store.state.utility.authUserID) {
