@@ -1,51 +1,63 @@
 <template>
   <div class="stats mb-4">
-    <TheStatusBar/>
+    <TheStatusBar />
     <v-container class="stats">
       <h1 class="black--text">Stats</h1>
       <h6 class="subheader subheader--first my-3 black--text">Achievements</h6>
       <v-card>
         <!-- Profile Level -->
         <v-container class="secondary pa-3 ma-0">
-          <span class="label white--text">Last 10 weeks average completion</span>
+          <span class="label white--text"
+            >Last 10 weeks average completion</span
+          >
           <v-layout row wrap>
             <v-flex grow align-self-center>
               <span class="profileScore white--text">
-                <span class="profileScore__score colorGreen--text">{{setProfileLevel}}</span>
+                <span class="profileScore__score colorGreen--text">{{
+                  setProfileLevel
+                }}</span>
                 <span class="profileScore__unit">%</span>
                 <v-icon
                   v-if="Object.keys(userData.stats.weeksRecords).length > 1"
-                  :class="`profileScore__icon-chart profileScore__icon-chart--${setProfileChartArrow} icon icon-arrow_chart`"
+                  :class="
+                    `profileScore__icon-chart profileScore__icon-chart--${setProfileChartArrow} icon icon-arrow_chart`
+                  "
                 ></v-icon>
               </span>
             </v-flex>
             <v-flex shrink align-self-center>
-              <v-dialog v-model="dialogHelpProfile" max-width="350" content-class="standard-dialog">
-                <v-btn slot="activator" fab small class="primary help mr-0">
-                  <v-icon class="icon icon-question_mark white--text"></v-icon>
-                </v-btn>
-                <v-card>
-                  <v-card-title
-                    class="title primary white--text"
-                    primary-title
-                  >Achievements completion
-                    <v-icon
-                      right
-                      class="white--text icon icon-delete close"
-                      @click="dialogHelpProfile = false"
-                    ></v-icon>
-                  </v-card-title>
-                  <v-card-text>
-                    The main metric is the average amount of your last 10 weeks completions (10 completed weeks = 100%).
-                    As it’s always based on your recent achievements, it can go up and down, so it depends entirely on your discipline commitment throughout this time.
-                  </v-card-text>
-                </v-card>
-              </v-dialog>
+              <Dialog
+                :vmodel="dialogHelpProfile"
+                title="Achievements completion"
+                color="primary"
+                @closeDialog="dialogHelpProfile = false"
+              >
+                <div slot="body">
+                  The main metric is the average amount of your last 10 weeks
+                  completions (10 completed weeks = 100%). As it’s always based
+                  on your recent achievements, it can go up and down, so it
+                  depends entirely on your discipline commitment throughout this
+                  time.
+                </div>
+              </Dialog>
+              <v-btn
+                fab
+                small
+                class="primary help mr-0"
+                @click="dialogHelpProfile = true"
+              >
+                <v-icon class="icon icon-question_mark white--text"></v-icon>
+              </v-btn>
             </v-flex>
           </v-layout>
           <v-layout row wrap>
             <v-flex grow>
-              <v-progress-linear v-model="setProfileLevel" height="15" class="mt-2" width="80%"></v-progress-linear>
+              <v-progress-linear
+                v-model="setProfileLevel"
+                height="15"
+                class="mt-2"
+                width="80%"
+              ></v-progress-linear>
             </v-flex>
           </v-layout>
         </v-container>
@@ -66,8 +78,7 @@
               auto-draw
             ></v-sparkline>
             <template slot="label" slot-scope="item">
-              {{ item.value
-              }}
+              {{ item.value }}
             </template>
             <div class="guide guide--1"></div>
             <div class="guide guide--2"></div>
@@ -79,20 +90,22 @@
             padding="16"
             height="10"
           >
-            <template slot="label" slot-scope="item">{{ item.value }}%</template>
+            <template slot="label" slot-scope="item"
+              >{{ item.value }}%</template
+            >
           </v-sparkline>
         </v-container>
       </v-card>
 
       <!-- if empty task message -->
-      <StatsReboot v-if="showReboot"/>
+      <StatsReboot v-if="showReboot" />
 
       <!-- Tasks distribution charts -->
       <div v-if="Object.keys(tasks).length" class="tasks_charts">
         <h6 class="subheader my-3 mt-4 black--text">Tasks completions</h6>
         <v-expansion-panel>
           <v-expansion-panel-content
-            v-for="(task,key) in tasks"
+            v-for="(task, key) in tasks"
             :key="key"
             class="secondary white--text"
           >
@@ -102,14 +115,18 @@
                 <v-flex shrink>
                   <div :class="`category ${task.category}`">
                     <img
-                      :src="require(`@/assets/images/icons_categories/${task.category}.svg`)"
+                      :src="
+                        require(`@/assets/images/icons_categories/${
+                          task.category
+                        }.svg`)
+                      "
                       alt
-                    >
+                    />
                   </div>
                 </v-flex>
 
                 <v-flex grow class="pt-1 pl-3 pr-3 pb-1 body-1">
-                  <span class="custom-title">{{task.title}}</span>
+                  <span class="custom-title">{{ task.title }}</span>
                 </v-flex>
                 <v-spacer></v-spacer>
                 <v-flex shrink width="0"></v-flex>
@@ -117,7 +134,12 @@
               <v-layout class="progressbarContainer">
                 <v-flex grow>
                   <v-progress-linear
-                    :value="calcHeatMapProgress(getHeatMapMetrics(task.completionsHistory, 1),getHeatMapMetrics(task.completionsHistory, 0),)"
+                    :value="
+                      calcHeatMapProgress(
+                        getHeatMapMetrics(task.completionsHistory, 1),
+                        getHeatMapMetrics(task.completionsHistory, 0)
+                      )
+                    "
                     height="15"
                     class="mt-2 mb-0"
                     width="80%"
@@ -126,7 +148,11 @@
                 <v-flex
                   class="progressbarContainer__value white--text text-xs-left pt-1 pl-2 pr-2 pb-0"
                   shrink
-                >{{getHeatMapMetrics(task.completionsHistory, 1)}} / {{getHeatMapMetrics(task.completionsHistory,0)}} day{{getHeatMapMetrics(task.completionsHistory,0) > 1 ? 's' : '' }}</v-flex>
+                  >{{ getHeatMapMetrics(task.completionsHistory, 1) }} /
+                  {{ getHeatMapMetrics(task.completionsHistory, 0) }} day{{
+                    getHeatMapMetrics(task.completionsHistory, 0) > 1 ? "s" : ""
+                  }}</v-flex
+                >
               </v-layout>
             </div>
             <!-- Expanded part -->
@@ -135,7 +161,9 @@
                 <span class="label">Last 10 weeks completions history</span>
                 <div
                   class="heatmap"
-                  :style="{height: heatmapWrapperHeight(task.completionsHistory) + 'px' }"
+                  :style="{
+                    height: heatmapWrapperHeight(task.completionsHistory) + 'px'
+                  }"
                 >
                   <div class="dailyCompletionsWrapper">
                     <apexcharts
@@ -162,6 +190,7 @@ import { mapState, mapGetters } from 'vuex'
 import VueApexCharts from 'vue-apexcharts'
 import StatsReboot from '@/components/StatsReboot'
 import TheStatusBar from '@/components/TheStatusBar'
+import Dialog from '@/components/Dialog'
 import Vue from 'vue'
 import store from '@/store/store'
 Vue.use(VueApexCharts)
@@ -171,12 +200,13 @@ export default {
   components: {
     StatsReboot,
     TheStatusBar,
+    Dialog,
     apexcharts: VueApexCharts
   },
   data () {
     return {
       showReboot: false,
-      dialogHelpProfile: null,
+      dialogHelpProfile: false,
       levels: {
         trends: {
           gradients: [

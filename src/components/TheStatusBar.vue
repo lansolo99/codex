@@ -1,58 +1,60 @@
 <template>
-  <div :class="['theStatusBar', statusBarDisplayConf]" @click="statusBarRedirection()">
+  <div
+    :class="['theStatusBar', statusBarDisplayConf]"
+    @click="statusBarRedirection()"
+  >
     <v-layout>
       <v-flex shrink>
         <v-avatar class="theStatusBar__avatar" size="23px">
           <img
             v-if="profile.avatarImage === ''"
-            :src="require(`@/assets/images/avatar/${this.profile.avatarDefault}.svg`)"
-          >
-          <img v-else :src="profile.avatarImage">
+            :src="
+              require(`@/assets/images/avatar/${
+                this.profile.avatarDefault
+              }.svg`)
+            "
+          />
+          <img v-else :src="profile.avatarImage" />
         </v-avatar>
       </v-flex>
       <v-flex class="theStatusBar__text-status-wrapper">
         <span class="theStatusBar__text-status">
           Connected as
-          <i>{{profile.pseudo}}</i>
+          <i>{{ profile.pseudo }}</i>
         </span>
       </v-flex>
       <v-flex shrink>
         <div class="theStatusBar__btn-detail">...</div>
       </v-flex>
     </v-layout>
-
-    <v-dialog v-model="guestDialog" max-width="350" content-class="standard-dialog guest">
-      <v-card>
-        <v-card-title class="title red white--text pt-3 pb-3" primary-title>
-          Test mode!
-          <v-icon
-            right
-            class="white--text icon icon-delete close"
-            @click="handleGuestDialog ('continue')"
-          ></v-icon>
-        </v-card-title>
-        <v-card-text>
-          <p>You are testing Weekx as a guest. Therefore, there is not records tracking.</p>
-          <p class="mb-0">Please log in or register from the launch screen.</p>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="red darken-1"
-            flat="flat"
-            @click="handleGuestDialog('backToLogin')"
-          >Back to the launch screen</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <!-- ///// -->
+    <Dialog
+      :vmodel.sync="guestDialog"
+      title="Test mode!"
+      color="red"
+      @closeDialog="guestDialog = false"
+    >
+      <template v-slot:body>
+        <p>
+          You are testing Weekx as a guest. Therefore, there is not records
+          tracking.
+        </p>
+        <p class="mb-0">Please log in or register from the launch screen.</p>
+      </template>
+      <!-- <template v-slot:actions> </template> -->
+    </Dialog>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import { EventBus } from '@/bus'
+import Dialog from '@/components/Dialog'
 
 export default {
+  components: {
+    Dialog
+  },
   data () {
     return {
       statusBarDisplayConf: '',
@@ -73,6 +75,7 @@ export default {
         this.$router.push({ name: 'profile' })
       } else {
         // Guest
+        console.log('guest')
         this.guestDialog = true
       }
     },
