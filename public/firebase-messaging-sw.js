@@ -27,7 +27,8 @@ messaging.setBackgroundMessageHandler(function (payload) {
   var notificationOptions = {
     body: payload.data.body,
     icon: 'https://weekx.netlify.com/img/icons/android-chrome-512x512.png',
-    click_action: 'https://weekx.netlify.com'
+    click_action: 'https://weekx.netlify.com',
+    badge: 'https://weekx.netlify.com/img/icons/notification-badge.png'
   }
 
   return self.registration.showNotification(notificationTitle,
