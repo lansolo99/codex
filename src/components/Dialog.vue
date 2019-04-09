@@ -1,27 +1,29 @@
 <template>
-  <v-dialog :value="vmodel" max-width="350" content-class="standard-dialog">
+  <v-dialog
+    :value="vmodel"
+    :persistent="persistent"
+    max-width="350"
+    content-class="standard-dialog"
+  >
     <v-card>
+      <!-- Title -->
       <v-card-title :class="['title white--text', color]">
         {{ title }}
         <v-icon
+          v-if="closeIcon === true"
           right
           class="white--text icon icon-delete close"
           @click="$emit('closeDialog')"
         ></v-icon>
       </v-card-title>
+      <!-- Body -->
       <v-card-text>
         <slot name="body"></slot>
       </v-card-text>
-      <v-card-actions>
-        <!-- <slot name="actions"></slot> -->
+      <!-- Actions -->
+      <v-card-actions v-if="hasActionSlotData">
         <v-spacer></v-spacer>
-
-        <v-btn
-          color="red darken-1"
-          flat="flat"
-          @click="handleGuestDialog('backToLogin')"
-          >Back to the launch screen</v-btn
-        >
+        <slot name="actions"></slot>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -34,6 +36,12 @@ export default {
       type: Boolean,
       required: true
     },
+    closeIcon: {
+      type: Boolean
+    },
+    persistent: {
+      type: Boolean
+    },
     color: {
       type: String,
       required: true
@@ -43,9 +51,9 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-      mutableVmodel: this.vmodel
+  computed: {
+    hasActionSlotData () {
+      return this.$slots.actions
     }
   }
 }

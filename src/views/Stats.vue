@@ -7,15 +7,19 @@
       <v-card>
         <!-- Profile Level -->
         <v-container class="secondary pa-3 ma-0">
-          <span class="label white--text"
-            >Last 10 weeks average completion</span
+          <span class="label white--text">Last 10 weeks average completion</span>
+          <v-layout
+            row
+            wrap
           >
-          <v-layout row wrap>
-            <v-flex grow align-self-center>
+            <v-flex
+              grow
+              align-self-center
+            >
               <span class="profileScore white--text">
                 <span class="profileScore__score colorGreen--text">{{
                   setProfileLevel
-                }}</span>
+                  }}</span>
                 <span class="profileScore__unit">%</span>
                 <v-icon
                   v-if="Object.keys(userData.stats.weeksRecords).length > 1"
@@ -25,10 +29,14 @@
                 ></v-icon>
               </span>
             </v-flex>
-            <v-flex shrink align-self-center>
+            <v-flex
+              shrink
+              align-self-center
+            >
               <Dialog
                 :vmodel="dialogHelpProfile"
                 title="Achievements completion"
+                :closeIcon="true"
                 color="primary"
                 @closeDialog="dialogHelpProfile = false"
               >
@@ -50,7 +58,10 @@
               </v-btn>
             </v-flex>
           </v-layout>
-          <v-layout row wrap>
+          <v-layout
+            row
+            wrap
+          >
             <v-flex grow>
               <v-progress-linear
                 v-model="setProfileLevel"
@@ -64,7 +75,10 @@
         <!-- Last 10 weeks -->
         <v-container v-if="Object.keys(userData.stats.weeksRecords).length > 1">
           <span class="label">Last 10 weeks completions details</span>
-          <v-sheet color="sparkline-sheet mb-3" elevation="0">
+          <v-sheet
+            color="sparkline-sheet mb-3"
+            elevation="0"
+          >
             <v-sparkline
               class="sparkline sparkline--last10Weeks"
               :labels="setRecordWeeksLabels"
@@ -77,7 +91,10 @@
               height="75"
               auto-draw
             ></v-sparkline>
-            <template slot="label" slot-scope="item">
+            <template
+              slot="label"
+              slot-scope="item"
+            >
               {{ item.value }}
             </template>
             <div class="guide guide--1"></div>
@@ -90,9 +107,10 @@
             padding="16"
             height="10"
           >
-            <template slot="label" slot-scope="item"
-              >{{ item.value }}%</template
-            >
+            <template
+              slot="label"
+              slot-scope="item"
+            >{{ item.value }}%</template>
           </v-sparkline>
         </v-container>
       </v-card>
@@ -101,7 +119,10 @@
       <StatsReboot v-if="showReboot" />
 
       <!-- Tasks distribution charts -->
-      <div v-if="Object.keys(tasks).length" class="tasks_charts">
+      <div
+        v-if="Object.keys(tasks).length"
+        class="tasks_charts"
+      >
         <h6 class="subheader my-3 mt-4 black--text">Tasks completions</h6>
         <v-expansion-panel>
           <v-expansion-panel-content
@@ -110,8 +131,15 @@
             class="secondary white--text"
           >
             <!-- Bar part -->
-            <div slot="header" class="pb-1">
-              <v-layout row wrap :class="`task ${task.status} mr-2 px-0`">
+            <div
+              slot="header"
+              class="pb-1"
+            >
+              <v-layout
+                row
+                wrap
+                :class="`task ${task.status} mr-2 px-0`"
+              >
                 <v-flex shrink>
                   <div :class="`category ${task.category}`">
                     <img
@@ -125,11 +153,17 @@
                   </div>
                 </v-flex>
 
-                <v-flex grow class="pt-1 pl-3 pr-3 pb-1 body-1">
+                <v-flex
+                  grow
+                  class="pt-1 pl-3 pr-3 pb-1 body-1"
+                >
                   <span class="custom-title">{{ task.title }}</span>
                 </v-flex>
                 <v-spacer></v-spacer>
-                <v-flex shrink width="0"></v-flex>
+                <v-flex
+                  shrink
+                  width="0"
+                ></v-flex>
               </v-layout>
               <v-layout class="progressbarContainer">
                 <v-flex grow>
@@ -148,11 +182,10 @@
                 <v-flex
                   class="progressbarContainer__value white--text text-xs-left pt-1 pl-2 pr-2 pb-0"
                   shrink
-                  >{{ getHeatMapMetrics(task.completionsHistory, 1) }} /
+                >{{ getHeatMapMetrics(task.completionsHistory, 1) }} /
                   {{ getHeatMapMetrics(task.completionsHistory, 0) }} day{{
-                    getHeatMapMetrics(task.completionsHistory, 0) > 1 ? "s" : ""
-                  }}</v-flex
-                >
+                  getHeatMapMetrics(task.completionsHistory, 0) > 1 ? "s" : ""
+                  }}</v-flex>
               </v-layout>
             </div>
             <!-- Expanded part -->

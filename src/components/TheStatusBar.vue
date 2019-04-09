@@ -5,7 +5,10 @@
   >
     <v-layout>
       <v-flex shrink>
-        <v-avatar class="theStatusBar__avatar" size="23px">
+        <v-avatar
+          class="theStatusBar__avatar"
+          size="23px"
+        >
           <img
             v-if="profile.avatarImage === ''"
             :src="
@@ -14,7 +17,10 @@
               }.svg`)
             "
           />
-          <img v-else :src="profile.avatarImage" />
+          <img
+            v-else
+            :src="profile.avatarImage"
+          />
         </v-avatar>
       </v-flex>
       <v-flex class="theStatusBar__text-status-wrapper">
@@ -27,12 +33,13 @@
         <div class="theStatusBar__btn-detail">...</div>
       </v-flex>
     </v-layout>
-    <!-- ///// -->
+    <!-- Dialog Guest -->
     <Dialog
-      :vmodel.sync="guestDialog"
+      :vmodel="dialogGuest"
       title="Test mode!"
+      :closeIcon="true"
       color="red"
-      @closeDialog="guestDialog = false"
+      @closeDialog="dialogGuest = false"
     >
       <template v-slot:body>
         <p>
@@ -41,7 +48,13 @@
         </p>
         <p class="mb-0">Please log in or register from the launch screen.</p>
       </template>
-      <!-- <template v-slot:actions> </template> -->
+      <template v-slot:actions>
+        <v-btn
+          color="red darken-1"
+          flat="flat"
+          @click="handleGuestDialog('backToLogin')"
+        >Back to the launch screen</v-btn>
+      </template>
     </Dialog>
   </div>
 </template>
@@ -58,7 +71,7 @@ export default {
   data () {
     return {
       statusBarDisplayConf: '',
-      guestDialog: false
+      dialogGuest: false
     }
   },
   computed: {
@@ -76,12 +89,14 @@ export default {
       } else {
         // Guest
         console.log('guest')
-        this.guestDialog = true
+        this.dialogGuest = true
       }
     },
     handleGuestDialog (action) {
+      console.log('handleGuestDialog')
+
       if (action === 'continue') {
-        this.guestDialog = false
+        this.dialogGuest = false
       } else {
         EventBus.$emit('signOut')
         this.$router.push({ name: 'login' })
@@ -97,7 +112,7 @@ export default {
 
     // globalUpdate
     EventBus.$on('showGuestDialog', () => {
-      this.guestDialog = true
+      this.dialogGuest = true
     })
   }
 }
