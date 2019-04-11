@@ -13,8 +13,8 @@ module.exports = {
   },
   pwa: {
     name: 'Weekx',
-    themeColor: '#FFBA4C',
-    msTileColor: '#FFBA4C',
+    themeColor: '#FFA81E',
+    msTileColor: '#FFA81E',
     // Workbox plugin
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
