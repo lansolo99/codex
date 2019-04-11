@@ -3,99 +3,142 @@
     <v-container>
       <!-- Header -->
       <v-layout>
-        <v-flex grow self-align center>
+        <v-flex
+          grow
+          self-align
+          center
+        >
           <h1 class="black--text">Profile</h1>
         </v-flex>
       </v-layout>
       <!-- Form -->
-      <ProfileForm/>
+      <ProfileForm />
 
-      <v-layout v-if="utility.authUserID" class="mx-3 mt-4 mb-2" justify-center>
-        <v-btn block large center @click="signOut" class="colorGreen white--text">Sign out</v-btn>
+      <v-layout
+        v-if="utility.authUserID"
+        class="mx-3 mt-4 mb-2"
+        justify-center
+      >
+        <v-btn
+          block
+          large
+          center
+          @click="signOut"
+          class="colorGreen white--text"
+        >Sign out</v-btn>
       </v-layout>
     </v-container>
     <v-container class="primary darken-1">
       <!-- Reset account -->
-      <v-layout class="mx-3 mt-2 mb-2" justify-center>
-        <v-dialog v-model="dialogResetAccount" persistent content-class="standard-dialog">
-          <v-btn slot="activator" large center color="primary white--text px-5">Reset my account</v-btn>
-          <v-card>
-            <v-card-title class="title red white--text pt-3 pb-3" primary-title>Reset my account?</v-card-title>
-
-            <v-card-text>
-              You will loose all your task and progression since the
-              beginning!
-            </v-card-text>
-
-            <v-card-actions>
-              <v-btn color="red darken-1" flat="flat" @click="dialogResetAccount = false">Cancel</v-btn>
-              <v-spacer></v-spacer>
-              <v-btn color="red darken-1" flat="flat" @click="resetAccount()">Agree</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-layout>
-      <div></div>
-      <v-dialog v-model="dialogResetAccountConfirmation" content-class="standard-dialog">
-        <v-card>
-          <v-card-title class="title green white--text pt-3 pb-3" primary-title>Reset done!</v-card-title>
-
-          <v-card-text>Let's start over again ...</v-card-text>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-
+      <v-layout
+        class="mx-3 mt-2 mb-2"
+        justify-center
+      >
+        <v-btn
+          large
+          center
+          color="primary white--text px-5"
+          @click="dialogResetAccount = true"
+        >Reset my account</v-btn>
+        <Dialog
+          :vmodel="dialogResetAccount"
+          title="Reset my account?"
+          color="red"
+          :persistent="true"
+          @closeDialog="dialogResetAccount = false"
+        >
+          <template v-slot:body>
+            You will loose all your task and progression since the beginning!
+          </template>
+          <template v-slot:actions>
             <v-btn
-              color="green darken-1"
+              color="red darken-1"
               flat="flat"
-              @click="dialogResetAccountConfirmation = false"
-            >Ok</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+              @click="dialogResetAccount = false"
+            >Cancel</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-1"
+              flat="flat"
+              @click="resetAccount()"
+            >Agree</v-btn>
+          </template>
+        </Dialog>
+      </v-layout>
+      <Dialog
+        :vmodel="dialogResetAccountConfirmation"
+        title="Reset done!"
+        color="green"
+        :persistent="true"
+        @closeDialog="dialogResetAccountConfirmation = false"
+      >
+        <template v-slot:body>
+          Let's start over again ...
+        </template>
+        <template v-slot:actions>
+          <v-btn
+            color="green darken-1"
+            flat="flat"
+            @click="dialogResetAccountConfirmation = false"
+          >Ok</v-btn>
+        </template>
+      </Dialog>
     </v-container>
     <v-container class="primary darken-2">
       <!-- Delete account -->
-      <v-layout class="mx-3 mt-2 mb-2" justify-center>
-        <v-dialog
-          v-model="dialogDeleteAccount"
-          persistent
-          max-width="350"
-          content-class="standard-dialog"
+      <v-layout
+        class="mx-3 mt-2 mb-2"
+        justify-center
+      >
+        <v-btn
+          large
+          center
+          color="red white--text px-5"
+          @click="dialogDeleteAccount= true"
+        >Delete my account</v-btn>
+        <Dialog
+          :vmodel="dialogDeleteAccount"
+          title="Delete my account?"
+          color="red"
+          :persistent="true"
+          @closeDialog="dialogDeleteAccount = false"
         >
-          <v-btn slot="activator" large center color="red white--text px-5">Delete my account</v-btn>
-          <v-card>
-            <v-card-title class="title red white--text pt-3 pb-3" primary-title>Delete my account?</v-card-title>
-
-            <v-card-text>
-              Your account will be deleted forever and couldn't be restored.
-              All recorded data will be lost
-            </v-card-text>
-
-            <v-card-actions>
-              <v-btn color="red darken-1" flat="flat" @click="dialogDeleteAccount = false">Cancel</v-btn>
-              <v-spacer></v-spacer>
-              <v-btn color="red darken-1" flat="flat" @click="deleteAccount()">Agree</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+          <template v-slot:body>
+            Your account will be deleted forever and couldn't be restored.
+            All recorded data will be lost
+          </template>
+          <template v-slot:actions>
+            <v-btn
+              color="red darken-1"
+              flat="flat"
+              @click="dialogDeleteAccount = false"
+            >Cancel</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-1"
+              flat="flat"
+              @click="deleteAccount()"
+            >Agree</v-btn>
+          </template>
+        </Dialog>
         <!-- Delete account : network needed -->
-        <v-dialog v-model="dialogDeleteNeedNetwork" persistent content-class="standard-dialog">
-          <v-card>
-            <v-card-title class="title red white--text pt-3 pb-3" primary-title>A problem occured!</v-card-title>
-
-            <v-card-text>
-              You can't delete account while offline, try again
-              later.
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-
-              <v-btn color="red darken-1" flat="flat" @click="dialogDeleteNeedNetwork = false">Ok</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <Dialog
+          :vmodel="dialogDeleteNeedNetwork"
+          title="A problem occured!"
+          color="red"
+          @closeDialog="dialogDeleteNeedNetwork = false"
+        >
+          <template v-slot:body>
+            You can't delete account while offline, try again later.
+          </template>
+          <template v-slot:actions>
+            <v-btn
+              color="red darken-1"
+              flat="flat"
+              @click="dialogDeleteNeedNetwork = false"
+            >Ok</v-btn>
+          </template>
+        </Dialog>
       </v-layout>
     </v-container>
   </div>
@@ -107,11 +150,13 @@ import { mapState, mapActions, mapMutations } from 'vuex'
 import { EventBus } from '@/bus'
 import store from '@/store/store'
 import firebase from '@/Firebase'
+import Dialog from '@/components/Dialog'
 
 export default {
   name: 'Profile',
   components: {
-    ProfileForm
+    ProfileForm,
+    Dialog
   },
   data () {
     return {

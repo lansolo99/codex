@@ -1,7 +1,10 @@
 <template>
   <div class="login">
     <v-container fill-height>
-      <v-layout align-center class="elementsWrapper mx-4">
+      <v-layout
+        align-center
+        class="elementsWrapper mx-4"
+      >
         <v-flex xs12>
           <v-layout>
             <v-flex xs12>
@@ -26,7 +29,10 @@
                 ></v-icon>
               </v-card-title>
               <v-card-text class="pa-3">
-                <v-form lazy-validation ref="signUpForm">
+                <v-form
+                  lazy-validation
+                  ref="signUpForm"
+                >
                   <v-text-field
                     color="secondary"
                     class="red--text mt-1"
@@ -79,7 +85,10 @@
                     @click="emailSignUp"
                   >Sign Up</v-btn>
                 </v-form>
-                <v-layout justify-center class="mt-4">
+                <v-layout
+                  justify-center
+                  class="mt-4"
+                >
                   Already have an account ?&nbsp;
                   <a
                     class="simpleLink primary--text text--darken-2"
@@ -136,13 +145,19 @@
                     class="mt-3 colorGreen white--text"
                     @click="emailSignIn"
                   >Sign In</v-btn>
-                  <v-layout justify-center class="mt-2">
+                  <v-layout
+                    justify-center
+                    class="mt-2"
+                  >
                     <a
                       class="simpleLink primary--text text--darken-2"
                       @click="loginElementsDisplay('resetPassword')"
                     >Forgot your password ?</a>
                   </v-layout>
-                  <v-layout justify-center class="mt-2">
+                  <v-layout
+                    justify-center
+                    class="mt-2"
+                  >
                     <v-btn
                       large
                       outline
@@ -151,7 +166,10 @@
                     >Sign in with Google</v-btn>
                   </v-layout>
                 </v-form>
-                <v-layout justify-center class="mt-2">
+                <v-layout
+                  justify-center
+                  class="mt-2"
+                >
                   No account ?&nbsp;
                   <a
                     class="simpleLink primary--text text--darken-2"
@@ -166,7 +184,12 @@
           <div v-if="loginDisplay === 'resetPassword'">
             <v-form>
               <v-card class="pa-3">
-                <v-text-field class="pt-1 mt-3" color="secondary" label="Email" v-model="email"></v-text-field>
+                <v-text-field
+                  class="pt-1 mt-3"
+                  color="secondary"
+                  label="Email"
+                  v-model="email"
+                ></v-text-field>
                 <div class="resetPasswordError">{{resetPasswordCatchError}}</div>
                 <div class="resetPasswordResolved">{{resetPasswordResolved}}</div>
                 <v-btn
@@ -179,8 +202,15 @@
                 >Reset my password</v-btn>
               </v-card>
             </v-form>
-            <v-layout class="mx-4 mt-3" justify-center>
-              <v-btn large @click="loginElementsDisplay('allButtons')" class="red white--text">Back</v-btn>
+            <v-layout
+              class="mx-4 mt-3"
+              justify-center
+            >
+              <v-btn
+                large
+                @click="loginElementsDisplay('allButtons')"
+                class="red white--text"
+              >Back</v-btn>
             </v-layout>
           </div>
 
@@ -191,7 +221,11 @@
               class="allButtonsWrapper"
               :class="{ displayAllButtons: displayAllButtons }"
             >
-              <v-flex xs12 sm7 md4>
+              <v-flex
+                xs12
+                sm7
+                md4
+              >
                 <v-layout>
                   <v-flex xs12>
                     <v-btn
@@ -204,19 +238,41 @@
                 </v-layout>
                 <v-layout>
                   <v-flex xs12>
-                    <v-btn block large @click="loginElementsDisplay('signIn')">Connexion</v-btn>
+                    <v-btn
+                      block
+                      large
+                      @click="loginElementsDisplay('signIn')"
+                    >Connexion</v-btn>
                   </v-flex>
                 </v-layout>
-                <v-layout justify-center class="mt-3 guest">
-                  <v-flex xs12 class="text-xs-center">
-                    <v-btn to="/tasks" class="black white--text" @click="signInAsGuest">
+                <v-layout
+                  justify-center
+                  class="mt-3 guest"
+                >
+                  <v-flex
+                    xs12
+                    class="text-xs-center"
+                  >
+                    <v-btn
+                      to="/tasks"
+                      class="black white--text"
+                      @click="signInAsGuest"
+                    >
                       <span>Test without account</span>
                     </v-btn>
                   </v-flex>
                 </v-layout>
-                <v-layout v-if="authUser" class="mt-3">
+                <v-layout
+                  v-if="authUser"
+                  class="mt-3"
+                >
                   <v-flex xs12>
-                    <v-btn block large @click="signOut" class="red white--text">Sign out</v-btn>
+                    <v-btn
+                      block
+                      large
+                      @click="signOut"
+                      class="red white--text"
+                    >Sign out</v-btn>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -226,30 +282,28 @@
       </v-layout>
     </v-container>
 
-    <TheInstallAppBar v-if="pwa.appInstall" @click.native="installer(pwa.appInstallOS)"/>
-    <v-dialog
-      v-model="dialogAppleInstall"
-      max-width="350"
-      content-class="standard-dialog dialogAppleInstall"
+    <TheInstallAppBar
+      v-if="pwa.appInstall"
+      @click.native="installer(pwa.appInstallOS)"
+    />
+
+    <Dialog
+      :vmodel="dialogAppleInstall"
+      title="Install the app"
+      color="primary"
+      class="dialogAppleInstall"
+      :persistent="true"
+      :closeIcon="true"
+      @closeDialog="dialogAppleInstall = false"
     >
-      <v-card>
-        <v-card-title class="title primary white--text" primary-title>
-          Install the app
-          <v-icon
-            right
-            class="white--text icon icon-delete close"
-            @click="dialogAppleInstall = false"
-          ></v-icon>
-        </v-card-title>
-        <v-card-text>
-          Install this webapp on your Apple device (from your Safari browser only!) :
-          <div class="mt-2">
-            Tap
-            <v-icon class="blue--text icon icon-apple-share mr-1"></v-icon>and then Add to homescreen
-          </div>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+      <template v-slot:body>
+        Install this webapp on your Apple device (from your Safari browser only!) :
+        <div class="mt-2">
+          Tap
+          <v-icon class="blue--text icon icon-apple-share mr-1"></v-icon>and then Add to homescreen
+        </div>
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -266,8 +320,7 @@ import * as animationData from '@/assets/animations/data.json'
 import {getStringFromIsoDay } from '@/utils'
 // eslint-disable-next-line
 import { getHours, getYear ,setHours } from 'date-fns'
-// import { convertToLocalTime } from 'date-fns-timezone/dist/convertToLocalTime'
-// import { convertToTimeZone } from 'date-fns-timezone'
+import Dialog from '@/components/Dialog'
 
 function notAnExistingPseudo (value) {
   return this.allUsersPseudos.includes(value) !== true
@@ -277,7 +330,8 @@ export default {
   name: 'Login',
   components: {
     Lottie,
-    TheInstallAppBar
+    TheInstallAppBar,
+    Dialog
   },
   data () {
     return {
@@ -463,7 +517,7 @@ export default {
       this.authUser = null
       this.setUser('null')
       this.pseudo = null
-      this.dialogAppleInstall = null
+      this.dialogAppleInstall = false
       this.email = ''
       this.password = ''
       this.signInCatchError = ''

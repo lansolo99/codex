@@ -281,39 +281,41 @@
                   color="colorGreen white--text px-5"
                   @click="handleSave"
                 >Add task</v-btn>
+
                 <!-- Delete task -->
-                <v-dialog
+                <v-btn
                   v-else
-                  max-width="350"
-                  content-class="standard-dialog"
+                  v-model="dialogDeleteTask"
+                  block
+                  large
+                  center
+                  color="red white--text px-5"
+                  @click="dialogDeleteTask = true"
+                >Delete task</v-btn>
+                <Dialog
+                  :vmodel="dialogDeleteTask"
+                  title="Delete this task?"
+                  color="red"
+                  :persistent="true"
+                  @closeDialog="dialogDeleteTask = false"
                 >
-                  <v-btn
-                    v-model="dialogDeleteTask"
-                    slot="activator"
-                    block
-                    large
-                    center
-                    color="red white--text px-5"
-                  >Delete task</v-btn>
-                  <v-card>
-                    <v-card-title
-                      class="title red white--text pt-3 pb-3"
-                      primary-title
-                    >Delete this task?</v-card-title>
+                  <template v-slot:body>
+                    All recorded datas for this tasks will be lost!
+                  </template>
+                  <template v-slot:actions>
+                    <v-btn
+                      color="red darken-1"
+                      flat="flat"
+                      @click="dialogDeleteTask = false"
+                    >Cancel</v-btn>
+                    <v-btn
+                      color="red darken-1"
+                      flat="flat"
+                      @click="handleDelete(task.id)"
+                    >Agree</v-btn>
+                  </template>
+                </Dialog>
 
-                    <v-card-text>All recorded datas for this tasks will be lost</v-card-text>
-
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-
-                      <v-btn
-                        color="red darken-1"
-                        flat="flat"
-                        @click="handleDelete(task.id)"
-                      >Agree</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
               </v-layout>
             </v-card>
           </v-form>
