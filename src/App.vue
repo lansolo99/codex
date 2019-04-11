@@ -1,12 +1,12 @@
 <template>
   <v-app class="primary">
     <v-content :class="toolbarConf">
-      <router-view/>
+      <router-view />
     </v-content>
 
-    <TheNavbar v-if="this.view !== 'login'"/>
+    <TheNavbar v-if="this.view !== 'login'" />
     <transition name="spinner">
-      <AppSpinner v-show="showAppSpinner"/>
+      <AppSpinner v-show="showAppSpinner" />
     </transition>
   </v-app>
 </template>
@@ -20,8 +20,6 @@ import TheNavbar from '@/components/TheNavbar'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import firebase from './Firebase'
 import AppSpinner from '@/components/AppSpinner.vue'
-
-// import Uuid from 'uuid/v1'
 
 export default {
   name: 'App',
@@ -453,12 +451,9 @@ export default {
             console.log('User doesnt exist yet')
 
             // Init connexionDateLast to current time
-            this.userData.connexionDateLast = Date.now()
+            this.userData.connexionDateLast = Number(Date.now())
             // Init subscription date
-            this.userData.registrationDate = format(
-              new Date(Date.now()),
-              'D MMMM YYYY'
-            )
+            this.userData.registrationDate = Number(Date.now())
 
             this.updateProfile(this.userData).then(() => {
               console.log('profileUpdated')

@@ -181,8 +181,6 @@ export default {
       addUserToken: 'profile/addUserToken'
     }),
     ...mapMutations({
-      // setResetProfileProgression: 'profile/setResetProfileProgression',
-      // resetTasksDatas: 'tasks/resetTasksDatas',
       setDeleteAccount: 'utility/setDeleteAccount'
     }),
     handleEditProfile () {

@@ -3,19 +3,34 @@
   <v-container class="profileForm primary pa-0">
     <v-layout>
       <v-flex xs-12>
-        <v-form ref="profileForm" lazy-validation>
+        <v-form
+          ref="profileForm"
+          lazy-validation
+        >
           <!-- Account -->
           <div class="fieldset fieldset--account">
             <h6 class="subheader subheader--first my-3 black--text">{{profileDatas.pseudo}}</h6>
             <v-card class="secondary pa-3">
-              <v-layout row wrap>
-                <v-flex xs-12 text-xs-center>
-                  <v-avatar size="110px" color="rgba(0, 0, 0, 0.4)">
+              <v-layout
+                row
+                wrap
+              >
+                <v-flex
+                  xs-12
+                  text-xs-center
+                >
+                  <v-avatar
+                    size="110px"
+                    color="rgba(0, 0, 0, 0.4)"
+                  >
                     <img
                       v-if="profileDatas.avatarImage === ''"
                       :src="require(`@/assets/images/avatar/${this.profileDatas.avatarDefault}.svg`)"
                     >
-                    <img v-else :src="profileDatas.avatarImage">
+                    <img
+                      v-else
+                      :src="profileDatas.avatarImage"
+                    >
 
                     <image-uploader
                       ref="fileInput"
@@ -31,7 +46,10 @@
                       @onUpload="startImageResize"
                       @onComplete="endImageResize"
                     >
-                      <label for="fileInput" slot="upload-label">
+                      <label
+                        for="fileInput"
+                        slot="upload-label"
+                      >
                         <figure>
                           <v-btn
                             fab
@@ -75,7 +93,7 @@
                 color="secondary"
                 label="Registration date"
                 readonly
-                v-model="profileDatas.registrationDate"
+                :value="formatRegistrationDate"
                 required
               ></v-text-field>
             </v-card>
@@ -85,19 +103,31 @@
             <h6 class="subheader subheader--first my-3 black--text">Settings</h6>
             <v-card>
               <v-container class="secondary ma-0 pb-2 white--text">
-                <v-layout row wrap>
+                <v-layout
+                  row
+                  wrap
+                >
                   <v-flex shrink>
                     <div class="category">
-                      <img :src="require(`@/assets/images/icons_categories/Reminder.svg`)" alt>
+                      <img
+                        :src="require(`@/assets/images/icons_categories/Reminder.svg`)"
+                        alt
+                      >
                     </div>
                   </v-flex>
-                  <v-flex grow class="pt-1 pl-3 pr-3 pb-1">
+                  <v-flex
+                    grow
+                    class="pt-1 pl-3 pr-3 pb-1"
+                  >
                     <span class="custom-title">Daily tasks reminder</span>
                   </v-flex>
                 </v-layout>
               </v-container>
               <v-container>
-                <v-layout row wrap>
+                <v-layout
+                  row
+                  wrap
+                >
                   <v-flex xs8>
                     <v-switch
                       @change="manageSubscribe()"
@@ -126,7 +156,10 @@
       content-class="standard-dialog"
     >
       <v-card>
-        <v-card-title class="title red white--text pt-3 pb-3" primary-title>
+        <v-card-title
+          class="title red white--text pt-3 pb-3"
+          primary-title
+        >
           Notifications denied
           <v-icon
             right
@@ -154,7 +187,10 @@
       content-class="standard-dialog"
     >
       <v-card>
-        <v-card-title class="title red white--text pt-3 pb-3" primary-title>
+        <v-card-title
+          class="title red white--text pt-3 pb-3"
+          primary-title
+        >
           Notifications not supported!
           <v-icon
             right
@@ -179,6 +215,7 @@ import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 import firebase from '@/Firebase'
 import ImageUploader from 'vue-image-upload-resize'
+import { format } from 'date-fns'
 import Vue from 'vue'
 Vue.use(ImageUploader)
 
@@ -254,6 +291,10 @@ export default {
     }),
     dailyTaskRemindertime: function () {
       return this.profileDatas.notifications.dailyTaskReminder.time
+    },
+    formatRegistrationDate () {
+      return format(
+        new Date(this.profileDatas.registrationDate * 1000), 'D MMMM YYYY')
     }
   },
   watch: {
