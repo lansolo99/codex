@@ -150,61 +150,38 @@
         </v-form>
       </v-flex>
     </v-layout>
-    <v-dialog
-      v-model="dialogNotificationPermissionDenied"
-      max-width="350"
-      content-class="standard-dialog"
+    <!-- Notification permission denied -->
+    <Dialog
+      :vmodel="dialogNotificationPermissionDenied"
+      title="Notifications denied!"
+      color="red"
+      :closeIcon="true"
+      @closeDialog="dialogNotificationPermissionDenied = false"
     >
-      <v-card>
-        <v-card-title
-          class="title red white--text pt-3 pb-3"
-          primary-title
-        >
-          Notifications denied
-          <v-icon
-            right
-            class="white--text icon icon-delete close"
-            @click="dialogNotificationPermissionDenied = false"
-          ></v-icon>
-        </v-card-title>
-
-        <v-card-text>You chose to deny notification. You might want to manually toggle that choice in your browser settings if you change your mind.</v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn
-            color="red darken-1"
-            flat="flat"
-            @click="dialogNotificationPermissionDenied = false"
-          >Ok</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog
-      v-model="dialogNotificationNotSupportedEnv"
-      max-width="350"
-      content-class="standard-dialog"
+      <template v-slot:body>
+        You chose to deny notification. You might want to manually toggle that choice in your browser settings if you change your mind.
+      </template>
+      <template v-slot:actions>
+        <v-btn
+          color="red darken-1"
+          flat="flat"
+          @click="dialogNotificationPermissionDenied = false"
+        >Ok</v-btn>
+      </template>
+    </Dialog>
+    <!-- Web push notifications not supported -->
+    <Dialog
+      :vmodel="dialogNotificationNotSupportedEnv"
+      title="Notifications not supported!"
+      color="red"
+      :closeIcon="true"
+      @closeDialog="dialogNotificationNotSupportedEnv = false"
     >
-      <v-card>
-        <v-card-title
-          class="title red white--text pt-3 pb-3"
-          primary-title
-        >
-          Notifications not supported!
-          <v-icon
-            right
-            class="white--text icon icon-delete close"
-            @click="dialogNotificationNotSupportedEnv = false"
-          ></v-icon>
-        </v-card-title>
-
-        <v-card-text>
-          <p>Sorry but push notifications are not supported with your device. Maybe some days...</p>
-          <p>Try Android instead.</p>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+      <template v-slot:body>
+        <p>Sorry but push notifications are not supported with your device. Maybe some days...</p>
+        <p>Try Android instead.</p>
+      </template>
+    </Dialog>
   </v-container>
 </template>
 
@@ -216,10 +193,14 @@ import { required } from 'vuelidate/lib/validators'
 import firebase from '@/Firebase'
 import ImageUploader from 'vue-image-upload-resize'
 import { format } from 'date-fns'
+import Dialog from '@/components/Dialog'
 import Vue from 'vue'
 Vue.use(ImageUploader)
 
 export default {
+  components: {
+    Dialog
+  },
   comments: true,
   name: 'ProfileForm',
   data () {
@@ -409,8 +390,8 @@ export default {
     },
     unsupportedNotifications () {
       // Web push not supported
-      this.dialogNotificationNotSupportedEnv = true
       this.profileDatas.notifications.dailyTaskReminder.status = false
+      this.dialogNotificationNotSupportedEnv = true
       this.profileDatas.notifications.token = ''
       const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
       this.updateProfile(profileDatas).then(() => {

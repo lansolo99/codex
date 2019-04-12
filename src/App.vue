@@ -8,6 +8,23 @@
     <transition name="spinner">
       <AppSpinner v-show="showAppSpinner" />
     </transition>
+
+    <!-- Inform user notification to subscription has been deleted -->
+    <Dialog
+      :vmodel="dialogUnsubscribeNotification"
+      title="Notification subscription"
+      color="primary"
+      :closeIcon="true"
+      @closeDialog="dialogUnsubscribeNotification = false"
+    >
+      <template v-slot:body>
+        Welcome back {{userData.pseudo}}!
+        <div class="mt-2">
+          Just to inform you that your subscription to notifications reminder has been suspended because you might have changed your device.
+          To get it back, just reactivate it from your profile page.
+        </div>
+      </template>
+    </Dialog>
   </v-app>
 </template>
 
@@ -20,11 +37,14 @@ import TheNavbar from '@/components/TheNavbar'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import firebase from './Firebase'
 import AppSpinner from '@/components/AppSpinner.vue'
+import Dialog from '@/components/Dialog'
 
 export default {
   name: 'App',
   data () {
     return {
+      userResignIn: false,
+      dialogUnsubscribeNotification: false,
       showAppSpinner: true,
       authUser: null,
       toolbarConf: 'toolbarNone',
@@ -36,7 +56,8 @@ export default {
   },
   components: {
     TheNavbar,
-    AppSpinner
+    AppSpinner,
+    Dialog
   },
   computed: {
     ...mapState({
@@ -433,7 +454,9 @@ export default {
                 // Delete token (UI)
                 const currentToken = ''
                 const userStatus = false
-                this.addUserToken({ currentToken, userStatus })
+                this.addUserToken({ currentToken, userStatus }).then(() => {
+                  this.userResignIn = true
+                })
                 // Fetch tasks datas
                 this.fetchTasksDatas(this.utility.authUserID)
                   .then((res) => {
@@ -481,9 +504,13 @@ export default {
         .set({ profile: this.profile, tasks: this.tasks })
         .then(() => {
           console.log('Firebase updated')
+
           if (context === 'signOut') {
             EventBus.$emit('signOut')
             this.$router.push({ name: 'login' })
+          } else if (this.userResignIn === true) {
+            this.dialogUnsubscribeNotification = true
+            this.userResignIn = false
           }
         })
     })
