@@ -175,7 +175,7 @@
       title="Notifications not supported!"
       color="red"
       :closeIcon="true"
-      @closeDialog="dialogNotificationNotSupportedEnv = false"
+      @closeDialog="resetNotificationSwitch()"
     >
       <template v-slot:body>
         <p>Sorry but push notifications are not supported with your device. Maybe some days...</p>
@@ -390,7 +390,7 @@ export default {
     },
     unsupportedNotifications () {
       // Web push not supported
-      this.profileDatas.notifications.dailyTaskReminder.status = false
+      // this.profileDatas.notifications.dailyTaskReminder.status = false
       this.dialogNotificationNotSupportedEnv = true
       this.profileDatas.notifications.token = ''
       const profileDatas = JSON.parse(JSON.stringify(this.profileDatas))
@@ -398,6 +398,10 @@ export default {
         // Update firebase
         EventBus.$emit('updateFirebase')
       })
+    },
+    resetNotificationSwitch () {
+      this.dialogNotificationNotSupportedEnv = false
+      this.profileDatas.notifications.dailyTaskReminder.status = false
     },
     notificationHour () {
       // Update profile store
