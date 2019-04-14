@@ -8,7 +8,8 @@
     <v-card>
       <!-- Title -->
       <v-card-title :class="['title white--text', color]">
-        {{ title }}
+        <div class="mr-4">{{ title }}</div>
+
         <v-icon
           v-if="closeIcon === true"
           right
