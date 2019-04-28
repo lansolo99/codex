@@ -3,6 +3,8 @@ const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const getHours = require('date-fns/get_hours')
 const setHours = require('date-fns/set_hours')
+const differenceInSeconds = require('date-fns/difference_in_seconds')
+const endOfToday = require('date-fns/end_of_today')
 const getISODay = require('date-fns/get_iso_day')
 const {
   convertToLocalTime
@@ -49,6 +51,7 @@ exports.sendNotificationsReminder = functions.pubsub.topic('weekx-reminders').on
 
             const serverHour = getHours(new Date(Date.now()))
             const userDefinedHour = doc.data().profile.notifications.dailyTaskReminder.time
+            const userPushTTL = differenceInSeconds(new Date(Date.now()), endOfToday())
             const userDate = setHours(new Date(Date.now()), userDefinedHour)
             const userTimeZone = doc.data().profile.notifications.timezone
             const userConvertedDate = convertToLocalTime(userDate, {
@@ -93,41 +96,6 @@ exports.sendNotificationsReminder = functions.pubsub.topic('weekx-reminders').on
                 }
 
                 // Admin SDK
-
-                // let message = {
-                //   "message": {
-                //     "token": doc.data().profile.notifications.token,
-                //     "webpush": {
-                //       "notification": {
-                //         "title": "Weekx",
-                //         "body": "test",
-                //         "icon": 'https://weekx.netlify.com/img/icons/android-chrome-512x512.png'
-                //       }
-                //     }
-                //   }
-                // }
-
-                // let message = {
-                //   data: {
-                //     title: 'Weekx',
-                //     body: `You have ${countDailyTasks} task${plural} today!'`
-                //   },
-                //   token: doc.data().profile.notifications.token,
-                //   "notification": {
-                //     "title": "Weekx",
-                //     "body": `You have ${countDailyTasks} task${plural} today!'`,
-                //     "icon": 'https://weekx.netlify.com/img/icons/android-chrome-512x512.png'
-                //   },
-                //   "webpush": {
-                //     "headers": {
-                //       "TTL": "43200"
-                //     },
-                //     "fcm_options": {
-                //       "link": "https://weekx.netlify.com"
-                //     }
-                //   }
-                // }
-
                 let message = {
                   data: {
                     title: 'Weekx',
@@ -136,7 +104,7 @@ exports.sendNotificationsReminder = functions.pubsub.topic('weekx-reminders').on
                   token: doc.data().profile.notifications.token,
                   "webpush": {
                     "headers": {
-                      "TTL": "43200"
+                      "TTL": userPushTTL
                     },
                     "notification": {
                       "title": "Weekx",

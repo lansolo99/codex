@@ -21,7 +21,7 @@ module.exports = {
       swSrc: 'src/service-worker.js'
     }
   },
-  baseUrl: '/',
+  publicPath: '/',
   configureWebpack: {
     resolve: {
       extensions: ['.js', '.vue', '.json'],

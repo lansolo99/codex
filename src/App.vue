@@ -361,6 +361,13 @@ export default {
     // console.log(format(new Date(2019, 0, 18, 11, 45, 5, 123), 'DD/MM/YYYY'))
     // console.log(getTime(new Date(2019, 0, 18, 11, 45, 5, 123)))
 
+    /// second to midnight testing
+    // const resultDiffSecondsToMid = differenceInSeconds(
+    //   new Date(Date.now()),
+    //   endOfToday()
+    // )
+    // console.log(Math.abs(resultDiffSecondsToMid))
+
     /* =============================================
                 FIREBASE CLOUD MESSAGING
     ============================================= */
@@ -536,8 +543,7 @@ export default {
   padding-top: 0px !important;
 }
 .toolbarTasks {
-  // toolbar(135px) + statusbar (40px)
-  padding-top: calc(135px + 50px) !important;
+  padding-top: calc(135px + 38px) !important;
 }
 .toolbarStats {
   padding-top: 40px !important;

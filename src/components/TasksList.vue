@@ -1,15 +1,25 @@
 <template>
   <div class="taskList">
-    <v-expansion-panel v-model="panel" class="mt-2" v-if="utility.tasksReady" v-click-outside="closeTasksPanels">
-      <v-expansion-panel-content v-for="(task,key) in filterTasks(periodicity.name)" :key="key">
+    <v-expansion-panel
+      v-model="panel"
+      class="mt-2"
+      v-if="utility.tasksReady"
+      v-click-outside="closeTasksPanels"
+    >
+      <v-expansion-panel-content
+        v-for="(task,key) in filterTasks(periodicity.name)"
+        :key="key"
+      >
         <v-layout
           slot="header"
           row
-          wrap
           class="task mr-2 px-0"
           :class="[{disabled: task.disabled}, task.status]"
         >
-          <v-flex shrink class="checkboxFlexContainer">
+          <v-flex
+            shrink
+            class="checkboxFlexContainer"
+          >
             <v-checkbox
               @click.native.stop
               hide-details
@@ -28,21 +38,37 @@
               v-if="hasTaskSubtasks(task) || task.disabled"
             ></v-checkbox>
             <v-icon class="icon icon-checkbox_off"></v-icon>
-            <v-icon :class="{active: task.checked}" class="icon icon-checkbox_filled"></v-icon>
+            <v-icon
+              :class="{active: task.checked}"
+              class="icon icon-checkbox_filled"
+            ></v-icon>
           </v-flex>
-          <v-flex shrink class="ml-2">
+          <v-flex
+            shrink
+            class="ml-2"
+          >
             <div :class="`category ${task.category}`">
-              <img :src="require(`@/assets/images/icons_categories/${task.category}.svg`)" alt>
+              <img
+                :src="require(`@/assets/images/icons_categories/${task.category}.svg`)"
+                alt
+              >
             </div>
           </v-flex>
-          <v-flex grow class="pt-1 pl-2 pr-3 pb-1 body-1">
+          <v-flex class="pt-1 pl-2 pr-3 pb-1 body-1">
             <span :class="['custom-title', { completed: task.checked } ]">{{task.title}}</span>
           </v-flex>
           <v-spacer></v-spacer>
 
-          <v-flex shrink width="0"></v-flex>
+          <v-flex
+            shrink
+            width="0"
+          ></v-flex>
           <!-- If subtasks -->
-          <v-flex v-if="task.subtasks" xs12 class="subtasks">
+          <v-flex
+            v-if="task.subtasks"
+            xs12
+            class="subtasks"
+          >
             <v-layout
               v-for="(subtask,key) in task.subtasks"
               :key="key"
@@ -50,10 +76,16 @@
               wrap
               :class="`task ${task.status}`"
             >
-              <v-flex shrink class="pt-2 icon-slot">
+              <v-flex
+                shrink
+                class="pt-2 icon-slot"
+              >
                 <v-icon class="icon icon-arrow_return pl-1"></v-icon>
               </v-flex>
-              <v-flex shrink class="pt-1 checkboxFlexContainer">
+              <v-flex
+                shrink
+                class="pt-1 checkboxFlexContainer"
+              >
                 <v-checkbox
                   @click.native.stop
                   class="ma-0 pa-0"
@@ -71,9 +103,15 @@
                   v-if="task.disabled === true"
                 ></v-checkbox>
                 <v-icon class="icon icon-checkbox_off"></v-icon>
-                <v-icon :class="{active: subtask.checked}" class="icon icon-checkbox_filled"></v-icon>
+                <v-icon
+                  :class="{active: subtask.checked}"
+                  class="icon icon-checkbox_filled"
+                ></v-icon>
               </v-flex>
-              <v-flex grow class="pa-1 pt-2 pl-2 pr-3 body-1">
+              <v-flex
+                grow
+                class="pa-1 pt-2 pl-2 pr-3 body-1"
+              >
                 <span :class="['name', { completed: subtask.checked } ]">{{subtask.name}}</span>
               </v-flex>
             </v-layout>
@@ -88,15 +126,17 @@
                 <span v-if="task.schedule.weekly === 'Everyday'">{{task.schedule.weekly}}</span>
                 <span v-else>{{task.schedule.weekly}} a week</span>
               </span>
-              <span
-                v-if="task.schedule.periodicity === 'On specific days'"
-              >{{getTaskDays(task.schedule.specificDays)}}</span>
+              <span v-if="task.schedule.periodicity === 'On specific days'">{{getTaskDays(task.schedule.specificDays)}}</span>
               <span v-if="task.schedule.periodicity === 'Once'">{{task.schedule.once}}</span>
             </p>
 
             <h6>Category</h6>
             <p>{{task.category}}</p>
-            <v-btn large class="colorGreen white--text ma-0" @click="handleEdit(task.id)">Edit task</v-btn>
+            <v-btn
+              large
+              class="colorGreen white--text ma-0"
+              @click="handleEdit(task.id)"
+            >Edit task</v-btn>
           </v-card-text>
         </v-card>
       </v-expansion-panel-content>
@@ -309,6 +349,11 @@ export default {
       position: relative;
       transition: all 0.3s ease-out;
       @include strikethrough;
+      display: block;
+      margin-right: 60px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
   }
   .details {
