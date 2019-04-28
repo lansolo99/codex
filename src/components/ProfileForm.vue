@@ -275,7 +275,7 @@ export default {
     },
     formatRegistrationDate () {
       return format(
-        new Date(this.profileDatas.registrationDate * 1000), 'D MMMM YYYY')
+        new Date(this.profileDatas.registrationDate), 'D MMMM YYYY')
     }
   },
   watch: {

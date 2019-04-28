@@ -10,113 +10,122 @@
         v-for="(task,key) in filterTasks(periodicity.name)"
         :key="key"
       >
-        <v-layout
+        <div
+          class="layoutsWrapper"
           slot="header"
-          row
-          class="task mr-2 px-0"
-          :class="[{disabled: task.disabled}, task.status]"
         >
-          <v-flex
-            shrink
-            class="checkboxFlexContainer"
+          <v-layout
+            class="task mr-2 px-0"
+            :class="[{disabled: task.disabled}, task.status]"
           >
-            <v-checkbox
-              @click.native.stop
-              hide-details
-              class="ma-0 pa-0 pt-1"
-              :class="{hasSubtask : hasTaskSubtasks(task)}"
-              color="black"
-              off-icon
-              on-icon="icon-checkbox_on"
-              :disabled="hasTaskSubtasks(task) || task.disabled === true"
-              :input-value="task.checked"
-              @change="updateCheckedStatus(task.id, $event, 'task', key)"
-            ></v-checkbox>
-            <v-checkbox
-              class="preventExpansion"
-              @click.native.stop
-              v-if="hasTaskSubtasks(task) || task.disabled"
-            ></v-checkbox>
-            <v-icon class="icon icon-checkbox_off"></v-icon>
-            <v-icon
-              :class="{active: task.checked}"
-              class="icon icon-checkbox_filled"
-            ></v-icon>
-          </v-flex>
-          <v-flex
-            shrink
-            class="ml-2"
-          >
-            <div :class="`category ${task.category}`">
-              <img
-                :src="require(`@/assets/images/icons_categories/${task.category}.svg`)"
-                alt
-              >
-            </div>
-          </v-flex>
-          <v-flex class="pt-1 pl-2 pr-3 pb-1 body-1">
-            <span :class="['custom-title', { completed: task.checked } ]">{{task.title}}</span>
-          </v-flex>
-          <v-spacer></v-spacer>
-
-          <v-flex
-            shrink
-            width="0"
-          ></v-flex>
-          <!-- If subtasks -->
-          <v-flex
-            v-if="task.subtasks"
-            xs12
-            class="subtasks"
-          >
-            <v-layout
-              v-for="(subtask,key) in task.subtasks"
-              :key="key"
-              row
-              wrap
-              :class="`task ${task.status}`"
+            <v-flex
+              shrink
+              class="checkboxFlexContainer"
             >
-              <v-flex
-                shrink
-                class="pt-2 icon-slot"
+              <v-checkbox
+                @click.native.stop
+                hide-details
+                class="ma-0 pa-0 pt-1"
+                :class="{hasSubtask : hasTaskSubtasks(task)}"
+                color="black"
+                off-icon
+                on-icon="icon-checkbox_on"
+                :disabled="hasTaskSubtasks(task) || task.disabled === true"
+                :input-value="task.checked"
+                @change="updateCheckedStatus(task.id, $event, 'task', key)"
+              ></v-checkbox>
+              <v-checkbox
+                class="preventExpansion"
+                @click.native.stop
+                v-if="hasTaskSubtasks(task) || task.disabled"
+              ></v-checkbox>
+              <v-icon class="icon icon-checkbox_off"></v-icon>
+              <v-icon
+                :class="{active: task.checked}"
+                class="icon icon-checkbox_filled"
+              ></v-icon>
+            </v-flex>
+            <v-flex
+              shrink
+              class="ml-2"
+            >
+              <div :class="`category ${task.category}`">
+                <img
+                  :src="require(`@/assets/images/icons_categories/${task.category}.svg`)"
+                  alt
+                >
+              </div>
+            </v-flex>
+            <v-flex class="titleFlexContainer pt-1 pl-2 pb-1 body-1">
+              <div class="titleFlexContainer__fixedSlot">
+                <span :class="['custom-title', { completed: task.checked } ]">{{task.title}}</span>
+              </div>
+            </v-flex>
+            <v-spacer></v-spacer>
+            <v-flex
+              shrink
+              width="0"
+            ></v-flex>
+          </v-layout>
+          <v-layout
+            class="mr-2"
+            v-if="task.subtasks"
+          >
+
+            <!-- If subtasks -->
+            <v-flex
+              xs12
+              class="subtasks"
+            >
+              <v-layout
+                v-for="(subtask,key) in task.subtasks"
+                :key="key"
+                row
+                wrap
+                :class="`task ${task.status}`"
               >
-                <v-icon class="icon icon-arrow_return pl-1"></v-icon>
-              </v-flex>
-              <v-flex
-                shrink
-                class="pt-1 checkboxFlexContainer"
-              >
-                <v-checkbox
-                  @click.native.stop
-                  class="ma-0 pa-0"
-                  color="black"
-                  off-icon
-                  on-icon="icon-checkbox_on"
-                  hide-details
-                  :disabled="task.disabled === true"
-                  :input-value="subtask.checked"
-                  @change="updateCheckedStatus(task.id, $event, 'subtask',key,subtask.id)"
-                ></v-checkbox>
-                <v-checkbox
-                  class="preventExpansion"
-                  @click.native.stop
-                  v-if="task.disabled === true"
-                ></v-checkbox>
-                <v-icon class="icon icon-checkbox_off"></v-icon>
-                <v-icon
-                  :class="{active: subtask.checked}"
-                  class="icon icon-checkbox_filled"
-                ></v-icon>
-              </v-flex>
-              <v-flex
-                grow
-                class="pa-1 pt-2 pl-2 pr-3 body-1"
-              >
-                <span :class="['name', { completed: subtask.checked } ]">{{subtask.name}}</span>
-              </v-flex>
-            </v-layout>
-          </v-flex>
-        </v-layout>
+                <v-flex
+                  shrink
+                  class="pt-2 icon-slot"
+                >
+                  <v-icon class="icon icon-arrow_return pl-1"></v-icon>
+                </v-flex>
+                <v-flex
+                  shrink
+                  class="pt-1 checkboxFlexContainer"
+                >
+                  <v-checkbox
+                    @click.native.stop
+                    class="ma-0 pa-0"
+                    color="black"
+                    off-icon
+                    on-icon="icon-checkbox_on"
+                    hide-details
+                    :disabled="task.disabled === true"
+                    :input-value="subtask.checked"
+                    @change="updateCheckedStatus(task.id, $event, 'subtask',key,subtask.id)"
+                  ></v-checkbox>
+                  <v-checkbox
+                    class="preventExpansion"
+                    @click.native.stop
+                    v-if="task.disabled === true"
+                  ></v-checkbox>
+                  <v-icon class="icon icon-checkbox_off"></v-icon>
+                  <v-icon
+                    :class="{active: subtask.checked}"
+                    class="icon icon-checkbox_filled"
+                  ></v-icon>
+                </v-flex>
+                <v-flex
+                  grow
+                  class="pa-1 pt-2 pl-2 pr-3 body-1"
+                >
+                  <span :class="['name', { completed: subtask.checked } ]">{{subtask.name}}</span>
+                </v-flex>
+              </v-layout>
+            </v-flex>
+          </v-layout>
+        </div>
         <!-- Expanded part -->
         <v-card class="details blue-grey lighten-5 pa-2">
           <v-card-text>
@@ -344,13 +353,31 @@ export default {
   }
 
   .task {
+    .titleFlexContainer {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+      &__fixedSlot {
+        position: absolute;
+        width: 100%;
+        display: block;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+    }
     .custom-title {
       font-size: 16px;
-      position: relative;
       transition: all 0.3s ease-out;
       @include strikethrough;
-      display: block;
-      margin-right: 60px;
+      position: relative;
+      width: 100%;
+      // position: absolute;
+      // width: 100%;
+      display: inline;
+      // max-width: 60%;
+      //margin-right: 60px;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;

@@ -51,7 +51,7 @@ exports.sendNotificationsReminder = functions.pubsub.topic('weekx-reminders').on
 
             const serverHour = getHours(new Date(Date.now()))
             const userDefinedHour = doc.data().profile.notifications.dailyTaskReminder.time
-            const userPushTTL = differenceInSeconds(new Date(Date.now()), endOfToday())
+            const userPushTTL = Math.abs(differenceInSeconds(new Date(Date.now()), endOfToday())).toString()
             const userDate = setHours(new Date(Date.now()), userDefinedHour)
             const userTimeZone = doc.data().profile.notifications.timezone
             const userConvertedDate = convertToLocalTime(userDate, {

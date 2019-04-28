@@ -269,12 +269,22 @@ export default {
       const dailyTasks = Object.values(this.tasks)
         .filter(task => {
           return (task.schedule.periodicity === 'Weekly' &&
-        task.schedule.weekly === 'Everyday') ||
+        task.disabled === false) ||
         (task.schedule.periodicity === 'On specific days' &&
         task.schedule.specificDays.find(v => { return v === getStringFromIsoDay(this.time.isoDay) })) ||
         (task.schedule.periodicity === 'Once' &&
         task.schedule.once === 'single')
         })
+
+      // const dailyTasks = Object.values(this.tasks)
+      // .filter(task => {
+      //   return (task.schedule.periodicity === 'Weekly' &&
+      // task.schedule.weekly === 'Everyday') ||
+      // (task.schedule.periodicity === 'On specific days' &&
+      // task.schedule.specificDays.find(v => { return v === getStringFromIsoDay(this.time.isoDay) })) ||
+      // (task.schedule.periodicity === 'Once' &&
+      // task.schedule.once === 'single')
+      // })
 
       // Distribute tasks value
       const countDailyTasks = dailyTasks.length
@@ -360,13 +370,6 @@ export default {
     // Helper for last connexion date :
     // console.log(format(new Date(2019, 0, 18, 11, 45, 5, 123), 'DD/MM/YYYY'))
     // console.log(getTime(new Date(2019, 0, 18, 11, 45, 5, 123)))
-
-    /// second to midnight testing
-    // const resultDiffSecondsToMid = differenceInSeconds(
-    //   new Date(Date.now()),
-    //   endOfToday()
-    // )
-    // console.log(Math.abs(resultDiffSecondsToMid))
 
     /* =============================================
                 FIREBASE CLOUD MESSAGING
