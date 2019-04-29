@@ -321,7 +321,6 @@ import {getStringFromIsoDay } from '@/utils'
 // eslint-disable-next-line
 import { getHours, getYear ,setHours } from 'date-fns'
 import Dialog from '@/components/Dialog'
-import uuid from 'uuid/v4'
 
 function notAnExistingPseudo (value) {
   return this.allUsersPseudos.includes(value) !== true
@@ -672,7 +671,6 @@ export default {
             this.userData.email = this.authUser.email
             this.userData.pseudo = this.pseudo
             this.userData.password = this.password
-            this.userData.notifications.deviceId = uuid()
           }
 
           this.updateProfile(this.userData).then(() => {

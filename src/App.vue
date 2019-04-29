@@ -38,7 +38,7 @@ import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import firebase from './Firebase'
 import AppSpinner from '@/components/AppSpinner.vue'
 import Dialog from '@/components/Dialog'
-import uuid from 'uuid/v4'
+// import uuid from 'uuid/v4'
 
 export default {
   name: 'App',
@@ -367,6 +367,8 @@ export default {
     ============================================= */
 
     if (firebase.messaging.isSupported()) {
+      console.log('firebase messaging supported')
+
       const messaging = firebase.messaging()
       // Add the public key generated from the console here.
       messaging.usePublicVapidKey('BMZ27Tax1A9db5QrZpnHVs7mIUJS8walNQrElirXRA6B11i-t_I0INmYVUi0TFoMbkY-sitDCL2zS21ePvQb9e0')
@@ -455,33 +457,45 @@ export default {
 
                 // Notification subscriptions
                 // 1 Don't delete token on sign out
-                const currentUserDeviceId = uuid()
-                console.log('currentUserDeviceId = ' + currentUserDeviceId)
-                const currentUserDeviceId2 = uuid()
-                console.log('currentUserDeviceId = ' + currentUserDeviceId2)
+
                 // Case 1 : user has no token -> do nothing
-                // Case 2 : user has token -> check uuid -> same ? do nothing : delete token
+                // Case 2 : user has token -> check current registration token -> same ? do nothing : delete token
                 if (this.profile.notifications.token !== '') {
                   console.log('token found')
-                  // Set current user device id
-                  const storedUserDeviceId = this.profile.notifications.deviceId
-                  const currentUserDeviceId = uuid()
-                  console.log('currentUserDeviceId = ' + currentUserDeviceId)
 
-                  if (currentUserDeviceId !== storedUserDeviceId) {
-                    console.log('currentUserDeviceId is different from stored one')
-                    console.log('delete token & update device id')
-                    // Delete token (UI)
-                    const currentToken = ''
-                    const userStatus = false
-                    this.addUserToken({ currentToken, userStatus }).then(() => {
-                      this.userResignIn = true
+                  if (firebase.messaging.isSupported()) {
+                    const messaging = firebase.messaging()
+                    messaging.getToken().then((currentToken) => {
+                      if (currentToken) {
+                        if (currentToken !== this.profile.notifications.token) {
+                          console.log('currentToken IS NOT the same => delete token')
+                          // Delete token (UI)
+                          const currentToken = ''
+                          const userStatus = false
+                          this.addUserToken({ currentToken, userStatus }).then(() => {
+                            this.userResignIn = true
+                          })
+                        } else {
+                          console.log('currentToken IS the same => doing nothing')
+                        }
+                      } else {
+                      }
+                    }).catch(error => {
+                      console.log('An error occurred while retrieving token. ', error)
                     })
-                    // Update current device id
-                    this.updateUserDeviceId(uuid())
-                  } else {
-                    console.log('currentUserDeviceId match, do nothing')
                   }
+
+                  //   // Delete token (UI)
+                  //   const currentToken = ''
+                  //   const userStatus = false
+                  //   this.addUserToken({ currentToken, userStatus }).then(() => {
+                  //     this.userResignIn = true
+                  //   })
+                  //   // Update current device id
+                  //   this.updateUserDeviceId(uuid())
+                  // } else {
+                  //   console.log('currentUserDeviceId match, do nothing')
+                  // }
                 }
 
                 // Fetch tasks datas
