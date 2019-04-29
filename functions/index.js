@@ -114,7 +114,8 @@ exports.sendNotificationsReminder = functions.pubsub.topic('weekx-reminders').on
                       "badge": 'https://weekx.netlify.com/img/icons/notification-badge.png'
                     },
                     "fcm_options": {
-                      "link": "https://weekx.netlify.com"
+                      "link": "https://weekx.netlify.com",
+                      "silent": true
                     }
                   }
                 }
