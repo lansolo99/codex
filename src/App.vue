@@ -38,6 +38,7 @@ import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import firebase from './Firebase'
 import AppSpinner from '@/components/AppSpinner.vue'
 import Dialog from '@/components/Dialog'
+import uuid from 'uuid/v4'
 
 export default {
   name: 'App',
@@ -276,16 +277,6 @@ export default {
         task.schedule.once === 'single')
         })
 
-      // const dailyTasks = Object.values(this.tasks)
-      // .filter(task => {
-      //   return (task.schedule.periodicity === 'Weekly' &&
-      // task.schedule.weekly === 'Everyday') ||
-      // (task.schedule.periodicity === 'On specific days' &&
-      // task.schedule.specificDays.find(v => { return v === getStringFromIsoDay(this.time.isoDay) })) ||
-      // (task.schedule.periodicity === 'Once' &&
-      // task.schedule.once === 'single')
-      // })
-
       // Distribute tasks value
       const countDailyTasks = dailyTasks.length
       const taskValue = 100 / countDailyTasks
@@ -461,12 +452,38 @@ export default {
             this.fetchProfileDatas(this.utility.authUserID)
               .then(res => {
                 console.log('fetchProfileDatas done')
-                // Delete token (UI)
-                const currentToken = ''
-                const userStatus = false
-                this.addUserToken({ currentToken, userStatus }).then(() => {
-                  this.userResignIn = true
-                })
+
+                // Notification subscriptions
+                // 1 Don't delete token on sign out
+                const currentUserDeviceId = uuid()
+                console.log('currentUserDeviceId = ' + currentUserDeviceId)
+                const currentUserDeviceId2 = uuid()
+                console.log('currentUserDeviceId = ' + currentUserDeviceId2)
+                // Case 1 : user has no token -> do nothing
+                // Case 2 : user has token -> check uuid -> same ? do nothing : delete token
+                if (this.profile.notifications.token !== '') {
+                  console.log('token found')
+                  // Set current user device id
+                  const storedUserDeviceId = this.profile.notifications.deviceId
+                  const currentUserDeviceId = uuid()
+                  console.log('currentUserDeviceId = ' + currentUserDeviceId)
+
+                  if (currentUserDeviceId !== storedUserDeviceId) {
+                    console.log('currentUserDeviceId is different from stored one')
+                    console.log('delete token & update device id')
+                    // Delete token (UI)
+                    const currentToken = ''
+                    const userStatus = false
+                    this.addUserToken({ currentToken, userStatus }).then(() => {
+                      this.userResignIn = true
+                    })
+                    // Update current device id
+                    this.updateUserDeviceId(uuid())
+                  } else {
+                    console.log('currentUserDeviceId match, do nothing')
+                  }
+                }
+
                 // Fetch tasks datas
                 this.fetchTasksDatas(this.utility.authUserID)
                   .then((res) => {

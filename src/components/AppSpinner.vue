@@ -24,8 +24,8 @@ export default {
   z-index: 100;
 
   .sk-folding-cube {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     position: relative;
     top: 50%;
     left: 50%;

@@ -372,12 +372,7 @@ export default {
       transition: all 0.3s ease-out;
       @include strikethrough;
       position: relative;
-      width: 100%;
-      // position: absolute;
-      // width: 100%;
       display: inline;
-      // max-width: 60%;
-      //margin-right: 60px;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
@@ -441,7 +436,7 @@ export default {
           display: inherit;
         }
       }
-      .hasSubtask + .icon-checkbox_off {
+      .hasSubtask ~ .icon-checkbox_off {
         opacity: 0.5;
       }
     }
