@@ -456,8 +456,6 @@ export default {
                 console.log('fetchProfileDatas done')
 
                 // Notification subscriptions
-                // 1 Don't delete token on sign out
-
                 // Case 1 : user has no token -> do nothing
                 // Case 2 : user has token -> check current registration token -> same ? do nothing : delete token
                 if (this.profile.notifications.token !== '') {
@@ -484,18 +482,6 @@ export default {
                       console.log('An error occurred while retrieving token. ', error)
                     })
                   }
-
-                  //   // Delete token (UI)
-                  //   const currentToken = ''
-                  //   const userStatus = false
-                  //   this.addUserToken({ currentToken, userStatus }).then(() => {
-                  //     this.userResignIn = true
-                  //   })
-                  //   // Update current device id
-                  //   this.updateUserDeviceId(uuid())
-                  // } else {
-                  //   console.log('currentUserDeviceId match, do nothing')
-                  // }
                 }
 
                 // Fetch tasks datas
