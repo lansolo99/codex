@@ -431,9 +431,6 @@ export default {
     // Populate local datas
     const retrievedProfile = JSON.parse(JSON.stringify(this.$store.state.profile))
     this.profileDatas = retrievedProfile
-    console.warn(this.profileDatas.registrationDate)
-
-    console.warn(format(new Date(this.profileDatas.registrationDate * 1000), 'D MMMM YYYY'))
 
     /* =============================================
                        EVENTS

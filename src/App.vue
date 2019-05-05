@@ -314,12 +314,13 @@ export default {
       const weeklyTasks = Object.values(this.tasks)
         .filter(task => {
           return task.schedule.periodicity === 'Weekly' ||
-                  task.schedule.periodicity === 'On specific days' ||
+                  (task.schedule.periodicity === 'On specific days' && task.completion.length !== 0) ||
                   (task.schedule.periodicity === 'Once' && task.schedule.once === 'single')
         })
 
       // Distribute tasks value
       const taskValue = 100 / weeklyTasks.length
+      console.warn('taskValue = ' + taskValue)
 
       let total = 0
       let totalCompletions = 0
@@ -328,6 +329,7 @@ export default {
       Object.entries(weeklyTasks)
         .forEach(v => {
           const completionLength = v[1].completion.length
+          console.warn('completionLength = ' + completionLength)
           const completionValue = taskValue / completionLength
           const countCompletionsDone = Object.entries(v[1].completion)
             .filter(completion => { return completion[1] === 1 })

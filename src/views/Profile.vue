@@ -190,15 +190,6 @@ export default {
     signOut () {
       EventBus.$emit('signOut')
       this.$router.push({ name: 'login' })
-      // If user has token, delete it -> drop this behavior
-      // if (this.profile.notifications.token !== '') {
-      //   // Delete token (UI)
-      //   const context = 'signOut'
-      //   EventBus.$emit('unsubscribeNotification', context)
-      // } else {
-      //   EventBus.$emit('signOut')
-      //   this.$router.push({ name: 'login' })
-      // }
     },
     deleteAccount () {
       console.log('deleteaccount')
