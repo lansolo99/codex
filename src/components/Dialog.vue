@@ -4,6 +4,7 @@
     :persistent="persistent"
     max-width="350"
     content-class="standard-dialog"
+    v-click-outside="resetVmodel"
   >
     <v-card>
       <!-- Title -->
@@ -31,7 +32,11 @@
 </template>
 
 <script>
+import clickOutside from '@/directives/click-outside'
 export default {
+  directives: {
+    clickOutside
+  },
   props: {
     vmodel: {
       type: Boolean,
@@ -55,6 +60,11 @@ export default {
   computed: {
     hasActionSlotData () {
       return this.$slots.actions
+    }
+  },
+  methods: {
+    resetVmodel () {
+      this.$emit('closeDialog')
     }
   }
 }

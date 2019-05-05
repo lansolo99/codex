@@ -52,7 +52,7 @@
                 fab
                 small
                 class="primary help mr-0"
-                @click="dialogHelpProfile = true"
+                @click.stop="dialogHelpProfile = true"
               >
                 <v-icon class="icon icon-question_mark white--text"></v-icon>
               </v-btn>

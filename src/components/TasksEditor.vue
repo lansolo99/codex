@@ -249,7 +249,7 @@
                   </v-layout>
                 </div>
                 <div class="white pa-2 pl-3">
-                  <v-layout>
+                  <v-layout class="addSubTaskLayout">
                     <v-text-field
                       placeholder="Add a new subtask"
                       v-model="newSubtask.name"
@@ -264,6 +264,22 @@
                     >
                       <v-icon class="icon icon-add"></v-icon>
                     </v-btn>
+                    <Dialog
+                      :vmodel="dialogNoEmptyTask"
+                      title="No empty task!"
+                      :closeIcon="true"
+                      color="red"
+                      @closeDialog="dialogNoEmptyTask = false"
+                    >
+                      <template v-slot:body>
+                        Please insert a task name before adding it!
+                      </template>
+                    </Dialog>
+                    <div
+                      v-if="newSubtask.name === ''"
+                      @click="dialogNoEmptyTask = true"
+                      :class="['guard', {guard_disabled: newSubtask.name !== ''}]"
+                    ></div>
                   </v-layout>
                 </div>
               </v-card>
@@ -342,6 +358,7 @@ export default {
       dialogTask: false,
       dialogEditSchedule: false,
       dialogDeleteTask: false,
+      dialogNoEmptyTask: false,
       changeSchedule: false,
       categories: [
         { name: 'Sport' },
@@ -685,6 +702,8 @@ export default {
       this.task.completionsHistory = {}
     },
     addNewSubTask () {
+      console.warn('addNewSubTask')
+
       const subtaskId = 'newSubtask' + parseInt(Math.random() * 1000)
       this.task.subtasks.push({
         id: subtaskId,
@@ -829,6 +848,19 @@ export default {
       bottom: 0;
       left: 0;
       right: 0;
+      &_disabled {
+        display: none;
+      }
+    }
+  }
+  .addSubTaskLayout {
+    .guard {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 56px;
+      height: 84px;
+      background: red;
       &_disabled {
         display: none;
       }

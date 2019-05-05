@@ -1,4 +1,4 @@
-# codex
+# Weekx app
 
 ## Project setup
 

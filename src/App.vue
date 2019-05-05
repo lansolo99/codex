@@ -320,7 +320,6 @@ export default {
 
       // Distribute tasks value
       const taskValue = 100 / weeklyTasks.length
-      console.warn('taskValue = ' + taskValue)
 
       let total = 0
       let totalCompletions = 0
@@ -329,7 +328,6 @@ export default {
       Object.entries(weeklyTasks)
         .forEach(v => {
           const completionLength = v[1].completion.length
-          console.warn('completionLength = ' + completionLength)
           const completionValue = taskValue / completionLength
           const countCompletionsDone = Object.entries(v[1].completion)
             .filter(completion => { return completion[1] === 1 })
