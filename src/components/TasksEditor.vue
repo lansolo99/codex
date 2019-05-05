@@ -860,7 +860,7 @@ export default {
       right: 0;
       width: 56px;
       height: 84px;
-      background: red;
+      background: transparent;
       &_disabled {
         display: none;
       }
