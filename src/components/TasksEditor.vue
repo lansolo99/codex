@@ -349,7 +349,6 @@ import { required, requiredIf } from 'vuelidate/lib/validators'
 import { EventBus } from '@/bus'
 import { getStringFromIsoDay } from '@/utils'
 import Dialog from '@/components/Dialog'
-import VueScrollTo from 'vue-scrollto'
 
 export default {
   components: {
@@ -639,31 +638,9 @@ export default {
       this.$v.task.$touch()
       if (this.$v.task.$invalid) {
         // Invalid form, throw form errors
-        if (this.$v.task.title.$invalid) {
-          console.warn('title is invalid')
-          // console.warn(this.$refs.taskDialog.$el.scrollTop)
-          // console.warn(document.querySelector('.v-dialog.taskEditor').scrollTop)
-          // document.getElementsByClassName('dialogTaskScrollablePart')[0].animate({ scrollTop: 0 }, '500')
-          // document.getElementsByClassName('dialogTaskScrollablePart')[0].scrollTop = 0
-          const options = {
-            easing: 'ease-in',
-            offset: 0,
-            force: true,
-            cancelable: true,
-            onStart: function (element) {
-              // scrolling started
-            },
-            onDone: function (element) {
-              // scrolling is done
-            },
-            onCancel: function () {
-              // scrolling has been interrupted
-            },
-            x: false,
-            y: true
-          }
-          VueScrollTo.scrollTo(document.getElementsByClassName('dialogTaskScrollablePart')[0], 500, options)
-          // element.scrollTop;
+        // Scrolltop to watch errors
+        if (this.$v.task.title.$invalid || this.$v.task.category.$invalid) {
+          document.getElementsByClassName('dialogTaskScrollablePart')[0].scrollTop = 0
         }
       } else {
         // Validation passed
