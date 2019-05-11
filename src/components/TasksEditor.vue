@@ -11,6 +11,7 @@
     <v-card
       flat
       tile
+      class="primary"
     >
       <!-- Toolbar -->
       <v-toolbar
@@ -757,7 +758,10 @@ export default {
 
 <style lang="scss">
 .taskEditor {
-  //max-width: 400px;
+  @include responsive(desktopscreens) {
+    margin: auto;
+    max-width: 375px;
+  }
   margin: auto;
   left: auto;
 
@@ -862,7 +866,7 @@ export default {
   .addSubTaskLayout {
     .guard {
       position: absolute;
-      top: 0;
+      bottom: 0;
       right: 0;
       width: 56px;
       height: 84px;

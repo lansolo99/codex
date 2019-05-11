@@ -1,10 +1,27 @@
 <template>
-  <v-bottom-nav class="theNavbar" :active.sync="bottomNav" :value="true" color="primary" app fixed>
-    <v-btn to="/tasks" flat color="white" value="tasks">
+  <v-bottom-nav
+    class="theNavbar"
+    :active.sync="bottomNav"
+    :value="true"
+    color="primary"
+    app
+    fixed
+  >
+    <v-btn
+      to="/tasks"
+      flat
+      color="white"
+      value="tasks"
+    >
       <v-icon class="icon icon-check"></v-icon>
     </v-btn>
 
-    <v-btn to="/stats" color="white" flat value="stats">
+    <v-btn
+      to="/stats"
+      color="white"
+      flat
+      value="stats"
+    >
       <v-icon class="icon icon-stats"></v-icon>
     </v-btn>
 
@@ -19,7 +36,13 @@
       <v-icon class="icon icon-profile"></v-icon>
     </v-btn>
 
-    <v-btn v-else :to="'/profile'" color="white" flat value="profile">
+    <v-btn
+      v-else
+      :to="'/profile'"
+      color="white"
+      flat
+      value="profile"
+    >
       <v-icon class="icon icon-profile"></v-icon>
     </v-btn>
     <div class></div>
@@ -105,6 +128,10 @@ export default {
   }
 }
 .theNavbar {
+  @include responsive(desktopscreens) {
+    margin: auto;
+    max-width: 375px;
+  }
   .v-btn {
     &.simulateDisabled {
       opacity: 0.5 !important;

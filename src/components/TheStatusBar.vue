@@ -34,7 +34,7 @@
       </v-flex>
     </v-layout>
     <!-- Dialog Guest -->
-    <Dialog
+    <!-- <Dialog
       :vmodel="dialogGuest"
       title="Test mode!"
       :closeIcon="true"
@@ -55,18 +55,54 @@
           @click="handleGuestDialog('backToLogin')"
         >Back to the launch screen</v-btn>
       </template>
-    </Dialog>
+    </Dialog> -->
+    <v-dialog
+      v-model="dialogGuest"
+      persistent
+      max-width="350"
+      content-class="standard-dialog"
+    >
+      <v-card>
+        <!-- Title -->
+        <v-card-title :class="['title white--text', 'red']">
+          <div class="mr-4">Test mode!</div>
+
+          <v-icon
+            right
+            class="white--text icon icon-delete close"
+            @click="dialogGuest= false"
+          ></v-icon>
+        </v-card-title>
+        <!-- Body -->
+        <v-card-text>
+          <p>
+            You are testing Weekx as a guest. Therefore, there is not records
+            tracking.
+          </p>
+          <p class="mb-0">Please log in or register from the launch screen.</p>
+        </v-card-text>
+        <!-- Actions -->
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="red darken-1"
+            flat="flat"
+            @click="handleGuestDialog('backToLogin')"
+          >Back to the launch screen</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import { EventBus } from '@/bus'
-import Dialog from '@/components/Dialog'
+// import Dialog from '@/components/Dialog'
 
 export default {
   components: {
-    Dialog
+    // Dialog
   },
   data () {
     return {
@@ -120,6 +156,11 @@ export default {
 
 <style lang="scss">
 .theStatusBar {
+  @include responsive(desktopscreens) {
+    margin: auto;
+    max-width: 375px;
+  }
+
   &.absoluteConf {
     position: absolute;
     top: 0;

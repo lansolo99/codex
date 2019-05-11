@@ -314,6 +314,7 @@ export default {
     },
     handleResetAvatar () {
       this.profileDatas.avatarImage = ''
+      this.formComponents.hasImage = false
       this.saveProfile()
     },
     manageSubscribe () {
@@ -413,7 +414,6 @@ export default {
     },
     setImage: function (output) {
       console.log('setImage')
-
       this.formComponents.hasImage = true
       this.profileDatas.avatarImage = output
       this.formComponents.image = output

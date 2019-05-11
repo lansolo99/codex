@@ -1,13 +1,25 @@
 <template>
   <header>
-    <v-toolbar dark app class="taskHeader secondary">
-      <TheStatusBar/>
+    <v-toolbar
+      dark
+      app
+      class="taskHeader secondary"
+    >
+      <TheStatusBar />
       <v-toolbar-title class="primaryLighter--text font-weight-bold">Tasks</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn fab small class="colorGreen" @click="handleCreate">
+      <v-btn
+        fab
+        small
+        class="colorGreen"
+        @click="handleCreate"
+      >
         <v-icon class="icon icon-add"></v-icon>
       </v-btn>
-      <TasksProgress slot="extension" class="TasksProgressWrapper"/>
+      <TasksProgress
+        slot="extension"
+        class="TasksProgressWrapper"
+      />
     </v-toolbar>
   </header>
 </template>
@@ -35,6 +47,10 @@ export default {
   padding-top: 10px;
   padding-top: 50px;
   z-index: 3;
+  @include responsive(desktopscreens) {
+    margin: auto;
+    max-width: 375px;
+  }
 
   &.v-toolbar {
     margin: auto;

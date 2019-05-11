@@ -38,7 +38,6 @@ import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import firebase from './Firebase'
 import AppSpinner from '@/components/AppSpinner.vue'
 import Dialog from '@/components/Dialog'
-// import uuid from 'uuid/v4'
 
 export default {
   name: 'App',
@@ -555,9 +554,10 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  // Max to tablet view
-  //max-width: 992px;
-  margin: auto;
+  @include responsive(desktopscreens) {
+    margin: auto;
+    max-width: 375px;
+  }
 }
 .toolbarNone {
   padding-top: 0px !important;
