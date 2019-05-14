@@ -41,6 +41,7 @@
           @click="dialogResetAccount = true"
         >Reset my account</v-btn>
         <Dialog
+          v-if="dialogResetAccount"
           :vmodel="dialogResetAccount"
           title="Reset my account?"
           color="red"
@@ -66,6 +67,7 @@
         </Dialog>
       </v-layout>
       <Dialog
+        v-if="dialogResetAccountConfirmation"
         :vmodel="dialogResetAccountConfirmation"
         title="Reset done!"
         color="green"
@@ -97,6 +99,7 @@
           @click="dialogDeleteAccount= true"
         >Delete my account</v-btn>
         <Dialog
+          v-if="dialogDeleteAccount"
           :vmodel="dialogDeleteAccount"
           title="Delete my account?"
           color="red"
@@ -123,6 +126,7 @@
         </Dialog>
         <!-- Delete account : network needed -->
         <Dialog
+          v-if="dialogDeleteNeedNetwork"
           :vmodel="dialogDeleteNeedNetwork"
           title="A problem occured!"
           color="red"

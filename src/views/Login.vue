@@ -288,6 +288,7 @@
     />
 
     <Dialog
+      v-if="dialogAppleInstall"
       :vmodel="dialogAppleInstall"
       title="Install the app"
       color="primary"

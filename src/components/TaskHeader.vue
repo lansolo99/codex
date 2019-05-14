@@ -68,6 +68,9 @@ export default {
       max-width: none !important;
     }
   }
+  .sdfsd {
+    color: blue;
+  }
 
   .v-toolbar__extension {
     height: auto !important;

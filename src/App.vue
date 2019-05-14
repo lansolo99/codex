@@ -1,4 +1,5 @@
 <template>
+
   <v-app class="primary">
     <v-content :class="toolbarConf">
       <router-view />
@@ -11,6 +12,7 @@
 
     <!-- Inform user notification to subscription has been deleted -->
     <Dialog
+      v-if="dialogUnsubscribeNotification"
       :vmodel="dialogUnsubscribeNotification"
       title="Notification subscription"
       color="primary"

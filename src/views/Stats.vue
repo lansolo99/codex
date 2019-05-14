@@ -34,6 +34,7 @@
               align-self-center
             >
               <Dialog
+                v-if="dialogHelpProfile"
                 :vmodel="dialogHelpProfile"
                 title="Achievements completion"
                 :closeIcon="true"

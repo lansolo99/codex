@@ -152,6 +152,7 @@
     </v-layout>
     <!-- Notification permission denied -->
     <Dialog
+      v-if="dialogNotificationPermissionDenied"
       :vmodel="dialogNotificationPermissionDenied"
       title="Notifications denied!"
       color="red"
@@ -171,6 +172,7 @@
     </Dialog>
     <!-- Web push notifications not supported -->
     <Dialog
+      v-if="dialogNotificationNotSupportedEnv"
       :vmodel="dialogNotificationNotSupportedEnv"
       title="Notifications not supported!"
       color="red"
@@ -318,6 +320,8 @@ export default {
       this.saveProfile()
     },
     manageSubscribe () {
+      console.log('manageSubscribe')
+
       if (this.profileDatas.notifications.dailyTaskReminder.status) {
         // status just set to True -> try subscription
         this.subscribeNotification()

@@ -192,6 +192,7 @@
                 </v-tabs>
                 <!-- Dialog Edit schedule -->
                 <Dialog
+                  v-if="dialogEditSchedule"
                   :vmodel="dialogEditSchedule"
                   title="Change schedule?"
                   color="red"
@@ -267,6 +268,7 @@
                       <v-icon class="icon icon-add"></v-icon>
                     </v-btn>
                     <Dialog
+                      v-if="dialogNoEmptyTask"
                       :vmodel="dialogNoEmptyTask"
                       title="No empty task!"
                       :closeIcon="true"
@@ -311,6 +313,7 @@
                   @click="dialogDeleteTask = true"
                 >Delete task</v-btn>
                 <Dialog
+                  v-if="dialogDeleteTask"
                   :vmodel="dialogDeleteTask"
                   title="Delete this task?"
                   color="red"

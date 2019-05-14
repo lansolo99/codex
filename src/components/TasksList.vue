@@ -396,6 +396,11 @@ export default {
     .task {
       &.disabled {
         opacity: 0.4;
+        & ~ .layout {
+          .subtasks {
+            opacity: 0.4;
+          }
+        }
       }
     }
     &__icon {

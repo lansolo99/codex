@@ -33,30 +33,9 @@
         <div class="theStatusBar__btn-detail">...</div>
       </v-flex>
     </v-layout>
-    <!-- Dialog Guest -->
-    <!-- <Dialog
-      :vmodel="dialogGuest"
-      title="Test mode!"
-      :closeIcon="true"
-      color="red"
-      @closeDialog="dialogGuest = false"
-    >
-      <template v-slot:body>
-        <p>
-          You are testing Weekx as a guest. Therefore, there is not records
-          tracking.
-        </p>
-        <p class="mb-0">Please log in or register from the launch screen.</p>
-      </template>
-      <template v-slot:actions>
-        <v-btn
-          color="red darken-1"
-          flat="flat"
-          @click="handleGuestDialog('backToLogin')"
-        >Back to the launch screen</v-btn>
-      </template>
-    </Dialog> -->
+
     <v-dialog
+      v-if="dialogGuest"
       v-model="dialogGuest"
       persistent
       max-width="350"
